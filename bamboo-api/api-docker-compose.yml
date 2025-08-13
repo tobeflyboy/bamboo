@@ -1,0 +1,24 @@
+version: "2.0"
+
+services:
+  bamboo-api:
+    image: 'your-company.harbor.com/bamboo/bamboo-api:2025.04.09-SNAPSHOT'
+    restart: always
+    container_name: bamboo-api
+    ports:
+      - "18080:8080"
+    volumes:
+      - "/d/data/app/logs:/opt/app/logs"
+    environment:
+      - JAVA_OPTS=-server -Xms512m -Xmx1g
+      - spring.profiles.active=test
+    mem_limit: 2048M
+    logging:
+      options:
+        max-size: 100m
+    networks:
+      - devops
+networks:
+  devops:
+    external:
+      name: devops01

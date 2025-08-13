@@ -1,0 +1,36 @@
+{
+  "defaultExpandHolderPosition": "right",
+  "allowSwitchLineShape": true,
+  "allowSwitchJunctionPoint": true,
+  "defaultJunctionPoint": "border",
+  "defaultLineShape": 6,
+  "defaultLineWidth": 3,
+  "allowShowMiniToolBar": true,
+  "maxLayoutTimes": 20,
+  "moveToCenterWhenRefresh": false,
+  "zoomToFitWhenRefresh": true,
+  "useAnimationWhenRefresh": true,
+  "hideNodeContentByZoom": false,
+  "defaultLineColor": "#b28a60",
+  "defaultLineMarker": {
+    "markerWidth": "50",
+    "markerHeight": "30",
+    "refX": 6,
+    "refY": 6,
+    "data": "M2,2 L10,6 L2,10 L6,6 L2,2"
+  },
+  "layouts": [
+    {
+      "label": "Center",
+      "layoutName": "force",
+      "maxLayoutTimes": 250,
+      "defaultNodeWidth": 300,
+      "defaultNodeHeight": 300,
+      "allowSwitchLineShape": true,
+      "zoomToFitWhenRefresh": true,
+      "checkedLineColor": "#ff0000",
+      "force_node_repulsion": 0.6,
+      "force_line_elastic": 0.4
+    }
+  ]
+}

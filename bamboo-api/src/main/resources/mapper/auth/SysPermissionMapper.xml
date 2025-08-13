@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nutcracker.mapper.auth.SysPermissionMapper">
+
+    <resultMap id="permissionMap" type="com.nutcracker.entity.dataobject.auth.SysPermissionDo">
+        <id column="id" jdbcType="VARCHAR" property="id"/>
+        <result column="parent_id" jdbcType="VARCHAR" property="parentId"/>
+        <result column="path" jdbcType="VARCHAR" property="path"/>
+        <result column="name" jdbcType="VARCHAR" property="name"/>
+        <result column="component" jdbcType="VARCHAR" property="component"/>
+        <result column="redirect" jdbcType="VARCHAR" property="redirect"/>
+        <result column="icon" jdbcType="VARCHAR" property="icon"/>
+        <result column="title" jdbcType="VARCHAR" property="title"/>
+        <result column="is_link" jdbcType="VARCHAR" property="isLink"/>
+        <result column="is_hide" jdbcType="BOOLEAN" property="isHide"/>
+        <result column="is_full" jdbcType="BOOLEAN" property="isFull"/>
+        <result column="is_affix" jdbcType="BOOLEAN" property="isAffix"/>
+        <result column="is_keep_alive" jdbcType="BOOLEAN" property="isKeepAlive"/>
+        <result column="active_menu" jdbcType="VARCHAR" property="activeMenu"/>
+        <result column="no_affix_parent" jdbcType="BOOLEAN" property="noAffixParent"/>
+        <result column="sort_order" jdbcType="INTEGER" property="sortOrder"/>
+        <result column="is_deleted" jdbcType="BOOLEAN" property="isDeleted"/>
+        <result column="create_time" jdbcType="TIMESTAMP" property="createTime"/>
+        <result column="update_time" jdbcType="TIMESTAMP" property="updateTime"/>
+    </resultMap>
+
+
+    <update id="updateParentPermissionCode">
+        update sys_permission
+        set
+            parent_id = #{newParentPermissionCode,jdbcType=VARCHAR}
+        where parent_id = #{oldParentPermissionCode,jdbcType=VARCHAR}
+    </update>
+
+    <select id="findAll" resultMap="permissionMap">
+        SELECT * FROM sys_permission WHERE is_deleted = 0 ORDER BY sort_order ASC
+    </select>
+
+    <select id="getSysPermissionByRoleId" parameterType="java.lang.String" resultMap="permissionMap">
+        select
+            p.*
+        from sys_permission p
+        inner join sys_role_permission rp on rp.permission_id = p.id
+        where rp.role_id = #{roleId,jdbcType=VARCHAR}
+        order by p.sort_order asc
+    </select>
+
+    <select id="findByPermissionCode" parameterType="java.lang.String" resultMap="permissionMap">
+        select * from sys_permission
+        where id = #{permissionCode,jdbcType=VARCHAR}
+    </select>
+
+    <select id="findByParentPermissionCode" parameterType="java.lang.String" resultMap="permissionMap">
+        select * from sys_permission
+        where parent_id = #{parentPermissionCode,jdbcType=VARCHAR}
+    </select>
+
+    <select id="findAllByRoleId" resultType="com.nutcracker.entity.domain.auth.SysPermission">
+        select
+            distinct
+            p.id as id,
+            p.parent_id as parentId,
+            p.path as path,
+            p.name as name,
+            p.component as component,
+            p.redirect as redirect,
+            p.icon as icon,
+            p.title as title,
+            p.is_link as isLink,
+            p.is_hide as isHide,
+            p.is_full as isFull,
+            p.is_affix as isAffix,
+            p.is_keep_alive as isKeepAlive,
+            p.active_menu as activeMenu,
+            p.no_affix_parent as noAffixParent,
+            p.sort_order assortOrder,
+            (case when rp.permission_id is not null then 1 else 0 end) as checked
+        from sys_permission p
+        left join (
+            select distinct permission_id from sys_role_permission where role_id = #{roleId,jdbcType=VARCHAR}
+        ) rp on rp.permission_id = p.id
+        where p.is_deleted = 0
+        order by p.sort_order asc
+    </select>
+
+</mapper>

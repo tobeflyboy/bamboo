@@ -1,0 +1,90 @@
+spring:
+  datasource:
+    # 配置多数据源
+    dynamic:
+      primary: auth # 设置默认的数据源或者数据源组,默认值即为auth
+      strict: false # 严格匹配数据源,默认false. true未匹配到指定数据源时抛异常,false使用默认数据源
+      datasource:
+        auth:
+          # url: jdbc:sqlite::resource:db/auth.sqlite
+          url: jdbc:sqlite:D:/workspace/github/bamboo/bamboo-api/src/main/resources/db/auth.sqlite
+          driver-class-name: org.sqlite.JDBC
+          username:
+          password:
+          hikari:
+            #连接超时时间:毫秒，小于250毫秒，否则被重置为默认值30秒
+            connection-timeout: 60000
+            #控制连接测试活动的最长时间。这个值必须小于connectionTimeout。
+            validation-timeout: 3000
+            #最大连接数,最多不超过10个，小于等于0会被重置为默认值10；大于零小于1会被重置为minimum-idle的值
+            maximum-pool-size: 60
+            #最小空闲连接，默认值10，小于0或大于maximum-pool-size，都会重置为maximum-pool-size
+            minimum-idle: 10
+            #空闲连接超时时间，默认值600000（10分钟），大于等于max-lifetime且max-lifetime>0，会被重置为0；不等于0且小于10秒，会被重置为10秒。
+            # 只有空闲连接数大于最大连接数且空闲时间超过该值，才会被释放
+            idle-timeout: 60000
+            #连接最大存活时间.不等于0且小于30秒，会被重置为默认值30分钟.设置应该比mysql设置的超时时间短
+            max-lifetime: 600000
+            #开启连接监测泄露leakDetectionThreshold方法，此属性控制在记录消息之前连接可能离开池的时间量，表明可能的连接泄漏。值代表连接被占用的泄露时间最低可接受值为5秒，不过此值的设定需要根据场景多次调试，如果真实泄露时间小幅度超过5秒，会引起warning，但不一定会导出数据不能入库，因为该方法只是检查，只有到达idleTimeout ，才会强制执行关闭连接。
+            leak-detection-threshold: 60000
+            #连接测试查询
+            connection-test-query: SELECT 'auth'
+        biz:
+          # url: jdbc:sqlite::resource:db/biz.sqlite
+          url: jdbc:sqlite:D:/workspace/github/bamboo/bamboo-api/src/main/resources/db/biz.sqlite
+          driver-class-name: org.sqlite.JDBC
+          username:
+          password:
+          hikari:
+            #连接超时时间:毫秒，小于250毫秒，否则被重置为默认值30秒
+            connection-timeout: 60000
+            #控制连接测试活动的最长时间。这个值必须小于connectionTimeout。
+            validation-timeout: 3000
+            #最大连接数,最多不超过10个，小于等于0会被重置为默认值10；大于零小于1会被重置为minimum-idle的值
+            maximum-pool-size: 60
+            #最小空闲连接，默认值10，小于0或大于maximum-pool-size，都会重置为maximum-pool-size
+            minimum-idle: 10
+            #空闲连接超时时间，默认值600000（10分钟），大于等于max-lifetime且max-lifetime>0，会被重置为0；不等于0且小于10秒，会被重置为10秒。
+            # 只有空闲连接数大于最大连接数且空闲时间超过该值，才会被释放
+            idle-timeout: 60000
+            #连接最大存活时间.不等于0且小于30秒，会被重置为默认值30分钟.设置应该比mysql设置的超时时间短
+            max-lifetime: 600000
+            #开启连接监测泄露leakDetectionThreshold方法，此属性控制在记录消息之前连接可能离开池的时间量，表明可能的连接泄漏。值代表连接被占用的泄露时间最低可接受值为5秒，不过此值的设定需要根据场景多次调试，如果真实泄露时间小幅度超过5秒，会引起warning，但不一定会导出数据不能入库，因为该方法只是检查，只有到达idleTimeout ，才会强制执行关闭连接。
+            leak-detection-threshold: 60000
+            #连接测试查询
+            connection-test-query: SELECT 'biz'
+  redis:
+    redisson:
+      # redisson cluster yml 方式集成redis
+      file: classpath:redisson.yml
+# knife4j的增强配置，不需要增强可以不配
+knife4j:
+  enable: true
+
+# 安全配置
+security:
+  session:
+    type: redis-token # 会话方式 jwt/redis-token
+    access-token-time-to-live: 7200    # 访问令牌 有效期(单位：秒)，默认 2 小时，-1 表示永不过期
+    refresh-token-time-to-live: 604800 # 刷新令牌有效期(单位：秒)，默认 7 天，-1 表示永不过期
+    app-name: ${spring.application.name}
+    secret-key: 209d043e9a414220bb8fc4444fd7f67c # JWT密钥(HS256算法至少32字符)
+    allow-multi-login: true # 是否允许多设备登录
+  # 安全白名单路径，仅跳过 AuthorizationFilter 过滤器，还是会走 Spring Security 的其他过滤器(CSRF、CORS等)
+  ignore-urls:
+    - /error
+    - /api/auth/login          # 登录接口
+    - /api/auth/login/**       # 登录接口(账号密码登录、手机验证码登录和微信登录)
+    - /api/auth/captcha        # 验证码获取接口
+    - /api/auth/refresh-token  # 刷新令牌接口
+    - /api/auth/logout         # 开放退出登录
+    - /ws/**                   # WebSocket接口
+  # 非安全端点路径，完全绕过 Spring Security 的安全控制
+  unsecured-urls:
+    - ${springdoc.swagger-ui.path}
+    - /rest/actuator/health        # 健康检查接口
+    - /doc.html
+    - /swagger-ui/**
+    - /v3/api-docs/**
+    - /webjars/**
+    - /favicon.ico

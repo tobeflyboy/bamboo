@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.nutcracker.mapper.auth.SysUserMapper">
+
+    <resultMap id="userMap" type="com.nutcracker.entity.dataobject.auth.SysUserDo">
+        <id column="id" jdbcType="VARCHAR" property="id"/>
+        <result column="username" jdbcType="VARCHAR" property="username"/>
+        <result column="password" jdbcType="VARCHAR" property="password"/>
+        <result column="salt" jdbcType="VARCHAR" property="salt"/>
+        <result column="real_name" jdbcType="VARCHAR" property="realName"/>
+        <result column="email" jdbcType="VARCHAR" property="email"/>
+        <result column="status" jdbcType="INTEGER" property="status"/>
+        <result column="create_time" jdbcType="VARCHAR" property="createTime" typeHandler="com.nutcracker.mapper.CustomDateTypeHandler"/>
+        <result column="create_by" jdbcType="VARCHAR" property="createBy"/>
+        <result column="update_time" jdbcType="VARCHAR" property="updateTime" typeHandler="com.nutcracker.mapper.CustomDateTypeHandler"/>
+        <result column="update_by" jdbcType="VARCHAR" property="updateBy"/>
+        <result column="last_login_time" jdbcType="VARCHAR" property="lastLoginTime" typeHandler="com.nutcracker.mapper.CustomDateTypeHandler"/>
+    </resultMap>
+
+    <resultMap id="SysUserMap" type="com.nutcracker.entity.domain.auth.SysUser">
+        <result column="user_id" jdbcType="VARCHAR" property="userId"/>
+        <result column="username" jdbcType="VARCHAR" property="username"/>
+        <result column="real_name" jdbcType="VARCHAR" property="realName"/>
+        <result column="password" jdbcType="VARCHAR" property="password"/>
+        <result column="salt" jdbcType="VARCHAR" property="salt"/>
+        <result column="email" jdbcType="VARCHAR" property="email"/>
+        <result column="status" jdbcType="INTEGER" property="status"/>
+        <result column="create_time" jdbcType="VARCHAR" property="createTime" typeHandler="com.nutcracker.mapper.CustomDateTypeHandler"/>
+        <result column="create_user_real_name" jdbcType="VARCHAR" property="createUserRealName"/>
+        <result column="update_time" jdbcType="VARCHAR" property="updateTime" typeHandler="com.nutcracker.mapper.CustomDateTypeHandler"/>
+        <result column="update_user_real_name" jdbcType="VARCHAR" property="realName"/>
+        <result column="update_by" jdbcType="VARCHAR" property="updateUserRealName"/>
+        <result column="last_login_time" jdbcType="VARCHAR" property="lastLoginTime" typeHandler="com.nutcracker.mapper.CustomDateTypeHandler"/>
+        <result column="role_id" jdbcType="VARCHAR" property="roleId"/>
+        <result column="role_code" jdbcType="VARCHAR" property="roleCode"/>
+        <result column="role_name" jdbcType="VARCHAR" property="roleName"/>
+    </resultMap>
+
+    <sql id="find_xxx">
+        id, username, password, salt, real_name, email, status, create_time, create_by, update_time, update_by, last_login_time
+	</sql>
+
+    <select id="findLoginUser" resultMap="SysUserMap">
+        select
+            u1.id as user_id,
+            u1.username,
+            u1.real_name as real_name,
+            u1.password,
+            u1.salt,
+            u1.email,
+            u1.status,
+            u1.create_time as create_time,
+            u2.real_name as create_user_real_name,
+            u1.update_time as update_time,
+            u3.real_name as update_user_real_name,
+            u1.last_login_time as last_login_time,
+            r.id as role_id,
+            r.role_code,
+            r.role_name
+        from sys_user u1
+        left join sys_user u2 on u2.id = u1.create_by
+        left join sys_user u3 on u3.id = u1.update_by
+        left join sys_user_role ur on ur.user_id = u1.id
+        left join sys_role r on r.id = ur.role_id
+        <where>
+            <if test="username != null and username != ''">
+                and u1.username=#{username,jdbcType=VARCHAR}
+            </if>
+            <if test="mobile != null and mobile != ''">
+                and u1.mobile=#{mobile,jdbcType=VARCHAR}
+            </if>
+            <if test="openid != null and openid != ''">
+                and u1.openid=#{openid,jdbcType=VARCHAR}
+            </if>
+        </where>
+        order by u1.create_time asc
+    </select>
+
+    <select id="findUserByRoleCode" parameterType="string" resultMap="userMap">
+        select
+            u.id,
+            u.username,
+            u.password,
+            u.salt,
+            u.real_name,
+            u.email,
+            u.status,
+            u.create_time,
+            u.create_by,
+            u.update_time,
+            u.update_by,
+            u.last_login_time
+        from sys_user u
+        inner join sys_user_role ur on ur.user_id = u.id
+        inner join sys_role r on r.role_id = ur.role_id
+        where r.authority = #{roleCode}
+    </select>
+
+    <select id="findUser" resultType="com.nutcracker.entity.domain.auth.SysUser" resultMap="SysUserMap">
+        select
+            u1.id as user_id,
+            u1.username,
+            u1.real_name as real_name,
+            u1.password,
+            u1.salt,
+            u1.email,
+            u1.status,
+            u1.create_time as create_time,
+            u2.real_name as create_user_real_name,
+            u1.update_time as update_time,
+            u3.real_name as update_user_real_name,
+            u1.last_login_time as last_login_time,
+            r.id as role_id,
+            r.role_code,
+            r.role_name
+        from sys_user u1
+        left join sys_user u2 on u2.id = u1.create_by
+        left join sys_user u3 on u3.id = u1.update_by
+        left join sys_user_role ur on ur.user_id = u1.id
+        left join sys_role r on r.id = ur.role_id
+        <where>
+            <if test="username != null and username != ''">
+                and u1.username=#{username,jdbcType=VARCHAR}
+            </if>
+            <if test="realName != null and realName != ''">
+                and u1.real_name like '%'||#{realName,jdbcType=VARCHAR}||'%'
+            </if>
+            <if test="status != null">
+                and u1.status=#{status,jdbcType=INTEGER}
+            </if>
+        </where>
+        order by u1.create_time desc
+    </select>
+
+</mapper>

@@ -1,33 +1,69 @@
 <svg xmlns="http://www.w3.org/2000/svg" version="1.1" baseProfile="full" width="100%" height="100%" viewBox="0 0 1400 800">
 
-  <rect x="1300" y="400" rx="40" ry="40" width="150" height="150" stroke="rgb(129, 201, 149)" fill="rgb(129, 201, 149)">
-    <animateTransform attributeType="XML" attributeName="transform" begin="0s" dur="35s" type="rotate" from="0 1450 550" to="360 1450 550" repeatCount="indefinite"/>
-  </rect>
-
-  <path d="M 100 350 A 150 150 0 1 1 400 350 Q400 370 380 370 L 250 370 L 120 370 Q100 370 100 350" fill="#a2b3ff">
-    <animateMotion path="M 800 -200 L 800 -300 L 800 -200" dur="20s" begin="0s" repeatCount="indefinite"/>
-    <animateTransform attributeType="XML" attributeName="transform" begin="0s" dur="30s" type="rotate" values="0 210 530 ; -30 210 530 ; 0 210 530" keyTimes="0 ; 0.5 ; 1" repeatCount="indefinite"/>
+  <!-- 左上：大波浪形 -->
+  <path d="M 300 100 C 350 70, 450 70, 500 100 C 550 130, 650 130, 700 100 L 700 140 C 650 170, 550 170, 500 140 C 450 110, 350 110, 300 140 Z"
+        fill="#a2b3ff">
+    <animateMotion path="M 0 -40 L 0 80 L 0 -40" dur="12s" repeatCount="indefinite"/>
+    <animateTransform attributeName="transform" type="rotate" values="-5 500 120; 5 500 120; -5 500 120" keyTimes="0;0.5;1" dur="8s" repeatCount="indefinite"/>
   </path>
 
-  <circle cx="150" cy="150" r="180" stroke="#85FFBD" fill="#85FFBD">
-    <animateMotion path="M 0 0 L 40 20 Z" dur="5s" repeatCount="indefinite"/>
+  <!-- 左：大圆 -->
+  <circle cx="180" cy="400" r="120" fill="#85FFBD" opacity="0.9">
+    <animateMotion path="M -30 0 L 30 0 L -30 0" dur="7s" repeatCount="indefinite"/>
+    <animate attributeName="r" values="120;110;120" dur="6s" repeatCount="indefinite"/>
   </circle>
 
-  <!-- 三角形 -->
-  <path d="M 165 580 L 270 580 Q275 578 270 570 L 223 483 Q220 480 217 483 L 165 570 Q160 578 165 580"  fill="#a2b3ff">
-    <animateTransform attributeType="XML" attributeName="transform" begin="0s" dur="35s" type="rotate" from="0 210 530" to="360 210 530" repeatCount="indefinite"/>
+  <!-- 中左：大六边形 -->
+  <polygon points="600,250 650,280 650,340 600,370 550,340 550,280" fill="#3054EB" opacity="0.85">
+    <animateTransform attributeName="transform" type="rotate" from="0 600 310" to="360 600 310" dur="25s" repeatCount="indefinite"/>
+  </polygon>
+
+  <!-- 左下：大椭圆（轨道） -->
+  <ellipse cx="200" cy="650" rx="110" ry="60" fill="#FFB6C1" opacity="0.8">
+    <animateMotion path="M 0 0 a 160 100 0 1 0 320 0 a 160 100 0 1 0 -320 0" dur="14s" repeatCount="indefinite" />
+  </ellipse>
+
+  <!-- 中下：弧形条 -->
+  <path d="M 500 700 A 100 60 0 1 1 700 700" stroke="#FFFFE0" stroke-width="20" fill="none" stroke-linecap="round">
+    <animate attributeName="d" values="M 500 700 A 100 60 0 1 1 700 700; M 500 700 A 100 60 0 1 1 700 720; M 500 700 A 100 60 0 1 1 700 700" dur="5s" repeatCount="indefinite"/>
   </path>
 
-<!--  <circle cx="1200" cy="600" r="30" stroke="rgb(241, 243, 244)" fill="rgb(241, 243, 244)">-->
-<!--    <animateMotion path="M 0 0 L -20 40 Z" dur="9s" repeatCount="indefinite"/>-->
-<!--  </circle>-->
-
-  <path d="M 100 350 A 40 40 0 1 1 180 350 L 180 430 A 40 40 0 1 1 100 430 Z" fill="#3054EB">
-    <animateMotion path="M 140 390 L 180 360 L 140 390" dur="20s" begin="0s" repeatCount="indefinite"/>
-    <animateTransform attributeType="XML" attributeName="transform" begin="0s" dur="30s" type="rotate" values="0 140 390; -60 140 390; 0 140 390" keyTimes="0 ; 0.5 ; 1" repeatCount="indefinite"/>
-  </path>
-
-  <rect x="400" y="600" rx="40" ry="40" width="100" height="100" stroke="rgb(129, 201, 149)" fill="#3054EB">
-    <animateTransform attributeType="XML" attributeName="transform" begin="0s" dur="35s" type="rotate" from="-30 550 750" to="330 550 750" repeatCount="indefinite"/>
+  <!-- 下中：圆角矩形 -->
+  <rect x="600" y="700" width="200" height="80" rx="30" ry="30" fill="#a2b3ff" opacity="0.9">
+    <animate attributeName="width" values="200;180;200" dur="4s" repeatCount="indefinite"/>
   </rect>
+
+  <!-- 上中：三角形风车 -->
+  <path d="M 650 100 L 710 200 L 590 200 Z" fill="#3054EB">
+    <animateTransform attributeName="transform" type="rotate" from="0 650 150" to="360 650 150" dur="15s" repeatCount="indefinite"/>
+  </path>
+
+  <!-- 左中下：扇形 -->
+  <path d="M 300 550 L 300 500 A 50 50 0 0 1 350 500 Z" fill="#85FFBD" opacity="0.8">
+    <animate attributeName="d" values="M 300 550 L 300 500 A 50 50 0 0 1 350 500 Z; M 300 550 L 300 500 A 50 50 0 0 1 300 550 Z; M 300 550 L 300 500 A 50 50 0 0 1 350 500 Z" dur="6s" repeatCount="indefinite"/>
+  </path>
+
+  <!-- 左上角：星形 -->
+  <path d="M 50 50 L 65 90 L 110 90 L 75 115 L 90 160 L 50 135 L 10 160 L 25 115 L -5 90 L 40 90 Z" fill="red">
+    <!-- 旋转动画 -->
+    <animateTransform attributeName="transform" attributeType="XML" type="rotate" from="0 210 210" to="360 50 50" dur="5s" repeatCount="indefinite"/>
+  </path>
+
+  <!-- 左上角补充：发光圆环（脉动+旋转） -->
+  <circle cx="100" cy="80" r="40" fill="none" stroke="#85FFBD" stroke-width="10" stroke-opacity="0.6">
+    <animate attributeName="r" values="40;35;40" dur="4s" repeatCount="indefinite"/>
+    <animate attributeName="stroke-opacity" values="0.6;0.3;0.6" dur="6s" repeatCount="indefinite"/>
+    <animateTransform attributeName="transform" type="rotate" from="0 100 80" to="360 100 80" dur="30s" repeatCount="indefinite"/>
+  </circle>
+
+  <!-- 右上角：斜角矩形（漂移+呼吸） -->
+  <rect x="1100" y="60" width="140" height="80" rx="20" ry="20" transform="rotate(-30 1170 100)" fill="#a2b3ff" opacity="0.7">
+    <animateMotion path="M 0 -10 L 0 20 L 0 -10" dur="8s" repeatCount="indefinite"/>
+    <animate attributeName="opacity" values="0.5;0.8;0.5" dur="5s" repeatCount="indefinite"/>
+  </rect>
+
+  <!-- 右下角：旋转圆弧（科技感） -->
+  <path d="M 1200 650 A 60 60 0 1 1 1260 710" fill="none" stroke="#3054EB" stroke-width="12" stroke-linecap="round">
+    <animateTransform attributeName="transform" type="rotate" from="0 1230 680" to="360 1230 680" dur="20s" repeatCount="indefinite"/>
+  </path>
 </svg>

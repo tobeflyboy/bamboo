@@ -79,7 +79,6 @@ const login = formEl => {
       // 3.清空 tabs、keepAlive 数据
       await tabsStore.setTabs([]);
       await keepAliveStore.setKeepAliveName([]);
-      // debugger;
       // 4.跳转到首页
       setTimeout(() => {
         router.push(HOME_URL);
@@ -118,5 +117,5 @@ onBeforeUnmount(() => {
 </script>
 
 <style scoped lang="scss">
-@import "../index";
+@use "../index";
 </style>

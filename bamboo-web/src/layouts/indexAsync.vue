@@ -1,6 +1,6 @@
 <!-- 💥 这里是异步加载 LayoutComponents -->
 <template>
-  <el-watermark id="watermark" :font="font" :content="watermark ? ['Bamboo System', 'Happy Working'] : ''">
+  <el-watermark id="watermark" :font="font" :content="watermark ? watermarkContent : ''">
     <suspense>
       <template #default>
         <component :is="LayoutComponents[layout]" />
@@ -18,7 +18,7 @@ import { computed, reactive, watch } from "vue";
 import { useGlobalStore } from "@/stores/modules/global";
 import Loading from "@/components/Loading/index.vue";
 import ThemeDrawer from "./components/ThemeDrawer/index.vue";
-
+import { useUserStore } from "@/stores/modules/user";
 const LayoutComponents = {
   vertical: () => import("./LayoutVertical/index.vue"),
   classic: () => import("./LayoutClassic/index.vue"),
@@ -27,7 +27,7 @@ const LayoutComponents = {
 };
 
 const globalStore = useGlobalStore();
-
+const watermarkContent = ["Bamboo System", userStore.onlineUser.realName, userStore.onlineUser.username];
 const isDark = computed(() => globalStore.isDark);
 const layout = computed(() => globalStore.layout);
 const watermark = computed(() => globalStore.watermark);

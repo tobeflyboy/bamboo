@@ -165,9 +165,8 @@ INSERT INTO sys_permission(id, parent_id, path, name, component, redirect, icon,
 ('1000000000000001106', '1000000000000000013', '/system/timingTask', 'timingTask', '/system/timingTask/index', NULL, 'Menu', '定时任务', '', 0, 0, 0, 1, NULL, 0, 1106, 0, CURRENT_TIMESTAMP, NULL),
 ('1000000000000001107', '1000000000000000013', '/system/systemLog', 'systemLog', '/system/systemLog/index', NULL, 'Menu', '系统日志', '', 0, 0, 0, 1, NULL, 0, 1107, 0, CURRENT_TIMESTAMP, NULL),
 ('1000000000000001201', '1000000000000000014', '/link/bing', 'bing', '/link/bing/index', NULL, 'Menu', 'Bing 内嵌', '', 0, 0, 0, 1, NULL, 0, 1201, 0, CURRENT_TIMESTAMP, NULL),
-('1000000000000001202', '1000000000000000014', '/link/gitee', 'gitee', '/link/gitee/index', 'https://gitee.com/haimashale/geeker-admin-js', 'Menu', 'Gitee 仓库', '', 0, 0, 0, 1, NULL, 0, 1202, 0, CURRENT_TIMESTAMP, NULL),
-('1000000000000001203', '1000000000000000014', '/link/github', 'github', '/link/github/index', 'https://github.com/lw123lw/Geeker-Admin-JS', 'Menu', 'GitHub 仓库', '', 0, 0, 0, 1, NULL, 0, 1203, 0, CURRENT_TIMESTAMP, NULL),
-('1000000000000001204', '1000000000000000014', '/link/docs', 'docs', '/link/docs/index', 'https://docs.spicyboy.cn', 'Menu', '项目文档', '', 0, 0, 0, 1, NULL, 0, 1204, 0, CURRENT_TIMESTAMP, NULL);
+('1000000000000001202', '1000000000000000014', '/link/github', 'github', '/link/github/index', 'https://github.com/tobeflyboy/bamboo', 'Menu', 'GitHub 仓库', '', 0, 0, 0, 1, NULL, 0, 1203, 0, CURRENT_TIMESTAMP, NULL),
+('1000000000000001203', '1000000000000000014', '/link/docs', 'docs', '/link/docs/index', 'https://docs.spicyboy.cn', 'Menu', '项目文档', '', 0, 0, 0, 1, NULL, 0, 1204, 0, CURRENT_TIMESTAMP, NULL);
 
 -- 5. 三级路由（层级3）
 INSERT INTO sys_permission(id, parent_id, path, name, component, redirect, icon, title, is_link, is_hide, is_full, is_affix, is_keep_alive, active_menu, no_affix_parent, sort_order, is_deleted, create_time, update_time) VALUES

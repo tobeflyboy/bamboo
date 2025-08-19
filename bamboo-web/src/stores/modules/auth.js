@@ -3,7 +3,7 @@ import { getAuthButtonListApi, getAuthMenuListApi } from "@/api/modules/login";
 import { getFlatMenuList, getShowMenuList, getAllBreadcrumbList } from "@/utils";
 
 export const useAuthStore = defineStore({
-  id: "geeker-auth",
+  id: "bamboo-web-auth",
   state: () => ({
     // 按钮权限列表
     authButtonList: {},

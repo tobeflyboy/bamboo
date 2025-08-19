@@ -1,6 +1,6 @@
 <!-- 💥 这里是一次性加载 LayoutComponents -->
 <template>
-  <el-watermark id="watermark" :font="font" :content="watermark ? ['Bamboo System', 'Happy Working'] : ''">
+  <el-watermark id="watermark" :font="font" :content="watermark ? watermarkContent : ''">
     <component :is="LayoutComponents[layout]" />
     <ThemeDrawer />
   </el-watermark>
@@ -14,6 +14,7 @@ import LayoutClassic from "./LayoutClassic/index.vue";
 import LayoutTransverse from "./LayoutTransverse/index.vue";
 import LayoutColumns from "./LayoutColumns/index.vue";
 import { useGlobalStore } from "@/stores/modules/global.js";
+import { useUserStore } from "@/stores/modules/user";
 
 const LayoutComponents = {
   vertical: LayoutVertical,
@@ -23,7 +24,8 @@ const LayoutComponents = {
 };
 
 const globalStore = useGlobalStore();
-
+const userStore = useUserStore();
+const watermarkContent = ["Bamboo System", userStore.onlineUser.realName, userStore.onlineUser.username];
 const isDark = computed(() => globalStore.isDark);
 const layout = computed(() => globalStore.layout);
 const watermark = computed(() => globalStore.watermark);

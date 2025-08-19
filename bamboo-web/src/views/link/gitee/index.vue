@@ -2,7 +2,7 @@
   <div class="card content-box">
     <span class="text">
       Gitee 仓库：
-      <a href="https://gitee.com/haimashale/geeker-admin-js" target="_blank">https://gitee.com/haimashale/geeker-admin-js</a>
+      <a href="https://github.com/tobeflyboy/bamboo" target="_blank">https://github.com/tobeflyboy/bamboo</a>
       🍒🍉🍊
     </span>
   </div>

@@ -1,9 +1,9 @@
 {
-  "name": "bamboo",
+  "name": "bamboo-web",
   "private": true,
   "version": "1.0.0",
   "type": "module",
-  "description": "bamboo open source management system",
+  "description": "bamboo-web open source management system",
   "author": {
     "name": "胡桃夹子",
     "email": "infowangxin@139.com",

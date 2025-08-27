@@ -14,6 +14,8 @@ import com.nutcracker.constant.JwtClaimConstants;
 import com.nutcracker.constant.RedisConstants;
 import com.nutcracker.entity.domain.auth.AuthToken;
 import com.nutcracker.entity.domain.auth.OnlineUser;
+import com.nutcracker.entity.domain.auth.SysUser;
+import com.nutcracker.service.auth.SysUserService;
 import com.nutcracker.util.JSON;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -43,13 +45,15 @@ public class TokenService {
 
     private final SecurityProperties securityProperties;
     private final RedisTemplate<String, Object> redisTemplate;
+    private final SysUserService sysUserService;
     private final byte[] secretKey;
 
-    public TokenService(SecurityProperties securityProperties, RedisTemplate<String, Object> redisTemplate) {
+    public TokenService(SecurityProperties securityProperties, RedisTemplate<String, Object> redisTemplate, SysUserService sysUserService) {
         this.securityProperties = securityProperties;
         this.redisTemplate = redisTemplate;
         log.debug("secretkey={}", securityProperties.getSession().getSecretKey());
         this.secretKey = securityProperties.getSession().getSecretKey().getBytes();
+        this.sysUserService = sysUserService;
     }
 
 
@@ -71,6 +75,9 @@ public class TokenService {
         // 单设备登录控制
         handleSingleDeviceLogin(onlineUser.getUserId(), accessToken);
         LocalDateTime expiresAt = LocalDateTime.now().plusSeconds(securityProperties.getSession().getAccessTokenTimeToLive());
+        // 记录登录时间
+        SysUser sysUser = SysUser.builder().userId(onlineUser.getUserId()).lastLoginTime(LocalDateTime.now()).build();
+        sysUserService.updateLastLoginTime(sysUser);
         return AuthToken.builder()
                 .token(accessToken)
                 .refreshToken(refreshToken)

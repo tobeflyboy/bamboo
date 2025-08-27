@@ -67,13 +67,11 @@ public class LoginServiceImpl implements LoginService {
     @Override
     public AuthToken login(String username, String password) {
         log.debug("login username={},password={}", username, password);
-
         SysUser sysUser = sysUserService.findByUsername(username);
         if (null == sysUser) {
             log.error("login error, 账号不存在！username={}", username);
             throw new BusinessException(ResultCode.USER_PASSWORD_ERROR);
         }
-
         String pwd = SecurityUtils.encryptPassword(sysUser.getSalt(), password, sysUser.getUsername());
         if (!StrUtil.equals(pwd, sysUser.getPassword())) {
             log.error("login error, 密码错误！username={},password={},pwd={}", username, sysUser.getPassword(), pwd);

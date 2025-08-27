@@ -13,6 +13,7 @@ import com.nutcracker.entity.domain.auth.SaveRolePermission;
 import com.nutcracker.entity.domain.auth.SysPermission;
 import com.nutcracker.entity.domain.auth.SysRole;
 import com.nutcracker.entity.domain.auth.SysUser;
+import com.nutcracker.entity.query.auth.SysUserQuery;
 import com.nutcracker.entity.vo.auth.RouteRecordRawVo;
 import com.nutcracker.service.auth.SysPermissionService;
 import com.nutcracker.service.auth.SysRoleService;
@@ -25,7 +26,6 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -73,7 +73,9 @@ public class AuthManagerRestController {
 
     @Operation(summary = "【菜单】菜单详情接口", description = "菜单详情接口")
     @PostMapping("/api/permission/{permissionId}")
-    public WrapperResp<SysPermission> permission(@PathVariable("permissionId") String permissionId) {
+    public WrapperResp<SysPermission> permission(
+            @Parameter(name = "permissionId", description = "菜单ID", example = "1")
+            @PathVariable("permissionId") String permissionId) {
         log.info(" /api/permission/{}", permissionId);
         SysPermission permission = sysPermissionService.getPermission(permissionId);
         WrapperResp<SysPermission> resp = WrapperResp.success(permission);
@@ -92,7 +94,9 @@ public class AuthManagerRestController {
 
     @Operation(summary = "【菜单】菜单删除接口", description = "菜单删除接口")
     @PostMapping("/api/permission/delete/{permissionId}")
-    public WrapperResp<Boolean> permissionDelete(@PathVariable("permissionId") String permissionId) {
+    public WrapperResp<Boolean> permissionDelete(
+            @Parameter(name = "permissionId", description = "菜单ID", example = "1")
+            @PathVariable("permissionId") String permissionId) {
         log.info("/api/permission/delete permissionId={}", permissionId);
         WrapperResp<Boolean> response = sysPermissionService.deletePermission(permissionId);
         log.info("/api/permission/delete permissionId={}, response={}", permissionId, response);
@@ -137,7 +141,9 @@ public class AuthManagerRestController {
 
     @Operation(summary = "【角色】角色删除接口", description = "角色删除接口")
     @PostMapping("/api/role/delete/{roleId}")
-    public WrapperResp<Boolean> deleteRole(@PathVariable("roleId") String roleId) {
+    public WrapperResp<Boolean> deleteRole(
+            @Parameter(name = "roleId", description = "角色ID", example = "1")
+            @PathVariable("roleId") String roleId) {
         log.info("/api/role/delete/{}", roleId);
         WrapperResp<Boolean> resp = sysRoleService.deleteRole(roleId);
         log.info("/api/role/delete/{}, resp={}", roleId, JSON.toJSONString(resp));
@@ -146,7 +152,9 @@ public class AuthManagerRestController {
 
     @Operation(summary = "【角色与菜单】查询接口", description = "根据角色查询对应的菜单查询接口")
     @PostMapping("/api/role_permission/{roleId}")
-    public WrapperResp<List<RouteRecordRawVo>> rolePermission(@PathVariable("roleId") String roleId) {
+    public WrapperResp<List<RouteRecordRawVo>> rolePermission(
+            @Parameter(name = "roleId", description = "角色ID", example = "1")
+            @PathVariable("roleId") String roleId) {
         log.info("/api/role_permission/{}", roleId);
         List<RouteRecordRawVo> list = sysPermissionService.getSysPermissionByRoleId(roleId);
         WrapperResp<List<RouteRecordRawVo>> resp = WrapperResp.success(list);
@@ -175,14 +183,22 @@ public class AuthManagerRestController {
 
     @Operation(summary = "【用户】列表分页查询接口", description = "用户列表分页查询接口")
     @PostMapping("/api/user/list")
-    public WrapperResp<PageInfo<SysUser>> userList(
-            @Parameter(name = "pageNum", description = "页码，当前第x页", example = "1")
-            @RequestParam(name = "pageNum", required = false) Integer pageNum,
-            @RequestBody(required = false) SysUser user) {
-        log.info("/api/user/list pageNum={},{}", pageNum, JSON.toJSONString(user));
-        PageInfo<SysUser> page = sysUserService.findSysUserByPage(pageNum, user);
+    public WrapperResp<PageInfo<SysUser>> userList(@RequestBody(required = false) SysUserQuery query) {
+        log.info("/api/user/list query={}", query);
+        PageInfo<SysUser> page = sysUserService.findSysUserByPage(query);
         WrapperResp<PageInfo<SysUser>> resp = WrapperResp.success(page);
-        log.info("/api/user/list pageNum={},{},{}", pageNum, JSON.toJSONString(user), JSON.toJSONString(resp));
+        log.info("/api/user/list query={},{}", query, resp);
+        return resp;
+    }
+
+    @Operation(summary = "【用户】用户信息", description = "用户信息接口")
+    @PostMapping("/api/user/detail/{userId}")
+    public WrapperResp<SysUser> userDetail(
+            @Parameter(name = "userId", description = "用户ID", example = "1")
+            @PathVariable("userId") String userId) {
+        log.info("/api/user/detail/{}", userId);
+        WrapperResp<SysUser> resp = sysUserService.findById(userId);
+        log.info("/api/user/detail/{},{}", userId, JSON.toJSONString(resp));
         return resp;
     }
 
@@ -199,15 +215,17 @@ public class AuthManagerRestController {
     @Operation(summary = "【用户】编辑接口", description = "用户编辑接口")
     @PostMapping("/api/user/edit")
     public WrapperResp<Boolean> userEdit(@RequestBody SysUser user) {
-        log.info("/api/user/edit {}", JSON.toJSONString(user));
+        log.info("/api/user/edit user={}", JSON.toJSONString(user));
         WrapperResp<Boolean> resp = sysUserService.editUser(user);
-        log.info("/api/user/edit {}, resp={}", JSON.toJSONString(user), JSON.toJSONString(resp));
+        log.info("/api/user/edit user={}, resp={}", JSON.toJSONString(user), JSON.toJSONString(resp));
         return resp;
     }
 
     @Operation(summary = "【用户】删除接口", description = "用户删除接口")
     @PostMapping("/api/user/delete/{userId}")
-    public WrapperResp<Boolean> deleteUser(@PathVariable("userId") String userId) {
+    public WrapperResp<Boolean> deleteUser(
+            @Parameter(name = "userId", description = "用户ID", example = "1")
+            @PathVariable("userId") String userId) {
         log.info("/api/delete/user/{}", userId);
         WrapperResp<Boolean> resp = sysUserService.deleteUser(userId);
         log.info("/api/delete/user/{}, resp={}", userId, JSON.toJSONString(resp));
@@ -224,11 +242,11 @@ public class AuthManagerRestController {
     }
 
     @Operation(summary = "【用户】Excel导出接口", description = "用户Excel导出接口")
-    @GetMapping("/api/user/export")
-    public void userExport(HttpServletResponse response, SysUser user) {
+    @PostMapping("/api/user/export")
+    public void userExport(HttpServletResponse response, SysUserQuery query) {
         try {
-            log.info("/api/user/export, user={}", JSON.toJSONString(user));
-            List<SysUser> list = sysUserService.findAll(user);
+            log.info("/api/user/export, user={}", JSON.toJSONString(query));
+            List<SysUser> list = sysUserService.findAll(query);
             if (CollUtil.isEmpty(list)) {
                 throw new RuntimeException("没有可导出的数据");
             }
@@ -281,7 +299,9 @@ public class AuthManagerRestController {
     @Operation(summary = "【用户】Excel导入接口", description = "用户Excel导入接口")
     @PostMapping("/api/user/import")
     @SneakyThrows
-    public WrapperResp<Boolean> userImport(@RequestParam("file") MultipartFile file) {
+    public WrapperResp<Boolean> userImport(
+            @Parameter(name = "file", description = "Excel文件")
+            @RequestParam("file") MultipartFile file) {
         log.info("api/user/import");
         InputStream stream = file.getInputStream();
         ExcelReader reader = ExcelUtil.getReader(stream);

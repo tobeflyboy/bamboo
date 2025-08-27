@@ -28,8 +28,7 @@
         <result column="create_time" jdbcType="VARCHAR" property="createTime" typeHandler="com.nutcracker.mapper.CustomDateTypeHandler"/>
         <result column="create_user_real_name" jdbcType="VARCHAR" property="createUserRealName"/>
         <result column="update_time" jdbcType="VARCHAR" property="updateTime" typeHandler="com.nutcracker.mapper.CustomDateTypeHandler"/>
-        <result column="update_user_real_name" jdbcType="VARCHAR" property="realName"/>
-        <result column="update_by" jdbcType="VARCHAR" property="updateUserRealName"/>
+        <result column="update_user_real_name" jdbcType="VARCHAR" property="updateUserRealName"/>
         <result column="last_login_time" jdbcType="VARCHAR" property="lastLoginTime" typeHandler="com.nutcracker.mapper.CustomDateTypeHandler"/>
         <result column="role_id" jdbcType="VARCHAR" property="roleId"/>
         <result column="role_code" jdbcType="VARCHAR" property="roleCode"/>
@@ -44,7 +43,7 @@
         select
             u1.id as user_id,
             u1.username,
-            u1.real_name as real_name,
+            u1.real_name,
             u1.password,
             u1.salt,
             u1.email,
@@ -96,11 +95,11 @@
         where r.authority = #{roleCode}
     </select>
 
-    <select id="findUser" resultType="com.nutcracker.entity.domain.auth.SysUser" resultMap="SysUserMap">
+    <select id="findUser" resultType="com.nutcracker.entity.query.auth.SysUserQuery" resultMap="SysUserMap">
         select
             u1.id as user_id,
             u1.username,
-            u1.real_name as real_name,
+            u1.real_name,
             u1.password,
             u1.salt,
             u1.email,
@@ -119,6 +118,9 @@
         left join sys_user_role ur on ur.user_id = u1.id
         left join sys_role r on r.id = ur.role_id
         <where>
+            <if test="userId != null and userId != ''">
+                and u1.id=#{userId,jdbcType=VARCHAR}
+            </if>
             <if test="username != null and username != ''">
                 and u1.username=#{username,jdbcType=VARCHAR}
             </if>

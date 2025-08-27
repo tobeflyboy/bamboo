@@ -3,6 +3,7 @@ package com.nutcracker.mapper.auth;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.nutcracker.entity.dataobject.auth.SysUserDo;
 import com.nutcracker.entity.domain.auth.SysUser;
+import com.nutcracker.entity.query.auth.SysUserQuery;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -36,8 +37,8 @@ public interface SysUserMapper extends BaseMapper<SysUserDo> {
     /**
      * 根据条件（店铺、名称）查询客服人员
      *
-     * @param user {@link SysUser }
+     * @param query {@link SysUserQuery }
      * @return {@link List }<{@link SysUserDo }>
      */
-    List<SysUser> findUser(SysUser user);
+    List<SysUser> findUser(SysUserQuery query);
 }

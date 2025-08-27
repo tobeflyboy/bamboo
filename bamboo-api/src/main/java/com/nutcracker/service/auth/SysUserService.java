@@ -4,6 +4,7 @@ import com.github.pagehelper.PageInfo;
 import com.nutcracker.common.wrapper.WrapperResp;
 import com.nutcracker.entity.domain.auth.SysRole;
 import com.nutcracker.entity.domain.auth.SysUser;
+import com.nutcracker.entity.query.auth.SysUserQuery;
 
 import java.util.List;
 
@@ -87,11 +88,10 @@ public interface SysUserService {
     /**
      * 分页查询用户
      *
-     * @param pageNum 当前页码
-     * @param user  {@link SysUser }
+     * @param query  {@link SysUserQuery }
      * @return {@link List }<{@link SysUser }>
      */
-    PageInfo<SysUser> findSysUserByPage(Integer pageNum, SysUser user);
+    PageInfo<SysUser> findSysUserByPage(SysUserQuery query);
 
     /**
      * 删除用户
@@ -120,7 +120,17 @@ public interface SysUserService {
     /**
      * 查找全部用户
      *
+     * @param query 怎么翻译
      * @return {@link List }<{@link SysUser }>
      */
-    List<SysUser> findAll(SysUser user);
+    List<SysUser> findAll(SysUserQuery query);
+
+
+    /**
+     * 查询用户
+     *
+     * @param userId 用户ID
+     * @return {@link WrapperResp }<{@link SysUser }>
+     */
+    WrapperResp<SysUser> findById(String userId);
 }

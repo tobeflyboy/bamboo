@@ -18,11 +18,13 @@ import com.nutcracker.entity.dataobject.auth.SysUserDo;
 import com.nutcracker.entity.dataobject.auth.SysUserRoleDo;
 import com.nutcracker.entity.domain.auth.SysRole;
 import com.nutcracker.entity.domain.auth.SysUser;
+import com.nutcracker.entity.query.auth.SysUserQuery;
 import com.nutcracker.mapper.CustomDateTypeHandler;
 import com.nutcracker.mapper.auth.SysRoleMapper;
 import com.nutcracker.mapper.auth.SysUserMapper;
 import com.nutcracker.mapper.auth.SysUserRoleMapper;
 import com.nutcracker.service.auth.SysUserService;
+import com.nutcracker.util.JSON;
 import com.nutcracker.util.salt.Digests;
 import com.nutcracker.util.salt.Encodes;
 import com.nutcracker.web.Identify;
@@ -33,9 +35,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * 用户服务impl
@@ -202,7 +203,7 @@ public class SysUserServiceImpl implements SysUserService {
         }
         SysUserDo u = sysUserMapper.selectById(sysUser.getUserId());
         if (u != null) {
-            LocalDateTime lastLoginTime = u.getLastLoginTime();
+            LocalDateTime lastLoginTime = sysUser.getLastLoginTime();
             if (lastLoginTime == null) {
                 lastLoginTime = LocalDateTime.now();
             }
@@ -214,11 +215,12 @@ public class SysUserServiceImpl implements SysUserService {
     }
 
     @Override
-    public PageInfo<SysUser> findSysUserByPage(Integer pageNum, SysUser user) {
-        log.info("findSysUserByPage , pageNum={},{}", pageNum, user);
-        pageNum = pageNum == null ? 1 : pageNum;
+    public PageInfo<SysUser> findSysUserByPage(SysUserQuery query) {
+        log.info("findSysUserByPage , query={}", query);
+        int pageNum = Optional.ofNullable(query).orElse(new SysUserQuery()).getPageNum();
         PageHelper.startPage(pageNum, DemoConstants.PAGE_SIZE);
-        List<SysUser> list = sysUserMapper.findUser(user);
+        List<SysUser> list = sysUserMapper.findUser(query);
+        log.info("findSysUserByPage, list={}", JSON.toJSONString(list));
         PageInfo<SysUser> page = new PageInfo<>(list);
         log.debug("findSysUserByPage page.toString()={}", page);
         return page;
@@ -257,8 +259,14 @@ public class SysUserServiceImpl implements SysUserService {
         if (ObjectUtil.isEmpty(user) || StrUtil.isBlank(user.getUserId())) {
             return WrapperResp.validateFailed("编辑保存失败，缺失用户信息！");
         }
-        if (StrUtil.isAllBlank(user.getRoleId(), user.getEmail())) {
-            return WrapperResp.validateFailed("编辑保存失败，用户角色必选，用户邮箱必填写！");
+        if (StrUtil.isBlank(user.getRealName())) {
+            return WrapperResp.validateFailed("编辑保存失败，姓名为必填项！");
+        }
+        if (StrUtil.isBlank(user.getRoleId())) {
+            return WrapperResp.validateFailed("编辑保存失败，角色必选！");
+        }
+        if (StrUtil.isBlank(user.getEmail())) {
+            return WrapperResp.validateFailed("编辑保存失败，邮箱为必填项！");
         }
         if (ObjectUtil.isEmpty(user.getStatus())) {
             return WrapperResp.validateFailed("编辑保存失败，用户状态未指定！");
@@ -271,14 +279,23 @@ public class SysUserServiceImpl implements SysUserService {
         LocalDateTime now = LocalDateTime.now();
         String operator = Identify.getSessionUser().getUserId();
         // 更新用户状态、邮箱
-        int updateResult = sysUserMapper.update(
-                new LambdaUpdateWrapper<SysUserDo>()
-                        .eq(SysUserDo::getId, user.getUserId())
-                        .set(SysUserDo::getStatus, user.getStatus())
-                        .set(SysUserDo::getEmail, user.getEmail())
-                        .set(SysUserDo::getUpdateTime, now, "typeHandler=" + CustomDateTypeHandler.class.getName())
-                        .set(SysUserDo::getUpdateBy, operator)
-        );
+        //int updateResult = sysUserMapper.update(
+        //        new LambdaUpdateWrapper<SysUserDo>()
+        //                .eq(SysUserDo::getId, user.getUserId())
+        //                .set(SysUserDo::getRealName, user.getRealName())
+        //                .set(SysUserDo::getStatus, user.getStatus())
+        //                .set(SysUserDo::getEmail, user.getEmail())
+        //                .set(SysUserDo::getUpdateTime, now, "typeHandler=" + CustomDateTypeHandler.class.getName())
+        //                .set(SysUserDo::getUpdateBy, operator)
+        //);
+        SysUserDo updateEntity = new SysUserDo();
+        updateEntity.setId(user.getUserId());
+        updateEntity.setRealName(user.getRealName());
+        updateEntity.setStatus(user.getStatus());
+        updateEntity.setEmail(user.getEmail());
+        updateEntity.setUpdateTime(now);
+        updateEntity.setUpdateBy(operator);
+        int updateResult = sysUserMapper.updateById(updateEntity);
         if (updateResult == 0) {
             log.error("editUser, sysUserMapper.update fail, {},now={},operator={}", user, now, operator);
             return WrapperResp.failed("编辑保存失败！");
@@ -330,7 +347,7 @@ public class SysUserServiceImpl implements SysUserService {
             return WrapperResp.validateFailed("重置密码失败，用户不存在！");
         }
         String password = SecurityUtils.encryptPassword(userDo.getSalt(), user.getNewPassword(), userDo.getUsername());
-        Date now = Calendar.getInstance().getTime();
+        LocalDateTime now = LocalDateTime.now();
         String operator = Identify.getSessionUser().getUserId();
         // 更新用户状态、邮箱
         int updateResult = sysUserMapper.update(
@@ -348,7 +365,22 @@ public class SysUserServiceImpl implements SysUserService {
     }
 
     @Override
-    public List<SysUser> findAll(SysUser user) {
-        return sysUserMapper.findUser(user);
+    public List<SysUser> findAll(SysUserQuery query) {
+        return sysUserMapper.findUser(query);
+    }
+
+
+    @Override
+    public WrapperResp<SysUser> findById(String userId) {
+        if (StrUtil.isBlank(userId)) {
+            return WrapperResp.validateFailed("用户ID为空！");
+        }
+        SysUserQuery query = SysUserQuery.builder().userId(userId).build();
+        List<SysUser> list = sysUserMapper.findUser(query);
+        if (CollUtil.isEmpty(list)) {
+            log.warn("未找到用户信息, userId={}", userId);
+            return WrapperResp.failed("未找到用户信息");
+        }
+        return WrapperResp.success(list.iterator().next());
     }
 }

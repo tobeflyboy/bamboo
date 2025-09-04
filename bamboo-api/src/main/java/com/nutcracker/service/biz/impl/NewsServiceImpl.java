@@ -3,11 +3,11 @@ package com.nutcracker.service.biz.impl;
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.dynamic.datasource.annotation.DS;
-import com.baomidou.mybatisplus.core.toolkit.IdWorker;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.nutcracker.constant.DataSourceTagger;
 import com.nutcracker.constant.DemoConstants;
+import com.nutcracker.constant.PrimaryKey;
 import com.nutcracker.entity.dataobject.biz.NewsDo;
 import com.nutcracker.mapper.biz.NewsMapper;
 import com.nutcracker.service.biz.NewsService;
@@ -36,7 +36,7 @@ public class NewsServiceImpl implements NewsService {
     @Override
     public boolean addNews(NewsDo newsDo) {
         if (newsDo != null) {
-            newsDo.setId(String.valueOf(IdWorker.getId("t_news")));
+            newsDo.setId(PrimaryKey.getSysUserRoleId());
             newsDo.setCreateTime(LocalDateTime.now());
             int flag = newsMapper.insert(newsDo);
             return flag == 1;

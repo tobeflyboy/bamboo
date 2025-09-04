@@ -5,13 +5,13 @@ import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
-import com.baomidou.mybatisplus.core.toolkit.IdWorker;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.nutcracker.common.exception.BusinessException;
 import com.nutcracker.common.wrapper.WrapperResp;
 import com.nutcracker.constant.CacheableKey;
 import com.nutcracker.constant.DemoConstants;
+import com.nutcracker.constant.PrimaryKey;
 import com.nutcracker.entity.convert.auth.SysRoleConvert;
 import com.nutcracker.entity.dataobject.auth.SysPermissionDo;
 import com.nutcracker.entity.dataobject.auth.SysRoleDo;
@@ -64,7 +64,7 @@ public class SysRoleServiceImpl implements SysRoleService {
             return WrapperResp.validateFailed("新增角色失败，角色已不存在！");
         }
         sysRoleDo = SysRoleConvert.INSTANCE.toDo(sysRole);
-        sysRoleDo.setId(String.valueOf(IdWorker.getId("sys_role")));
+        sysRoleDo.setId(PrimaryKey.getSysRoleId());
         sysRoleDo.setCreateBy(Identify.getSessionUser().getUserId());
         sysRoleDo.setCreateTime(LocalDateTime.now());
         int ret = sysRoleMapper.insert(sysRoleDo);
@@ -94,14 +94,14 @@ public class SysRoleServiceImpl implements SysRoleService {
 
     @Transactional
     @Override
-    public void addRolePermission(String roleCode, String permissionCode) {
-        SysRoleDo sysRoleDo = sysRoleMapper.findRoleByRoleCode(roleCode);
+    public void addRolePermission(String roleId, String permissionId) {
+        SysRoleDo sysRoleDo = sysRoleMapper.selectById(roleId);
         if (sysRoleDo == null) {
             throw new BusinessException("role-fail", "给角色授权失败， 角色编码错误");
         }
-        SysPermissionDo sysPermissionDo = sysPermissionMapper.findByPermissionCode(permissionCode);
+        SysPermissionDo sysPermissionDo = sysPermissionMapper.selectById(permissionId);
         if (sysPermissionDo == null) {
-            throw new BusinessException("role-fail", "给角色授权失败， 资源编码不存在，permissionCode=" + permissionCode);
+            throw new BusinessException("role-fail", "给角色授权失败， 资源编码不存在，permissionCode=" + permissionId);
         }
 
         SysRolePermissionDo rolePermissionDo = new SysRolePermissionDo();
@@ -110,7 +110,7 @@ public class SysRoleServiceImpl implements SysRoleService {
 
         SysRolePermissionDo rp = sysRolePermissionMapper.findRolePermissionByRoleIdAndPermissionId(rolePermissionDo.getRoleId(), rolePermissionDo.getPermissionId());
         if (rp == null) {
-            rolePermissionDo.setId(String.valueOf(IdWorker.getId("sys_role_permission")));
+            rolePermissionDo.setId(PrimaryKey.getSysRolePermissionId());
             sysRolePermissionMapper.insert(rolePermissionDo);
         }
     }
@@ -171,7 +171,7 @@ public class SysRoleServiceImpl implements SysRoleService {
         final String createBy = Identify.getSessionUser().getRealName();
         List<SysRolePermissionDo> list = saveRolePermission.getPermissionIdList()
                 .stream().map(permissionId -> SysRolePermissionDo.builder()
-                        .id(String.valueOf(IdWorker.getId("sys_role_permission")))
+                        .id(PrimaryKey.getSysRolePermissionId())
                         .roleId(roleId)
                         .permissionId(permissionId)
                         .createTime(now)

@@ -42,10 +42,10 @@ public interface SysRoleService {
     /**
      * 给角色授权
      *
-     * @param roleCode       角色编码
-     * @param permissionCode 授权对应的KEY
+     * @param roleId       角色id
+     * @param permissionId 资源id
      */
-    void addRolePermission(String roleCode, String permissionCode);
+    void addRolePermission(String roleId, String permissionId);
 
     /**
      * 分页查询角色

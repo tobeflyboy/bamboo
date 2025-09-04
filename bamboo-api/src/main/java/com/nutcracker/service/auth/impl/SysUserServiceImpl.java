@@ -4,13 +4,13 @@ import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
-import com.baomidou.mybatisplus.core.toolkit.IdWorker;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.nutcracker.common.enums.SysUserStatusEnum;
 import com.nutcracker.common.exception.BusinessException;
 import com.nutcracker.common.wrapper.WrapperResp;
 import com.nutcracker.constant.DemoConstants;
+import com.nutcracker.constant.PrimaryKey;
 import com.nutcracker.entity.convert.auth.SysRoleConvert;
 import com.nutcracker.entity.convert.auth.SysUserConvert;
 import com.nutcracker.entity.dataobject.auth.SysRoleDo;
@@ -101,7 +101,7 @@ public class SysUserServiceImpl implements SysUserService {
         String createdBy = Identify.getSessionUser().getUserId();
         LocalDateTime now = LocalDateTime.now();
         entryptPassword(u);
-        u.setId(String.valueOf(IdWorker.getId("sys_user")));
+        u.setId(PrimaryKey.getSysUserId());
         u.setStatus(SysUserStatusEnum.VALID.getCode());
         u.setCreateTime(now);
         u.setCreateBy(createdBy);
@@ -112,7 +112,7 @@ public class SysUserServiceImpl implements SysUserService {
         }
 
         SysUserRoleDo ur = new SysUserRoleDo();
-        ur.setId(String.valueOf(IdWorker.getId("sys_user_role")));
+        ur.setId(PrimaryKey.getSysUserRoleId());
         ur.setRoleId(r.getId());
         ur.setUserId(u.getId());
         ur.setCreateTime(now);

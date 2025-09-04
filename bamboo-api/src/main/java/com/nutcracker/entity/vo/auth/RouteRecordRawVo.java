@@ -27,20 +27,26 @@ import java.util.List;
 public class RouteRecordRawVo implements Serializable {
     private static final long serialVersionUID = -4690552821968239320L;
 
-    @Schema(description = "路由访问路径", example = "/home/index")
+    @Schema(description = "id")
+    private String id;
+
+    @Schema(description = "路由地址", example = "/home/index")
     private String path;
 
-    @Schema(description = "路由 name (对应页面组件 name, 可用作 KeepAlive 缓存标识 && 按钮权限筛选)", example = "home")
+    @Schema(description = "路由名称 (对应页面组件 name, 可用作 KeepAlive 缓存标识 && 按钮权限筛选)", example = "home")
     private String name;
 
     @Schema(description = "路由重定向地址", example = "")
     private String redirect;
 
-    @Schema(description = "视图文件路径", example = "/home/index")
+    @Schema(description = "路由组件地址", example = "/home/index")
     private String component;
 
     @Schema(description = "路由元信息")
     private MetaVo meta;
+
+    @Schema(description = "排序")
+    private Integer sortOrder;
 
     @Schema(description = "多级路由嵌套")
     private List<RouteRecordRawVo> children;

@@ -2,10 +2,15 @@ package com.nutcracker.service.auth.impl;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.collection.CollectionUtil;
+import cn.hutool.core.util.StrUtil;
+import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.nutcracker.common.wrapper.WrapperResp;
 import com.nutcracker.constant.CacheableKey;
+import com.nutcracker.constant.PrimaryKey;
 import com.nutcracker.entity.convert.auth.SysPermissionConvert;
 import com.nutcracker.entity.dataobject.auth.SysPermissionDo;
+import com.nutcracker.entity.dataobject.auth.SysRolePermissionDo;
 import com.nutcracker.entity.domain.auth.SysPermission;
 import com.nutcracker.entity.vo.auth.RouteRecordRawVo;
 import com.nutcracker.mapper.auth.SysPermissionMapper;
@@ -18,6 +23,7 @@ import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -101,11 +107,13 @@ public class SysPermissionServiceImpl implements SysPermissionService {
 
             // 构建路由对象
             RouteRecordRawVo vo = RouteRecordRawVo.builder()
+                    .id(router.getId())
                     .path(router.getPath())
                     .name(router.getName())
                     .redirect(router.getRedirect())
                     .component(router.getComponent())
                     .meta(metaVo)
+                    .sortOrder(router.getSortOrder())
                     .children(new ArrayList<>())
                     .build();
             voMap.put(router.getId(), vo);
@@ -132,46 +140,32 @@ public class SysPermissionServiceImpl implements SysPermissionService {
     @Override
     public WrapperResp<Boolean> savePermission(SysPermission permission) {
         log.info("savePermission {}", permission);
-        //if (permission == null || StrUtil.isBlank(permission.getPermissionCode()) || StrUtil.isBlank(permission.getPermissionName())) {
-        //    log.error("savePermission fail, {}", permission);
-        //    return WrapperResp.validateFailed("保存失败，缺少必要参数");
-        //}
-        //
-        //SysPermissionDo permissionDo = sysPermissionMapper.findByPermissionCode(permission.getPermissionCode());
-        //int resultNum;
-        //if (StrUtil.isNotBlank(permission.getId())) {
-        //    // 更新
-        //    if (null != permissionDo && !StrUtil.equals(permission.getId(), permissionDo.getId()) && StrUtil.equals(permission.getPermissionCode(), permissionDo.getPermissionCode())) {
-        //        return WrapperResp.validateFailed("更新失败，权限编码已存在");
-        //    }
-        //    SysPermissionDo p = sysPermissionMapper.selectById(permission.getId());
-        //    if (null == p) {
-        //        return WrapperResp.validateFailed("更新失败，菜单信息不存在！");
-        //    }
-        //    String oldPermissionCode = p.getPermissionCode();
-        //    p = SysPermissionConvert.INSTANCE.toDo(permission);
-        //    resultNum = sysPermissionMapper.updateSysPermissionById(p);
-        //
-        //    // 菜单变更
-        //    if(!StrUtil.equals(permission.getPermissionCode(), oldPermissionCode)){
-        //        // 更新子菜单数据
-        //        sysPermissionMapper.updateParentPermissionCode(permission.getPermissionCode(), oldPermissionCode);
-        //    }
-        //} else {
-        //    // 新增
-        //    if (null != permissionDo && StrUtil.equals(permission.getPermissionCode(), permissionDo.getPermissionCode())) {
-        //        return WrapperResp.validateFailed("保存失败，权限编码已存在");
-        //    }
-        //    SysPermissionDo p = SysPermissionConvert.INSTANCE.toDo(permission);
-        //    p.setId(String.valueOf(IdWorker.getId("t_sys_permission")));
-        //    p.setCreateTime(LocalDateTime.now());
-        //    p.setCreateBy(Identify.getSessionUser().getUserId());
-        //    resultNum = sysPermissionMapper.insert(p);
-        //}
-        //log.info("savePermission {},resultNum={}", permission, resultNum);
-        //if (resultNum == 0) {
-        //    return WrapperResp.failed("保存失败，缺少必要参数");
-        //}
+        if (permission == null
+                || StrUtil.isBlank(permission.getName())
+                || StrUtil.isBlank(permission.getIcon())
+                || StrUtil.isBlank(permission.getTitle())) {
+            log.error("savePermission fail, {}", permission);
+            return WrapperResp.validateFailed("保存失败，缺少必要参数");
+        }
+        int resultNum;
+        if (StrUtil.isNotBlank(permission.getId())) {
+            SysPermissionDo p = sysPermissionMapper.selectById(permission.getId());
+            if (null == p) {
+                return WrapperResp.validateFailed("更新失败，菜单信息不存在！");
+            }
+            p = SysPermissionConvert.INSTANCE.toDo(permission);
+            resultNum = sysPermissionMapper.updateById(p);
+        } else {
+            // 新增
+            SysPermissionDo p = SysPermissionConvert.INSTANCE.toDo(permission);
+            p.setId(PrimaryKey.getSysPermissionId());
+            p.setCreateTime(LocalDateTime.now());
+            resultNum = sysPermissionMapper.insert(p);
+        }
+        log.info("savePermission {},resultNum={}", permission, resultNum);
+        if (resultNum == 0) {
+            return WrapperResp.failed("保存失败，缺少必要参数");
+        }
         return WrapperResp.success(Boolean.TRUE);
     }
 
@@ -179,29 +173,31 @@ public class SysPermissionServiceImpl implements SysPermissionService {
     @CacheEvict(cacheNames = CacheableKey.ROLE_PERMISSION, allEntries = true)
     public WrapperResp<Boolean> deletePermission(String permissionId) {
         log.info("deletePermission permissionId={}", permissionId);
-        //SysPermissionDo sysPermissionDo = sysPermissionMapper.selectById(permissionId);
-        //List<SysPermissionDo> children = sysPermissionMapper.findByParentPermissionCode(sysPermissionDo.getPermissionCode());
-        //if (CollUtil.isNotEmpty(children)) {
-        //    return WrapperResp.validateFailed("因为还有下级菜单，无法执行删除操作！");
-        //}
-        //List<SysRolePermissionDo> list = sysRolePermissionMapper.selectList(
-        //        new LambdaQueryWrapper<SysRolePermissionDo>()
-        //                .eq(SysRolePermissionDo::getPermissionId, permissionId)
-        //);
-        //if (CollUtil.isNotEmpty(list)) {
-        //    int ret = sysRolePermissionMapper.delete(
-        //            new LambdaUpdateWrapper<SysRolePermissionDo>()
-        //                    .eq(SysRolePermissionDo::getPermissionId, permissionId)
-        //    );
-        //    if (ret == 0) {
-        //        log.error("resetPwd, sysRolePermissionMapper.delete fail, permissionId={}", permissionId);
-        //        return WrapperResp.failed("删除失败！");
-        //    }
-        //}
-        //if (sysPermissionMapper.deleteById(permissionId) == 0) {
-        //    log.error("resetPwd, sysPermissionMapper.deleteById fail, permissionId={}", permissionId);
-        //    return WrapperResp.failed("删除失败！");
-        //}
+        SysPermissionDo sysPermissionDo = sysPermissionMapper.selectById(permissionId);
+        List<SysPermissionDo> children = sysPermissionMapper.findByParentPermissionId(sysPermissionDo.getParentId());
+        if (CollUtil.isNotEmpty(children)) {
+            return WrapperResp.validateFailed("因为还有下级菜单，无法执行删除操作！");
+        }
+        List<SysRolePermissionDo> list = sysRolePermissionMapper.selectList(
+                new LambdaQueryWrapper<SysRolePermissionDo>()
+                        .eq(SysRolePermissionDo::getPermissionId, permissionId)
+        );
+        if (CollUtil.isNotEmpty(list)) {
+            // 删除角色菜单授权
+            int ret = sysRolePermissionMapper.delete(
+                    new LambdaUpdateWrapper<SysRolePermissionDo>()
+                            .eq(SysRolePermissionDo::getPermissionId, permissionId)
+            );
+            if (ret != list.size()) {
+                log.error("resetPwd, sysRolePermissionMapper.delete fail, permissionId={}", permissionId);
+                return WrapperResp.failed("删除失败！");
+            }
+        }
+        //
+        if (sysPermissionMapper.deleteById(permissionId) == 0) {
+            log.error("resetPwd, sysPermissionMapper.deleteById fail, permissionId={}", permissionId);
+            return WrapperResp.failed("删除失败！");
+        }
         return WrapperResp.success(Boolean.TRUE);
     }
 

@@ -165,7 +165,7 @@ public enum SysPermissionEnum {
     //static {
         //for (SysPermissionEnum p : SysPermissionEnum.values()) {
             //SysPermissionDo per = SysPermissionDo.builder()
-            //        .id(String.valueOf(IdWorker.getId("sys_permission")))
+            //        .id(PrimaryKey.getSysPermissionId())
             //        .name(p.getPermissionName())
             //        .parentPermissionCode(p.getParentPermissionCode())
             //        .url(p.getUrl())

@@ -45,14 +45,9 @@
         order by p.sort_order asc
     </select>
 
-    <select id="findByPermissionCode" parameterType="java.lang.String" resultMap="permissionMap">
+    <select id="findByParentPermissionId" parameterType="java.lang.String" resultMap="permissionMap">
         select * from sys_permission
-        where id = #{permissionCode,jdbcType=VARCHAR}
-    </select>
-
-    <select id="findByParentPermissionCode" parameterType="java.lang.String" resultMap="permissionMap">
-        select * from sys_permission
-        where parent_id = #{parentPermissionCode,jdbcType=VARCHAR}
+        where parent_id = #{parentPermissionId,jdbcType=VARCHAR}
     </select>
 
     <select id="findAllByRoleId" resultType="com.nutcracker.entity.domain.auth.SysPermission">

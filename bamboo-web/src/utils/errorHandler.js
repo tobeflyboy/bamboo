@@ -4,9 +4,11 @@ import { ElNotification } from "element-plus";
  * @description 全局代码错误捕捉
  * */
 const errorHandler = error => {
-  console.log({ error });
+  console.log("error handler:", { error });
   // 过滤 HTTP 请求错误
-  if (error.status || error.status === 0) return false;
+  if (error.code || error.code === "A0400") {
+    return false;
+  }
   let errorMap = {
     InternalError: "Javascript引擎内部错误",
     ReferenceError: "未找到对象",

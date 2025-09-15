@@ -147,6 +147,12 @@ public class SysPermissionServiceImpl implements SysPermissionService {
             log.error("savePermission fail, {}", permission);
             return WrapperResp.validateFailed("保存失败，缺少必要参数");
         }
+        if (StrUtil.isEmpty(permission.getParentId())) {
+            permission.setParentId(null);
+        }
+        if (StrUtil.isEmpty(permission.getRedirect())) {
+            permission.setRedirect(null);
+        }
         int resultNum;
         if (StrUtil.isNotBlank(permission.getId())) {
             SysPermissionDo p = sysPermissionMapper.selectById(permission.getId());
@@ -156,6 +162,7 @@ public class SysPermissionServiceImpl implements SysPermissionService {
             p = SysPermissionConvert.INSTANCE.toDo(permission);
             resultNum = sysPermissionMapper.updateById(p);
         } else {
+            // TODO 判断是不是已经存在相同的菜单
             // 新增
             SysPermissionDo p = SysPermissionConvert.INSTANCE.toDo(permission);
             p.setId(PrimaryKey.getSysPermissionId());
@@ -174,10 +181,16 @@ public class SysPermissionServiceImpl implements SysPermissionService {
     public WrapperResp<Boolean> deletePermission(String permissionId) {
         log.info("deletePermission permissionId={}", permissionId);
         SysPermissionDo sysPermissionDo = sysPermissionMapper.selectById(permissionId);
-        List<SysPermissionDo> children = sysPermissionMapper.findByParentPermissionId(sysPermissionDo.getParentId());
+        if (null == sysPermissionDo) {
+            log.warn("找不到菜单，删除失败！permissionId={}", permissionId);
+            return WrapperResp.validateFailed("找不到菜单，删除失败！");
+        }
+        List<SysPermissionDo> children = sysPermissionMapper.findByParentPermissionId(permissionId);
         if (CollUtil.isNotEmpty(children)) {
+            log.warn("因为还有下级菜单，无法执行删除操作！permissionId={}", permissionId);
             return WrapperResp.validateFailed("因为还有下级菜单，无法执行删除操作！");
         }
+
         List<SysRolePermissionDo> list = sysRolePermissionMapper.selectList(
                 new LambdaQueryWrapper<SysRolePermissionDo>()
                         .eq(SysRolePermissionDo::getPermissionId, permissionId)
@@ -193,8 +206,10 @@ public class SysPermissionServiceImpl implements SysPermissionService {
                 return WrapperResp.failed("删除失败！");
             }
         }
-        //
-        if (sysPermissionMapper.deleteById(permissionId) == 0) {
+        sysPermissionDo.setIsDeleted(true);
+        sysPermissionDo.setUpdateTime(LocalDateTime.now());
+        // 实际上是逻辑删除
+        if (sysPermissionMapper.deleteById(sysPermissionDo) == 0) {
             log.error("resetPwd, sysPermissionMapper.deleteById fail, permissionId={}", permissionId);
             return WrapperResp.failed("删除失败！");
         }

@@ -28,7 +28,7 @@
           style="width: 100%"
           :cell-style="{ fontSize: data.tdFontSize }"
         >
-          <el-table-column label="名称" min-width="120">
+          <el-table-column label="菜单名称" min-width="120">
             <template #default="scope">
               <el-icon v-if="getIconComponent(scope.row.meta.icon)" class="menu-icon">
                 <component :is="getIconComponent(scope.row.meta.icon)" />
@@ -36,10 +36,8 @@
               {{ scope.row.meta.title }}
             </template>
           </el-table-column>
-
           <el-table-column label="路由地址" prop="path" min-width="120" />
           <el-table-column label="视图文件路径" prop="component" min-width="120" />
-
           <el-table-column label="可见">
             <template #default="scope">
               <el-tag :type="scope.row.meta.isHide === 0 ? 'success' : 'warning'" size="small">
@@ -73,7 +71,6 @@
                   <span></span>
                 </template>
               </el-tooltip>
-
               <el-tooltip content="编辑" placement="top">
                 <el-button
                   type="primary"
@@ -84,7 +81,6 @@
                   @click="showEditPermissionDialog(scope.row)"
                 ></el-button>
               </el-tooltip>
-
               <el-tooltip content="删除" placement="top">
                 <el-button
                   type="danger"
@@ -102,67 +98,70 @@
       </div>
     </el-card>
 
-    <!-- 编辑dialog -->
-    <el-dialog v-model="data.dialogEditPermissionFormVisible" title="编辑菜单" width="480">
-      <el-form :model="data.editPermissionForm" ref="editPermissionFormRef" :rules="data.editPermissionFormRules">
+    <!-- 新增、编辑dialog -->
+    <el-dialog v-model="data.dialogPermissionFormVisible" :title="data.dialogPermissionFormTitle" width="480">
+      <el-form :model="data.permissionForm" ref="permissionFormRef" :rules="data.permissionFormRules">
+        <el-form-item label="上级菜单" prop="parentTitle" v-if="data.showParentMenuFormItem" :label-width="data.formLabelWidth">
+          <el-input v-model.trim="data.permissionForm.parentTitle" disabled />
+        </el-form-item>
         <el-form-item label="菜单名称" prop="title" :label-width="data.formLabelWidth">
-          <el-input v-model="data.editPermissionForm.title" clearable />
+          <el-input v-model.trim="data.permissionForm.title" clearable placeholder="请输入菜单名称，必填项" />
         </el-form-item>
         <el-form-item label="路由name" prop="name" :label-width="data.formLabelWidth">
-          <el-input v-model="data.editPermissionForm.name" clearable />
+          <el-input v-model.trim="data.permissionForm.name" clearable placeholder="请输入路由name，必填项" />
         </el-form-item>
         <el-form-item label="路由地址" prop="path" :label-width="data.formLabelWidth">
-          <el-input v-model="data.editPermissionForm.path" clearable />
+          <el-input v-model.trim="data.permissionForm.path" clearable placeholder="请输入路由地址，必填项" />
         </el-form-item>
         <el-form-item label="视图文件路径" prop="component" :label-width="data.formLabelWidth">
-          <el-input v-model="data.editPermissionForm.component" clearable />
+          <el-input v-model.trim="data.permissionForm.component" clearable placeholder="请输入视图文件路径" />
         </el-form-item>
         <el-form-item label="重定向地址" prop="redirect" :label-width="data.formLabelWidth">
-          <el-input v-model="data.editPermissionForm.redirect" readonly clearable />
+          <el-input v-model.trim="data.permissionForm.redirect" readonly clearable placeholder="可以不填写" />
         </el-form-item>
         <el-form-item label="外链地址" prop="isLink" :label-width="data.formLabelWidth">
-          <el-input v-model="data.editPermissionForm.isLink" clearable />
+          <el-input v-model.trim="data.permissionForm.isLink" clearable placeholder="可以不填写" />
         </el-form-item>
         <el-form-item label="排序序号" prop="sortOrder" :label-width="data.formLabelWidth">
-          <el-input v-model.number="data.editPermissionForm.sortOrder" type="number" />
+          <el-input v-model.number.trim="data.permissionForm.sortOrder" type="number" />
         </el-form-item>
         <el-form-item label="图标" prop="icon" :label-width="data.formLabelWidth">
-          <el-col :span="11">
+          <el-col :span="21">
             <el-input
-              v-model="data.editPermissionForm.icon"
-              placeholder="请选择图标"
+              v-model="data.permissionForm.icon"
+              placeholder="请选择图标，必选择项"
               readonly
               @click="data.dialogIconFormVisible = true"
             />
           </el-col>
           <el-col :span="2" class="ml8">
-            <div v-if="data.editPermissionForm.icon" style="margin-top: 8px">
+            <div v-if="data.permissionForm.icon" style="margin-top: 8px">
               <el-icon size="large">
-                <component :is="data.editPermissionForm.icon" />
+                <component :is="data.permissionForm.icon" />
               </el-icon>
             </div>
           </el-col>
         </el-form-item>
         <el-form-item label="是否隐藏" prop="isHide" :label-width="data.formLabelWidth">
-          <el-radio-group v-model="data.editPermissionForm.isHide">
+          <el-radio-group v-model="data.permissionForm.isHide">
             <el-radio :value="false" size="small">否</el-radio>
             <el-radio :value="true" size="small">是</el-radio>
           </el-radio-group>
         </el-form-item>
         <el-form-item label="是否全屏" prop="isFull" :label-width="data.formLabelWidth">
-          <el-radio-group v-model="data.editPermissionForm.isFull">
+          <el-radio-group v-model="data.permissionForm.isFull">
             <el-radio :value="false" size="small">否</el-radio>
             <el-radio :value="true" size="small">是</el-radio>
           </el-radio-group>
         </el-form-item>
         <el-form-item label="是否标签固定" prop="isAffix" :label-width="data.formLabelWidth">
-          <el-radio-group v-model="data.editPermissionForm.isAffix">
+          <el-radio-group v-model="data.permissionForm.isAffix">
             <el-radio :value="false" size="small">否</el-radio>
             <el-radio :value="true" size="small">是</el-radio>
           </el-radio-group>
         </el-form-item>
         <el-form-item label="是否路由缓存" prop="isKeepAlive" :label-width="data.formLabelWidth">
-          <el-radio-group v-model="data.editPermissionForm.isKeepAlive">
+          <el-radio-group v-model="data.permissionForm.isKeepAlive">
             <el-radio :value="false" size="small">否</el-radio>
             <el-radio :value="true" size="small">是</el-radio>
           </el-radio-group>
@@ -170,8 +169,8 @@
       </el-form>
       <template #footer>
         <div class="dialog-footer">
-          <el-button @click="data.dialogEditPermissionFormVisible = false">取消</el-button>
-          <el-button type="primary" @click="editPermissionSubmit">提交</el-button>
+          <el-button @click="data.dialogPermissionFormVisible = false">取消</el-button>
+          <el-button type="primary" @click="permissionSave">提交</el-button>
         </div>
       </template>
     </el-dialog>
@@ -184,7 +183,7 @@
         <div
           v-for="(icon, index) in filteredIcons"
           :key="index"
-          :class="{ selected: data.editPermissionForm.icon === icon.name }"
+          :class="{ selected: data.permissionForm.icon === icon.name }"
           @click="selectIcon(icon.name)"
           class="icon-grid-item"
         >
@@ -194,6 +193,75 @@
           <span class="icon-name">{{ icon.name }}</span>
         </div>
       </div>
+    </el-dialog>
+
+    <!-- 删除用户dialog -->
+    <el-dialog v-model="data.dialogDeletePermissionFormVisible" title="删除菜单" width="480" align-center>
+      <el-form :model="data.deletePermissionForm">
+        <el-form-item label="菜单名称" prop="title" :label-width="data.formLabelWidth">
+          <el-input v-model.trim="data.deletePermissionForm.title" disabled />
+        </el-form-item>
+        <el-form-item label="路由name" prop="name" :label-width="data.formLabelWidth">
+          <el-input v-model.trim="data.deletePermissionForm.name" disabled />
+        </el-form-item>
+        <el-form-item label="路由地址" prop="path" :label-width="data.formLabelWidth">
+          <el-input v-model.trim="data.deletePermissionForm.path" disabled />
+        </el-form-item>
+        <el-form-item label="视图文件路径" prop="component" :label-width="data.formLabelWidth">
+          <el-input v-model.trim="data.deletePermissionForm.component" disabled />
+        </el-form-item>
+        <el-form-item label="重定向地址" prop="redirect" :label-width="data.formLabelWidth">
+          <el-input v-model.trim="data.deletePermissionForm.redirect" readonly disabled />
+        </el-form-item>
+        <el-form-item label="外链地址" prop="isLink" :label-width="data.formLabelWidth">
+          <el-input v-model.trim="data.deletePermissionForm.isLink" disabled />
+        </el-form-item>
+        <el-form-item label="排序序号" prop="sortOrder" :label-width="data.formLabelWidth">
+          <el-input v-model.number.trim="data.deletePermissionForm.sortOrder" type="number" disabled />
+        </el-form-item>
+        <el-form-item label="图标" prop="icon" :label-width="data.formLabelWidth">
+          <el-col :span="21">
+            <el-input v-model="data.deletePermissionForm.icon" placeholder="请选择图标，必选择项" disabled />
+          </el-col>
+          <el-col :span="2" class="ml8">
+            <div v-if="data.deletePermissionForm.icon" style="margin-top: 8px">
+              <el-icon size="large">
+                <component :is="data.deletePermissionForm.icon" />
+              </el-icon>
+            </div>
+          </el-col>
+        </el-form-item>
+        <el-form-item label="是否隐藏" prop="isHide" :label-width="data.formLabelWidth">
+          <el-radio-group v-model="data.deletePermissionForm.isHide" disabled>
+            <el-radio :value="false" size="small">否</el-radio>
+            <el-radio :value="true" size="small">是</el-radio>
+          </el-radio-group>
+        </el-form-item>
+        <el-form-item label="是否全屏" prop="isFull" :label-width="data.formLabelWidth">
+          <el-radio-group v-model="data.deletePermissionForm.isFull" disabled>
+            <el-radio :value="false" size="small">否</el-radio>
+            <el-radio :value="true" size="small">是</el-radio>
+          </el-radio-group>
+        </el-form-item>
+        <el-form-item label="是否标签固定" prop="isAffix" :label-width="data.formLabelWidth">
+          <el-radio-group v-model="data.deletePermissionForm.isAffix" disabled>
+            <el-radio :value="false" size="small">否</el-radio>
+            <el-radio :value="true" size="small">是</el-radio>
+          </el-radio-group>
+        </el-form-item>
+        <el-form-item label="是否路由缓存" prop="isKeepAlive" :label-width="data.formLabelWidth">
+          <el-radio-group v-model="data.deletePermissionForm.isKeepAlive" disabled>
+            <el-radio :value="false" size="small">否</el-radio>
+            <el-radio :value="true" size="small">是</el-radio>
+          </el-radio-group>
+        </el-form-item>
+      </el-form>
+      <template #footer>
+        <div class="dialog-footer">
+          <el-button @click="data.dialogDeletePermissionFormVisible = false">取消</el-button>
+          <el-button type="danger" @click="deletePermissionSubmit">确认删除</el-button>
+        </div>
+      </template>
     </el-dialog>
   </div>
 </template>
@@ -205,13 +273,14 @@ import http from "@/api/index.js";
 import { ElMessage } from "element-plus";
 import * as ElementPlusIconsVue from "@element-plus/icons-vue";
 
-const editPermissionFormRef = ref(null);
+const permissionFormRef = ref(null);
 
 // 变量声明
 const data = reactive({
   // 常量
   formLabelWidth: "100px",
   tdFontSize: "12px",
+  showParentMenuFormItem: false,
 
   // 查询条件
   searchKeyword: "",
@@ -221,25 +290,21 @@ const data = reactive({
   permissionList: [],
 
   // dialog
+  dialogPermissionFormTitle: "",
   dialogIconFormVisible: false,
-  dialogEditPermissionFormVisible: false,
+  dialogPermissionFormVisible: false,
+  dialogDeletePermissionFormVisible: false,
 
   // 表单相关
-  editPermissionForm: {},
+  permissionForm: {},
+  deletePermissionForm: {},
 
   // 表单规则
-  editPermissionFormRules: {
-    username: [
-      { required: true, message: "请输入账号名称", trigger: "blur" },
-      { min: 6, max: 12, message: "长度在 6 到 12 个字符", trigger: "blur" }
-    ],
-    realName: [{ required: true, message: "请输入真实姓名", trigger: "blur" }],
-    email: [
-      { required: true, message: "请输入邮箱地址", trigger: "blur" },
-      { type: "email", message: "请输入正确的邮箱地址", trigger: "blur" }
-    ],
-    roleId: [{ required: true, message: "请选择角色", trigger: "change" }],
-    status: [{ required: true, message: "请选择状态", trigger: "change" }]
+  permissionFormRules: {
+    title: [{ required: true, message: "请输入菜单名称", trigger: "blur" }],
+    name: [{ required: true, message: "请输入路由name", trigger: "blur" }],
+    path: [{ required: true, message: "视图文件路径", trigger: "blur" }],
+    icon: [{ required: true, message: "请选择图标", trigger: "blur" }]
   }
 });
 
@@ -258,7 +323,7 @@ const filteredIcons = computed(() => {
 
 // 选择icon，并关闭icon dialog
 const selectIcon = iconName => {
-  data.editPermissionForm.icon = iconName;
+  data.permissionForm.icon = iconName;
   data.dialogIconFormVisible = false;
   data.iconSearch = "";
 };
@@ -320,47 +385,136 @@ const handleSearch = () => {
 
 // 新增顶级菜单示例
 const handleAddPermission = () => {
-  alert("新增菜单功能示例，可以接入表单逻辑");
+  data.dialogPermissionFormTitle = "新增菜单";
+  data.showParentMenuFormItem = false;
+  data.permissionForm = {
+    id: "",
+    parentId: "",
+    parentTitle: "",
+    title: "",
+    name: "",
+    path: "",
+    component: "",
+    redirect: "",
+    isLink: "",
+    sortOrder: "",
+    icon: "",
+    isHide: false,
+    isFull: false,
+    isAffix: false,
+    isKeepAlive: false
+  };
+  // 显示模态窗口
+  data.dialogPermissionFormVisible = true;
 };
 
 // 新增子菜单
-const handleAddSubPermission = () => {
-  console.log("新增子菜单");
+const handleAddSubPermission = permission => {
+  data.dialogPermissionFormTitle = "新增子菜单";
+  data.showParentMenuFormItem = true;
+  data.permissionForm = {
+    id: "",
+    parentId: permission.id,
+    parentTitle: permission.meta.title,
+    title: "",
+    name: "",
+    path: "",
+    component: "",
+    redirect: "",
+    isLink: "",
+    sortOrder: "",
+    icon: "",
+    isHide: false,
+    isFull: false,
+    isAffix: false,
+    isKeepAlive: false
+  };
+  console.log("新增子菜单:", data.permissionForm);
+  // 显示模态窗口
+  data.dialogPermissionFormVisible = true;
 };
 
 // 编辑菜单
 const showEditPermissionDialog = async permission => {
+  data.dialogPermissionFormTitle = "编辑菜单";
+  data.showParentMenuFormItem = false;
   console.log("showEditPermissionDialog permission:", permission);
   // 表单重置
   const resp = await http.post(`/api/permission/${permission.id}`);
   console.log("showEditPermissionDialog resp:", resp);
   if (resp.code === "00000") {
-    data.editPermissionForm = resp.data;
+    data.permissionForm = resp.data;
     // 显示模态窗口
-    data.dialogEditPermissionFormVisible = true;
+    data.dialogPermissionFormVisible = true;
   } else {
     ElMessage.error(resp.msg);
   }
 };
 
 // 编辑菜单，提交保存
-const editPermissionSubmit = async () => {
-  console.log("editPermissionSubmit form:", data.editPermissionForm);
-  const resp = await http.post("/api/permission/save", data.editPermissionForm);
-  console.log("编辑菜单，提交保存响应结果 resp:", resp);
+const permissionSave = () => {
+  permissionFormRef.value.validate(async (valid, fields) => {
+    if (valid) {
+      console.log("表单验证通过:", data.permissionForm);
+      const permission = {
+        id: data.permissionForm.id,
+        parentId: data.permissionForm.parentId,
+        title: data.permissionForm.title,
+        name: data.permissionForm.name,
+        path: data.permissionForm.path,
+        component: data.permissionForm.component,
+        redirect: data.permissionForm.redirect,
+        isLink: data.permissionForm.isLink,
+        sortOrder: data.permissionForm.sortOrder,
+        icon: data.permissionForm.icon,
+        isHide: data.permissionForm.isHide,
+        isFull: data.permissionForm.isFull,
+        isAffix: data.permissionForm.isAffix,
+        isKeepAlive: data.permissionForm.isKeepAlive
+      };
+      console.log("editPermissionSubmit permission:", permission);
+      const resp = await http.post("/api/permission/save", permission);
+      console.log("编辑菜单，提交保存响应结果 resp:", resp);
+      if (resp.code === "00000") {
+        ElMessage.success("编辑用户成功");
+        data.dialogPermissionFormVisible = false;
+        console.log("编辑菜单，提交保存成功");
+        await load();
+      } else {
+        ElMessage.error(resp.msg);
+      }
+    }
+  });
+};
+
+// 删除菜单
+const handleDeletePermission = async permissionId => {
+  console.log("删除菜单");
+  console.log("handleDeletePermission permission:", permissionId);
+  // 表单重置
+  const resp = await http.post(`/api/permission/${permissionId}`);
+  console.log("handleDeletePermission resp:", resp);
   if (resp.code === "00000") {
-    ElMessage.success("编辑用户成功");
-    data.dialogEditPermissionFormVisible = false;
-    console.log("编辑菜单，提交保存成功");
-    await load();
+    data.deletePermissionForm = resp.data;
+    // 显示模态窗口
+    data.dialogDeletePermissionFormVisible = true;
   } else {
     ElMessage.error(resp.msg);
   }
 };
 
-// 删除菜单
-const handleDeletePermission = () => {
-  console.log("删除菜单");
+const deletePermissionSubmit = async () => {
+  console.log("deletePermissionSubmit permissionId=", data.deletePermissionForm.id);
+  // 表单重置
+  const resp = await http.post(`/api/permission/delete/${data.deletePermissionForm.id}`);
+  console.log("handleDeletePermission resp:", resp);
+  if (resp.code === "00000") {
+    ElMessage.success("删除菜单成功");
+    await load();
+    data.dialogDeletePermissionFormVisible = false;
+  } else {
+    ElMessage.error(resp.msg);
+  }
 };
 </script>
 

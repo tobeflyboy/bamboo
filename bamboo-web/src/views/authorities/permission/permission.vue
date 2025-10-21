@@ -2,19 +2,33 @@
   <div>
     <el-card shadow="hover" class="main-container">
       <div class="menu-management-page">
-        <!-- 页面标题与操作栏 -->
-        <div class="page-header">
-          <div class="header-actions">
+        <!-- 第一块：查询条件区域 -->
+        <!-- gutter 属性用于设置行内栅格（el-col）之间的间距。-->
+        <el-row :gutter="20" class="mb20">
+          <el-col :span="6">
             <el-input
-              v-model="data.searchKeyword"
+              v-model.trim="data.searchKeyword"
               placeholder="输入菜单名称/路由/Icon搜索"
-              prefix-icon="Search"
-              class="search-input"
-              @input="handleSearch"
-            />
-            <el-button type="primary" icon="Plus" @click="handleAddPermission">新增菜单</el-button>
-          </div>
-        </div>
+              clearable
+              @keyup.enter="handleSearch"
+            >
+              <template #prefix>
+                <el-icon>
+                  <Search />
+                </el-icon>
+              </template>
+            </el-input>
+          </el-col>
+          <el-col :span="4">
+            <el-button type="primary" icon="Search" @click="handleSearch">搜索</el-button>
+            <el-button icon="CircleClose" @click="resetSearch">重置</el-button>
+          </el-col>
+        </el-row>
+
+        <!-- 第二块：操作工具栏 -->
+        <el-space class="mb20">
+          <el-button type="success" icon="Plus" @click="handleAddPermission">新增菜单</el-button>
+        </el-space>
 
         <!-- 树形表格 -->
         <el-table
@@ -40,7 +54,7 @@
           <el-table-column label="视图文件路径" prop="component" min-width="120" />
           <el-table-column label="可见">
             <template #default="scope">
-              <el-tag :type="scope.row.meta.isHide === 0 ? 'success' : 'warning'" size="small">
+              <el-tag :type="scope.row.meta.isHide === 0 ? 'primary' : 'info'" size="small">
                 {{ scope.row.meta.isHide === 0 ? "显示" : "隐藏" }}
               </el-tag>
             </template>
@@ -73,7 +87,7 @@
               </el-tooltip>
               <el-tooltip content="编辑" placement="top">
                 <el-button
-                  type="primary"
+                  type="warning"
                   icon="Edit"
                   size="small"
                   class="is-plain"
@@ -267,11 +281,11 @@
 </template>
 
 <script setup>
-import { ref, onMounted, reactive, computed } from "vue";
 import * as ElIcons from "@element-plus/icons-vue";
-import http from "@/api/index.js";
-import { ElMessage } from "element-plus";
 import * as ElementPlusIconsVue from "@element-plus/icons-vue";
+import { ElMessage } from "element-plus";
+import { ref, onMounted, reactive, computed } from "vue";
+import http from "@/api/index.js";
 
 const permissionFormRef = ref(null);
 
@@ -287,6 +301,7 @@ const data = reactive({
   iconSearch: "",
 
   // 菜单数据
+  permissionCloneList: [],
   permissionList: [],
 
   // dialog
@@ -304,7 +319,7 @@ const data = reactive({
     title: [{ required: true, message: "请输入菜单名称", trigger: "blur" }],
     name: [{ required: true, message: "请输入路由name", trigger: "blur" }],
     path: [{ required: true, message: "视图文件路径", trigger: "blur" }],
-    icon: [{ required: true, message: "请选择图标", trigger: "blur" }]
+    icon: [{ required: true, message: "请选择图标", trigger: "change" }]
   }
 });
 
@@ -325,7 +340,6 @@ const filteredIcons = computed(() => {
 const selectIcon = iconName => {
   data.permissionForm.icon = iconName;
   data.dialogIconFormVisible = false;
-  data.iconSearch = "";
 };
 
 // 根据 icon 名获取组件
@@ -337,17 +351,17 @@ const getIconComponent = iconName => {
 const loadChildren = (row, treeNode, resolve) => {
   if (!row) {
     // 根节点
-    const roots = data.permissionList.filter(item => !item.parentId);
+    const roots = data.permissionCloneList.filter(item => !item.parentId);
     roots.forEach(r => {
-      r.hasChildren = data.permissionList.some(c => c.parentId === r.id);
+      r.hasChildren = data.permissionCloneList.some(c => c.parentId === r.id);
       r._level = 0;
     });
     resolve(roots);
   } else {
-    const children = data.permissionList
+    const children = data.permissionCloneList
       .filter(item => item.parentId === row.id)
       .map(c => {
-        c.hasChildren = data.permissionList.some(ch => ch.parentId === c.id);
+        c.hasChildren = data.permissionCloneList.some(ch => ch.parentId === c.id);
         c._level = (row._level || 0) + 1;
         return c;
       });
@@ -358,11 +372,12 @@ const loadChildren = (row, treeNode, resolve) => {
 const load = async () => {
   const resp = await http.post("/api/permission/tree");
   if (resp.code === "00000") {
-    data.permissionList = resp.data.map(item => ({
+    data.permissionCloneList = resp.data.map(item => ({
       ...item,
       hasChildren: false, // 先默认 false，懒加载时计算
       _level: 0 // 根节点默认层级 0
     }));
+    data.permissionList = data.permissionCloneList;
   }
 };
 
@@ -373,14 +388,26 @@ onMounted(async () => {
 
 // 搜索功能
 const handleSearch = () => {
-  if (!data.searchKeyword.value) return;
-  const keyword = data.searchKeyword.value.toLowerCase();
-  data.permissionList = data.permissionList.filter(
-    item =>
-      (item.meta.title && item.meta.title.toLowerCase().includes(keyword)) ||
-      (item.path && item.path.toLowerCase().includes(keyword)) ||
-      (item.meta.icon && item.meta.icon.toLowerCase().includes(keyword))
-  );
+  console.log("handleSearch searchKeyword:", data.searchKeyword);
+  if (!data.searchKeyword) {
+    const keyword = data.searchKeyword.toLowerCase();
+    data.permissionList = data.permissionCloneList;
+  } else {
+    const keyword = data.searchKeyword.toLowerCase();
+    data.permissionList = data.permissionCloneList.filter(
+      item =>
+        (item.meta.title && item.meta.title.toLowerCase().includes(keyword)) ||
+        (item.path && item.path.toLowerCase().includes(keyword)) ||
+        (item.meta.icon && item.meta.icon.toLowerCase().includes(keyword))
+    );
+  }
+};
+
+// 重置搜索条件
+const resetSearch = () => {
+  console.log("resetSearch");
+  data.searchKeyword = "";
+  handleSearch();
 };
 
 // 新增顶级菜单示例

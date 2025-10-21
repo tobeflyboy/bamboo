@@ -30,6 +30,9 @@ public class RouteRecordRawVo implements Serializable {
     @Schema(description = "id")
     private String id;
 
+    @Schema(description = "parentId")
+    private String parentId;
+
     @Schema(description = "路由地址", example = "/home/index")
     private String path;
 
@@ -50,6 +53,12 @@ public class RouteRecordRawVo implements Serializable {
 
     @Schema(description = "多级路由嵌套")
     private List<RouteRecordRawVo> children;
+
+    @Schema(description = "是否选中,1=选中,0=未选择,3=部分选中")
+    private Integer checked;
+
+    @Schema(description = "子路由选中数量")
+    private Integer childrenCheckedNum;
 
     /**
      * 路由元信息

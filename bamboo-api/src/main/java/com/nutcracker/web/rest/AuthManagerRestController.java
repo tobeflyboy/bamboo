@@ -13,6 +13,7 @@ import com.nutcracker.entity.domain.auth.SaveRolePermission;
 import com.nutcracker.entity.domain.auth.SysPermission;
 import com.nutcracker.entity.domain.auth.SysRole;
 import com.nutcracker.entity.domain.auth.SysUser;
+import com.nutcracker.entity.query.auth.SysRoleQuery;
 import com.nutcracker.entity.query.auth.SysUserQuery;
 import com.nutcracker.entity.vo.auth.RouteRecordRawVo;
 import com.nutcracker.service.auth.SysPermissionService;
@@ -114,14 +115,11 @@ public class AuthManagerRestController {
 
     @Operation(summary = "【角色】角色列表分页查询接口", description = "角色列表分页查询接口")
     @PostMapping("/api/role/list")
-    public WrapperResp<PageInfo<SysRole>> roleList(
-            @Parameter(name = "pageNum", description = "页码，当前第x页", example = "1")
-            @RequestParam(value = "pageNum", required = false) Integer pageNum,
-            @RequestBody SysRole role) {
-        log.info("/api/role/list pageNum={},role={}", pageNum, JSON.toJSONString(role));
-        PageInfo<SysRole> page = sysRoleService.findSysRoleByPage(pageNum, role);
+    public WrapperResp<PageInfo<SysRole>> roleList(@RequestBody SysRoleQuery query) {
+        log.info("/api/role/list query={}", JSON.toJSONString(query));
+        PageInfo<SysRole> page = sysRoleService.findSysRoleByPage(query);
         WrapperResp<PageInfo<SysRole>> resp = WrapperResp.success(page);
-        log.info("/api/role/list pageNum={},role={},resp={}", pageNum, JSON.toJSONString(role), JSON.toJSONString(resp));
+        log.info("/api/role/list query={},resp={}", JSON.toJSONString(query), JSON.toJSONString(resp));
         return resp;
     }
 

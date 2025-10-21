@@ -26,9 +26,10 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 /**
  * 权限服务
@@ -52,7 +53,7 @@ public class SysPermissionServiceImpl implements SysPermissionService {
             return Collections.emptyList();
         }
         List<SysPermission> list = SysPermissionConvert.INSTANCE.toDomain(permissionDoList);
-        return getPermissionTree(list);
+        return getPermissionTree(list, false);
     }
 
     @Override
@@ -68,7 +69,7 @@ public class SysPermissionServiceImpl implements SysPermissionService {
             return Collections.emptyList();
         }
         List<SysPermission> list = SysPermissionConvert.INSTANCE.toDomain(permissionDoList);
-        List<RouteRecordRawVo> result = getPermissionTree(list);
+        List<RouteRecordRawVo> result = getPermissionTree(list, true);
         log.debug("getRolePermissionByRoleId roleId={},result.size={}", roleId, CollUtil.size(result));
         return result;
     }
@@ -82,58 +83,93 @@ public class SysPermissionServiceImpl implements SysPermissionService {
         return permission;
     }
 
-    private List<RouteRecordRawVo> getPermissionTree(List<SysPermission> permissionList) {
-        // 如果查询结果为空，直接返回空列表
+    private List<RouteRecordRawVo> getPermissionTree(List<SysPermission> permissionList, boolean checked) {
         if (CollectionUtil.isEmpty(permissionList)) {
             return Collections.emptyList();
         }
 
-        // 构建ID到VO的映射
-        Map<String, RouteRecordRawVo> voMap = new HashMap<>(permissionList.size());
+        // 1. 先构建所有节点的 VO
+        Map<String, RouteRecordRawVo> voMap = permissionList.stream().collect(Collectors.toMap(
+                SysPermission::getId,
+                router -> {
+                    RouteRecordRawVo.MetaVo meta = RouteRecordRawVo.MetaVo.builder()
+                            .icon(router.getIcon())
+                            .title(router.getTitle())
+                            .activeMenu(router.getActiveMenu())
+                            .isLink(router.getIsLink())
+                            .isHide(router.getIsHide())
+                            .isFull(router.getIsFull())
+                            .isAffix(router.getIsAffix())
+                            .isKeepAlive(router.getIsKeepAlive())
+                            .build();
+                    return RouteRecordRawVo.builder()
+                            .id(router.getId())
+                            .parentId(router.getParentId())
+                            .path(router.getPath())
+                            .name(router.getName())
+                            .redirect(router.getRedirect())
+                            .component(router.getComponent())
+                            .meta(meta)
+                            .sortOrder(router.getSortOrder())
+                            .checked(Optional.ofNullable(router.getChecked()).orElse(0))
+                            .children(new ArrayList<>())
+                            .build();
+                }
+        ));
 
-        // 转换所有路由为VO对象
-        for (SysPermission router : permissionList) {
-            // 构建元数据
-            RouteRecordRawVo.MetaVo metaVo = RouteRecordRawVo.MetaVo.builder()
-                    .icon(router.getIcon())
-                    .title(router.getTitle())
-                    .activeMenu(router.getActiveMenu())
-                    .isLink(router.getIsLink())
-                    .isHide(router.getIsHide())
-                    .isFull(router.getIsFull())
-                    .isAffix(router.getIsAffix())
-                    .isKeepAlive(router.getIsKeepAlive())
-                    .build();
-
-            // 构建路由对象
-            RouteRecordRawVo vo = RouteRecordRawVo.builder()
-                    .id(router.getId())
-                    .path(router.getPath())
-                    .name(router.getName())
-                    .redirect(router.getRedirect())
-                    .component(router.getComponent())
-                    .meta(metaVo)
-                    .sortOrder(router.getSortOrder())
-                    .children(new ArrayList<>())
-                    .build();
-            voMap.put(router.getId(), vo);
-        }
-
-        // 构建树形结构
+        // 2. 构建树结构（并计算子节点选中数量）
         List<RouteRecordRawVo> rootList = new ArrayList<>();
-        for (SysPermission router : permissionList) {
-            RouteRecordRawVo currentVo = voMap.get(router.getId());
-            if (router.getParentId() == null) {
-                rootList.add(currentVo);
+        voMap.values().forEach(vo -> {
+            String parentId = vo.getParentId();
+            if (parentId == null) {
+                rootList.add(vo);
             } else {
-                RouteRecordRawVo parentVo = voMap.get(router.getParentId());
-                if (parentVo != null) {
-                    parentVo.getChildren().add(currentVo);
+                RouteRecordRawVo parent = voMap.get(parentId);
+                if (parent != null) {
+                    parent.getChildren().add(vo);
                 }
             }
+        });
+
+        if (checked) {
+            // 3. 自底向上计算“部分选中(3)”状态
+            rootList.forEach(this::updateCheckedState);
         }
+
         return rootList;
     }
+
+    /**
+     * 递归计算 checked 状态（返回当前节点的选中子节点数量）
+     */
+    private int updateCheckedState(RouteRecordRawVo node) {
+        List<RouteRecordRawVo> children = node.getChildren();
+        if (CollectionUtil.isEmpty(children)) {
+            // 叶子节点：返回自身是否选中
+            return node.getChecked() == 1 ? 1 : 0;
+        }
+
+        int selectedChildren = 0;
+        for (RouteRecordRawVo child : children) {
+            selectedChildren += updateCheckedState(child);
+        }
+
+        int totalChildren = children.size();
+        node.setChildrenCheckedNum(selectedChildren);
+
+        if (selectedChildren == 0) {
+            // 子节点都没选
+            node.setChecked(0);
+        } else if (selectedChildren == totalChildren) {
+            // 子节点都选中
+            node.setChecked(1);
+        } else {
+            // 部分选中
+            node.setChecked(3);
+        }
+        return node.getChecked() == 1 ? 1 : 0;
+    }
+
 
     @CacheEvict(cacheNames = CacheableKey.ROLE_PERMISSION, allEntries = true)
     @Transactional
@@ -219,10 +255,12 @@ public class SysPermissionServiceImpl implements SysPermissionService {
     @Override
     public List<RouteRecordRawVo> getSysPermissionByRoleId(String roleId) {
         List<SysPermission> sysPermissionDos = sysPermissionMapper.findAllByRoleId(roleId);
+        List<RouteRecordRawVo> list;
         if (CollUtil.isNotEmpty(sysPermissionDos)) {
-            List<RouteRecordRawVo> list = getPermissionTree(sysPermissionDos);
-
+            list = getPermissionTree(sysPermissionDos, true);
+        } else {
+            list = Collections.emptyList();
         }
-        return Collections.emptyList();
+        return list;
     }
 }

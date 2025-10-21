@@ -33,7 +33,7 @@
 		where role_code = #{roleCode,jdbcType=VARCHAR}
 	</select>
 
-	<select id="findSysRole" resultType="com.nutcracker.entity.domain.auth.SysRole">
+	<select id="findSysRole" resultType="com.nutcracker.entity.domain.auth.SysRole" parameterType="com.nutcracker.entity.query.auth.SysRoleQuery">
 		select
 			r.id,
 			r.role_code,

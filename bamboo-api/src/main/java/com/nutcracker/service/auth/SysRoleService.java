@@ -4,6 +4,7 @@ import com.github.pagehelper.PageInfo;
 import com.nutcracker.common.wrapper.WrapperResp;
 import com.nutcracker.entity.domain.auth.SaveRolePermission;
 import com.nutcracker.entity.domain.auth.SysRole;
+import com.nutcracker.entity.query.auth.SysRoleQuery;
 
 import java.util.List;
 
@@ -50,11 +51,10 @@ public interface SysRoleService {
     /**
      * 分页查询角色
      *
-     * @param pageNum 当前页码
-     * @param role    {@link SysRole }
+     * @param query    {@link SysRoleQuery }
      * @return {@link List }<{@link SysRole }>
      */
-    PageInfo<SysRole> findSysRoleByPage(Integer pageNum, SysRole role);
+    PageInfo<SysRole> findSysRoleByPage(SysRoleQuery query);
 
     /**
      * 编辑角色

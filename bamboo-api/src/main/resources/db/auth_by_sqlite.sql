@@ -194,7 +194,8 @@ select
  1000000000000000000 + (row_number() over(order by p.id)) as id,
  r.id as role_id,
  p.id as permission_id
-from sys_permission p, sys_role r;
+from sys_permission p, sys_role r
+where p.is_deleted = 0;
 
 -- 初始化用户
 INSERT INTO sys_user (id, username, password, salt, real_name, email, status, create_time) VALUES 

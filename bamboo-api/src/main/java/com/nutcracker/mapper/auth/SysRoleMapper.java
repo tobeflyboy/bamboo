@@ -3,6 +3,7 @@ package com.nutcracker.mapper.auth;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import com.nutcracker.entity.dataobject.auth.SysRoleDo;
 import com.nutcracker.entity.domain.auth.SysRole;
+import com.nutcracker.entity.query.auth.SysRoleQuery;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
@@ -36,9 +37,9 @@ public interface SysRoleMapper extends BaseMapper<SysRoleDo> {
     /**
      * 查找系统角色
      *
-     * @param sysRole 系统角色
+     * @param query 系统角色
      * @return {@link List }<{@link SysRole }>
      */
-    List<SysRole> findSysRole(SysRole sysRole);
+    List<SysRole> findSysRole(SysRoleQuery query);
 
 }

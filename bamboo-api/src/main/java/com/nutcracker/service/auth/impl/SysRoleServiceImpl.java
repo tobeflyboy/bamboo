@@ -19,6 +19,7 @@ import com.nutcracker.entity.dataobject.auth.SysRolePermissionDo;
 import com.nutcracker.entity.dataobject.auth.SysUserRoleDo;
 import com.nutcracker.entity.domain.auth.SaveRolePermission;
 import com.nutcracker.entity.domain.auth.SysRole;
+import com.nutcracker.entity.query.auth.SysRoleQuery;
 import com.nutcracker.mapper.auth.SysPermissionMapper;
 import com.nutcracker.mapper.auth.SysRoleMapper;
 import com.nutcracker.mapper.auth.SysRolePermissionMapper;
@@ -33,6 +34,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 /**
  * 角色服务
@@ -116,11 +118,11 @@ public class SysRoleServiceImpl implements SysRoleService {
     }
 
     @Override
-    public PageInfo<SysRole> findSysRoleByPage(Integer pageNum, SysRole role) {
-        log.info("findSysRoleByPage , pageNum={},{}", pageNum, role);
-        pageNum = pageNum == null ? 1 : pageNum;
+    public PageInfo<SysRole> findSysRoleByPage(SysRoleQuery query) {
+        log.info("findSysRoleByPage , {}", query);
+        int pageNum = Optional.ofNullable(query).orElse(new SysRoleQuery()).getPageNum();
         PageHelper.startPage(pageNum, DemoConstants.PAGE_SIZE);
-        List<SysRole> list = sysRoleMapper.findSysRole(role);
+        List<SysRole> list = sysRoleMapper.findSysRole(query);
         PageInfo<SysRole> page = new PageInfo<>(list);
         log.debug("findSysRoleByPage page.toString()={}", page);
         return page;

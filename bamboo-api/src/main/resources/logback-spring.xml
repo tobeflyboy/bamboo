@@ -4,10 +4,11 @@
     <property name="LOG_DIR" value="${LOG_PATH:-./logs}"/>
     <property name="MAX_HISTORY" value="7"/>
     <property name="PATTERN_SCRIPT" value="%date{yyyy/MM/dd HH:mm:ss.SSS} [%-5level] [%thread] [%c{36}.%M\(\) : %line] - %msg%n"/>
-    <!-- LOGSTASH_ADDRESS: Logstash的地址和端口，用于日志收集，kibana地址：http://10.28.19.168:5601 -->
-    <property name="LOGSTASH_ADDRESS" value="10.28.19.168:5042"/>
+    <!-- LOGSTASH_ADDRESS: Logstash的地址和端口，用于日志收集，kibana地址：http://10.28.21.213:5601 -->
+    <property name="LOGSTASH_ADDRESS" value="10.28.21.213:4567"/>
     <!-- 根据ENV属性设置应用名称 -->
-    <property name="APP" value="springboot-jakarta-jwt-demo"/>
+    <!--<property name="APP" value="from-bamboo"/>-->
+    <property name="APP" value="from-bamboo-api"/>
     <!-- 环境 -->
     <property name="ENV" value="${spring.profiles.active:-dev}"/>
 

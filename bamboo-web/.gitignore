@@ -13,8 +13,8 @@ dist.zip
 dist-ssr
 stats.html
 *.local
-#package-lock.json
-#pnpm-lock.yaml
+package-lock.json
+pnpm-lock.yaml
 
 # Editor directories and files
 .vscode/*

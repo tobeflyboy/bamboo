@@ -1,8 +1,10 @@
 package com.nutcracker;
 
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.info.BuildProperties;
 import org.springframework.boot.web.servlet.ServletComponentScan;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.ApplicationContext;
@@ -34,24 +36,48 @@ public class BambooApiApplication {
     }
 
     private static void printApplicationInfo(ApplicationContext ctx) {
-        StringJoiner joiner = new StringJoiner("\n\t", "\n\n\t", "\n\t");
-        joiner.add("SpringBoot Version: " + Optional.ofNullable(SpringApplication.class.getPackage()).map(Package::getImplementationVersion).orElse("UNKNOWN"));
-        joiner.add("Application Version: " + Optional.ofNullable(BambooApiApplication.class.getPackage()).map(Package::getImplementationVersion).orElse("UNKNOWN"));
-        // 文档URL处理
-        String contextPath = Optional.ofNullable(ctx.getEnvironment().getProperty("server.servlet.context-path")).orElse("");
-        if (ctx instanceof WebApplicationContext) {
-            Environment env = ctx.getEnvironment();
-            try {
-                String host = InetAddress.getLocalHost().getHostAddress();
-                int port = env.getProperty("server.port", Integer.class, 8080);
-                joiner.add("Doc URL: http://" + host + ":" + port + contextPath + "/doc.html");
-            } catch (UnknownHostException e) {
-                log.warn("Host address resolution failed, skipping doc URL", e);
-            }
+        Environment env = ctx.getEnvironment();
+
+        String appName = ctx.getId();
+        String profile = String.join(", ", env.getActiveProfiles());
+        String contextPath = env.getProperty("server.servlet.context-path", "");
+        int port = env.getProperty("server.port", Integer.class, 8080);
+
+        String host = "localhost";
+        try {
+            host = InetAddress.getLocalHost().getHostAddress();
+        } catch (Exception ignored) {
         }
-        // 启动成功消息
-        String appName = contextPath.isBlank() ? "" : contextPath.replace("/", "") + " ";
-        joiner.add(appName + "Start Successful");
-        log.info(joiner.toString());
+
+        // 获取 BuildProperties（来自 spring-boot-maven-plugin build-info）
+        String version = "UNKNOWN";
+        try {
+            BuildProperties bp = ctx.getBean(BuildProperties.class);
+            version = bp.getVersion();
+        } catch (Exception ignored) {
+        }
+
+        String baseUrl = "http://" + host + ":" + port + contextPath;
+
+        log.info("""
+                        
+                        ------------------------------------------------------------
+                         Application      : {}
+                         Version          : {}
+                         Active Profile   : {}
+                         Context Path     : {}
+                         Access URL       : {}
+                         API Doc          : {}/doc.html
+                        ------------------------------------------------------------
+                        """,
+                appName,
+                version,
+                profile.isBlank() ? "default" : profile,
+                contextPath,
+                baseUrl,
+                baseUrl
+        );
     }
+
+
 }

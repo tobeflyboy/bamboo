@@ -371,9 +371,16 @@ async function showRolePermissionDialog(roleId) {
 
     // 获取所有需要展开的节点ID
     const expandedKeys = getExpandedKeys(permission.tree, checkedKeys, halfCheckedKeys);
-    // 设置树选中状态
-    treeRef.value.setCheckedKeys([...checkedKeys, ...halfCheckedKeys]);
-    // 设置树展开状态
+    // 先设置“全选”的节点
+    treeRef.value.setCheckedKeys(checkedKeys);
+
+    // 修复半选：逐个设置半选状态
+    halfCheckedKeys.forEach(id => {
+      // 第二个 false 表示不勾选；第三个 false 表示不向下递归
+      treeRef.value.setChecked(id, false, false);
+    });
+
+    // 展开节点
     treeRef.value.setExpandedKeys(expandedKeys);
   } catch (err) {
     console.error(err);

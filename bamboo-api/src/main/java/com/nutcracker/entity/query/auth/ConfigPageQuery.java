@@ -6,6 +6,8 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 
+import java.io.Serial;
+
 /**
  * 系统配置查询对象
  *
@@ -17,6 +19,7 @@ import lombok.ToString;
 @Schema(description = "系统配置分页查询")
 public class ConfigPageQuery extends BasePageQuery {
 
+    @Serial
     private static final long serialVersionUID = -239862668448262548L;
 
     @Schema(description = "关键字(配置项名称/配置项值)")

@@ -13,6 +13,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.apache.ibatis.type.JdbcType;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
@@ -30,6 +31,7 @@ import java.time.LocalDateTime;
 @TableName("sys_user")
 public class SysUserDo implements Serializable {
 
+    @Serial
     private static final long serialVersionUID = 1227495748732942139L;
 
     @Schema(description = "id", name = "id", requiredMode = Schema.RequiredMode.REQUIRED)

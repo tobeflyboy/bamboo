@@ -3,6 +3,7 @@ package com.nutcracker.common.wrapper;
 import lombok.Getter;
 import lombok.ToString;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.List;
 
@@ -16,6 +17,7 @@ import java.util.List;
 @Getter
 public class PageWrapperResp<T> implements Serializable {
 
+    @Serial
     private static final long serialVersionUID = 2474225556241688093L;
 
     private final List<T> list;

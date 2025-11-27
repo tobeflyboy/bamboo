@@ -11,6 +11,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Accessors;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
@@ -26,6 +27,7 @@ import java.time.LocalDateTime;
 @TableName("router") // 映射数据库表名
 public class RouterDo implements Serializable {
 
+    @Serial
     private static final long serialVersionUID = 8018252717534378478L;
 
     /**

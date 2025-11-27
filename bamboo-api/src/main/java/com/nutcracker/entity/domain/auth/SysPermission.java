@@ -3,6 +3,7 @@ package com.nutcracker.entity.domain.auth;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
@@ -15,6 +16,7 @@ import java.time.LocalDateTime;
 @Data
 public class SysPermission implements Serializable {
 
+    @Serial
     private static final long serialVersionUID = -2051933842290600230L;
 
     @Schema(description = "路由ID")

@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.List;
 
@@ -25,6 +26,8 @@ import java.util.List;
 @Getter
 @Setter
 public class RouteRecordRawVo implements Serializable {
+
+    @Serial
     private static final long serialVersionUID = -4690552821968239320L;
 
     @Schema(description = "id")
@@ -74,6 +77,8 @@ public class RouteRecordRawVo implements Serializable {
     @Getter
     @Setter
     public static class MetaVo implements Serializable {
+
+        @Serial
         private static final long serialVersionUID = -7298197283010048954L;
 
         @Schema(description = "菜单和面包屑对应的图标", example = "HomeFilled")

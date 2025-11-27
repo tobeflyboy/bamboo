@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.io.Serial;
 import java.io.Serializable;
 
 /**
@@ -20,6 +21,7 @@ import java.io.Serializable;
 @NoArgsConstructor
 public class OnlineUser implements Serializable {
 
+    @Serial
     private static final long serialVersionUID = 2573965649742628481L;
 
     @Schema(description = "用户ID", example = "182827785478483968")

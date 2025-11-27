@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
@@ -21,6 +22,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class AuthToken implements Serializable {
 
+    @Serial
     private static final long serialVersionUID = 2573965649742628481L;
 
     @Schema(description = "token", example = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyIjp7ImlkIjoxLCJ1c2VybmFtZSI6IuW8oOS4iSJ9LCJleHAiOjE3NDQyNjYwMjF9.KNDyfjv5zxe_oetmNvRpwIDVJFNM_Oyf5sVG9p9KrUQ")

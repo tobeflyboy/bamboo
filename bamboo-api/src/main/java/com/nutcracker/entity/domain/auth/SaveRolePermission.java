@@ -3,6 +3,7 @@ package com.nutcracker.entity.domain.auth;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.List;
 
@@ -15,6 +16,7 @@ import java.util.List;
 @Data
 public class SaveRolePermission implements Serializable {
 
+    @Serial
     private static final long serialVersionUID = -5302468045494660387L;
 
     @Schema(description = "角色ID")

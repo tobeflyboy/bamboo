@@ -12,6 +12,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.apache.ibatis.type.JdbcType;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
@@ -29,6 +30,7 @@ import java.time.LocalDateTime;
 @TableName("sys_role_permission")
 public class SysRolePermissionDo implements Serializable {
 
+    @Serial
     private static final long serialVersionUID = -7948507636703811294L;
 
     @Schema(description = "id", name = "id", requiredMode = Schema.RequiredMode.REQUIRED)

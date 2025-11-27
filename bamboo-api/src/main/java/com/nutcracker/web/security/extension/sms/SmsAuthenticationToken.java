@@ -3,7 +3,9 @@ package com.nutcracker.web.security.extension.sms;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
 
+import java.io.Serial;
 import java.util.Collection;
+import java.util.Collections;
 
 /**
  * 短信验证码认证 Token
@@ -12,6 +14,7 @@ import java.util.Collection;
  */
 public class SmsAuthenticationToken extends AbstractAuthenticationToken {
 
+    @Serial
     private static final long serialVersionUID = 6690205499801343996L;
 
     /**
@@ -31,7 +34,7 @@ public class SmsAuthenticationToken extends AbstractAuthenticationToken {
      */
     public SmsAuthenticationToken(Object principal, Object credentials) {
         // 没有授权信息时，设置为 null
-        super(null);
+        super(Collections.emptyList());
         this.principal = principal;
         this.credentials = credentials;
         // 默认未认证

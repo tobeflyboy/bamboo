@@ -4,7 +4,9 @@ import lombok.Getter;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
 
+import java.io.Serial;
 import java.util.Collection;
+import java.util.Collections;
 
 /**
  * 微信小程序手机号认证Token
@@ -15,6 +17,7 @@ import java.util.Collection;
 @Getter
 public class WxMiniAppPhoneAuthenticationToken extends AbstractAuthenticationToken {
 
+    @Serial
     private static final long serialVersionUID = -8777768969293651582L;
 
     private final Object principal;
@@ -35,7 +38,7 @@ public class WxMiniAppPhoneAuthenticationToken extends AbstractAuthenticationTok
      * @param iv 初始向量
      */
     public WxMiniAppPhoneAuthenticationToken(String code, String encryptedData, String iv) {
-        super(null);
+        super(Collections.emptyList());
         this.principal = code;
         this.encryptedData = encryptedData;
         this.iv = iv;

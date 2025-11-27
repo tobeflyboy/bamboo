@@ -3,6 +3,8 @@ package com.nutcracker.common.exception;
 import com.nutcracker.common.wrapper.IResultCode;
 import org.slf4j.helpers.MessageFormatter;
 
+import java.io.Serial;
+
 /**
  * 自定义异常类
  *
@@ -11,6 +13,7 @@ import org.slf4j.helpers.MessageFormatter;
  */
 public class BusinessException extends RuntimeException {
 
+    @Serial
     private static final long serialVersionUID = 5787303780395601031L;
 
     public IResultCode resultCode;

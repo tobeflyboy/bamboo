@@ -8,6 +8,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
@@ -24,6 +25,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class SysUser implements Serializable {
 
+    @Serial
     private static final long serialVersionUID = -2617669111308455616L;
 
     @Schema(description = "用户id", example = "1909164660242817025")

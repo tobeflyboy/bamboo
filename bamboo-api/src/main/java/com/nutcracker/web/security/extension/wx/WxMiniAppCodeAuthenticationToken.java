@@ -5,6 +5,7 @@ import org.springframework.security.core.GrantedAuthority;
 
 import java.io.Serial;
 import java.util.Collection;
+import java.util.Collections;
 
 /**
  * 微信小程序Code认证Token
@@ -13,8 +14,10 @@ import java.util.Collection;
  * @since 2.0.0
  */
 public class WxMiniAppCodeAuthenticationToken extends AbstractAuthenticationToken {
+
     @Serial
-    private static final long serialVersionUID = 621L;
+    private static final long serialVersionUID = -1120582080249064210L;
+
     private final Object principal;
 
     /**
@@ -24,7 +27,7 @@ public class WxMiniAppCodeAuthenticationToken extends AbstractAuthenticationToke
      */
     public WxMiniAppCodeAuthenticationToken(Object principal) {
         // 没有授权信息时，设置为 null
-        super(null);
+        super(Collections.emptyList());
         this.principal = principal;
         // 默认未认证
         this.setAuthenticated(false);

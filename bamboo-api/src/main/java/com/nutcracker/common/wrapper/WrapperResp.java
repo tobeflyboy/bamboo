@@ -3,6 +3,7 @@ package com.nutcracker.common.wrapper;
 import lombok.Getter;
 import lombok.ToString;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.util.List;
 
@@ -15,6 +16,8 @@ import java.util.List;
 @ToString(callSuper = true)
 @Getter
 public class WrapperResp<T> implements Serializable {
+
+    @Serial
     private static final long serialVersionUID = 4311633334311958565L;
 
     // Getter 方法

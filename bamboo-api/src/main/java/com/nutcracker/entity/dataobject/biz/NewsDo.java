@@ -7,6 +7,7 @@ import com.nutcracker.mapper.CustomDateTypeHandler;
 import lombok.Data;
 import org.apache.ibatis.type.JdbcType;
 
+import java.io.Serial;
 import java.io.Serializable;
 import java.time.LocalDateTime;
 
@@ -21,6 +22,7 @@ import java.time.LocalDateTime;
 @TableName("t_news")
 public class NewsDo implements Serializable {
 
+    @Serial
     private static final long serialVersionUID = 3624947930970250778L;
 
     @TableId("id")

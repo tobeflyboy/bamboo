@@ -10,6 +10,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
+import java.io.Serial;
 import java.time.LocalDateTime;
 
 /**
@@ -27,6 +28,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class SysRoleQuery extends BasePageQuery {
 
+    @Serial
     private static final long serialVersionUID = -3400097996428330935L;
 
     @Schema(description = "角色id", requiredMode = Schema.RequiredMode.REQUIRED)

@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.io.Serial;
 import java.io.Serializable;
 
 /**
@@ -21,6 +22,7 @@ import java.io.Serializable;
 @NoArgsConstructor
 public class UserRole implements Serializable {
 
+    @Serial
     private static final long serialVersionUID = -7686199439208183608L;
 
     @Schema(description = "用户id", example = "1909164660242817025")

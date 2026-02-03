@@ -29,8 +29,6 @@ build/
 !**/src/test/**/build/
 package-lock.json
 
-### VS Code ###
-.vscode/
 
 ## Eclipse Core
 .project

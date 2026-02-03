@@ -1,5 +1,3 @@
-HELP.md
-
 ## maven
 target/
 !.mvn/wrapper/maven-wrapper.jar
@@ -70,4 +68,3 @@ logs
 ## other
 dubbo-cache
 dubbo-cache.lock
-docs

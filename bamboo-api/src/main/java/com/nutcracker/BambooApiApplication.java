@@ -1,6 +1,7 @@
 package com.nutcracker;
 
-import lombok.extern.slf4j.Slf4j;
+import java.net.InetAddress;
+
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.info.BuildProperties;
@@ -10,7 +11,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.core.env.Environment;
 import org.springframework.scheduling.annotation.EnableAsync;
 
-import java.net.InetAddress;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * Start Application

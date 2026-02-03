@@ -1,0 +1,57 @@
+{
+    // 使用 IntelliSense 了解相关属性。
+    // 悬停以查看现有属性的描述。
+    // 欲了解更多信息，请访问: https://code.visualstudio.com/docs/java/java-debugging
+    // VS Code 调试配置文件版本号，固定写法
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "bamboo-api", // 在 VS Code 调试下拉菜单中显示的名称
+            "type": "java", // 调试器类型，使用 VS Code 的 Java 扩展
+            "request": "launch", // 请求类型：启动（如果是调试已运行的进程则用 attach）
+            // Spring Boot 或 Java 项目的入口类（包含 main 方法的类）
+            "mainClass": "com.nutcracker.BambooApiApplication",
+            // 对应工作区中具体项目的名称
+            "projectName": "bamboo-api",
+            // 虚拟机参数配置
+            "vmArgs": [
+                "-Dfile.encoding=UTF-8" // 强制使用 UTF-8 编码，防止 Windows 环境下控制台中文乱码
+            ],
+            // 控制台模式：internalConsole（调试控制台）
+            // 优点：支持点击报错堆栈直接跳转代码，支持在输入框实时执行变量求值
+            "console": "internalConsole",
+            // 界面显示控制
+            "presentation": {
+                "hidden": false, // 在调试面板中可见
+                "group": "backend", // 逻辑分组名为“后端”，将所有后端服务聚合在一起
+                "order": 1 // 在后端组内的显示优先级，数字越小越靠前
+            }
+        },
+        {
+            "name": "bamboo-web", // 在 VS Code 调试下拉菜单中显示的名称
+            "type": "node",
+            "request": "launch", // 请求类型：启动（如果是调试已运行的进程则用 attach）
+            // 重点：指定 npm 运行的工作目录，确保能找到 bamboo-web 文件夹下的 package.json
+            "cwd": "${workspaceFolder}/bamboo-web",
+            // 指定运行程序为 npm (Windows 会自动寻找 npm.cmd)
+            "runtimeExecutable": "npm",
+            // 关键：通过使用 runtimeArgs 传递参数，并关闭调试注入，等同于在终端执行: npm run dev
+            "runtimeArgs": [
+                "run",
+                "dev"
+            ],
+            // 关键设置：在 VS Code 内置终端显示输出（像 Java 启动一样直观）
+            // 避免了弹出外部 cmd 窗口导致的路径解析错误
+            "console": "integratedTerminal",
+            // 启动时不自动打开调试控制台面板，保持界面整洁
+            "internalConsoleOptions": "neverOpen",
+            // 强制捕获标准输出，减少 VS Code 调试引擎对进程的干扰，强制vscode不要尝试“理解”这个node进程，只管运行它
+            "outputCapture": "std",
+            "env": {
+                // 核心修复：禁用 VS Code 强制注入的实验性网络检查参数
+                // 解决了报错 2147942402 和 --experimental-network-inspection 冲突问题
+                "VSCODE_NODE_JS_SKIP_OPTIMISTIC_NETWORK_INSPECTION": "true"
+            }
+        }
+    ]
+}

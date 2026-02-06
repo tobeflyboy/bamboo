@@ -1,9 +1,9 @@
 # Bamboo 权限管理系统
 
 <p align="center">
-  <img src="https://img.shields.io/badge/Spring%20Boot-2.7.0-brightgreen" alt="Spring Boot Version">
-  <img src="https://img.shields.io/badge/Vue.js-3.x-blue" alt="Vue.js Version">
-  <img src="https://img.shields.io/badge/License-MIT-green" alt="License">
+  <img src="https://img.shields.io/badge/Spring%20Boot-3.5.8-brightgreen" alt="Spring Boot Version">
+  <img src="https://img.shields.io/badge/Vue.js-3.4.46-blue" alt="Vue.js Version">
+  <img src="https://img.shields.io/badge/License-MulanPSL2-orange" alt="License">
 </p>
 
 ## 📋 项目简介
@@ -23,7 +23,7 @@ Bamboo 是一个基于 Spring Boot 和 Vue.js 开发的企业级权限管理系�
 ## 🏗️ 技术架构
 
 ### 后端技术栈
-- **核心框架**：Spring Boot 2.7.0
+- **核心框架**：Spring Boot 3.5.8
 - **安全框架**：Spring Security + JWT
 - **持久层**：MyBatis Plus
 - **数据库**：MySQL/SQLite
@@ -241,7 +241,7 @@ docker-compose -f api-docker-compose.yml up -d
 
 ## 📄 许可证
 
-本项目采用 MIT 许可证 - 查看 [LICENSE](LICENSE) 文件了解详情
+本项目采用木兰宽松许可证（MulanPSL2）- 查看 [LICENSE](LICENSE) 文件了解详情
 
 ## 👥 团队介绍
 

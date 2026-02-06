@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.nutcracker.mapper.auth.SysRoleMapper">
+<mapper namespace="com.nutcracker.bamboo.infrastructure.persistence.mapper.auth.SysRoleMapper">
 
-	<resultMap id="roleMap" type="com.nutcracker.entity.dataobject.auth.SysRoleDo">
+	<resultMap id="roleMap" type="com.nutcracker.bamboo.infrastructure.persistence.entity.auth.SysRoleDo">
 		<id column="id" jdbcType="VARCHAR" property="id"/>
 		<result column="role_code" jdbcType="VARCHAR" property="roleCode"/>
 		<result column="role_name" jdbcType="VARCHAR" property="roleName"/>
-		<result column="create_time" jdbcType="VARCHAR" property="createTime" typeHandler="com.nutcracker.mapper.CustomDateTypeHandler"/>
+		<result column="create_time" jdbcType="VARCHAR" property="createTime" typeHandler="com.nutcracker.bamboo.infrastructure.persistence.mapper.CustomDateTypeHandler"/>
 		<result column="create_by" jdbcType="VARCHAR" property="createBy"/>
 	</resultMap>
 
@@ -33,7 +33,7 @@
 		where role_code = #{roleCode,jdbcType=VARCHAR}
 	</select>
 
-	<select id="findSysRole" resultType="com.nutcracker.entity.domain.auth.SysRole" parameterType="com.nutcracker.entity.query.auth.SysRoleQuery">
+	<select id="findSysRole" resultType="com.nutcracker.bamboo.domain.auth.model.SysRole" parameterType="com.nutcracker.bamboo.application.dto.SysRoleQuery">
 		select
 			r.id,
 			r.role_code,

@@ -13,25 +13,25 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
-import com.nutcracker.bamboo.application.dto.WxMiniAppCodeLoginDTO;
-import com.nutcracker.bamboo.application.dto.WxMiniAppPhoneLoginDTO;
+import com.nutcracker.bamboo.application.model.command.WxMiniAppCodeLoginDTO;
+import com.nutcracker.bamboo.application.model.command.WxMiniAppPhoneLoginDTO;
 import com.nutcracker.bamboo.application.service.auth.LoginService;
 import com.nutcracker.bamboo.application.service.auth.SysUserService;
-import com.nutcracker.bamboo.domain.auth.model.AuthToken;
-import com.nutcracker.bamboo.domain.auth.model.CaptchaInfo;
-import com.nutcracker.bamboo.domain.auth.model.OnlineUser;
-import com.nutcracker.bamboo.domain.auth.model.SysUser;
+import com.nutcracker.bamboo.common.constant.RedisConstants;
+import com.nutcracker.bamboo.common.constant.SecurityConstants;
+import com.nutcracker.bamboo.common.exception.BusinessException;
+import com.nutcracker.bamboo.common.util.JSON;
+import com.nutcracker.bamboo.common.wrapper.ResultCode;
+import com.nutcracker.bamboo.domain.model.entity.User;
+import com.nutcracker.bamboo.domain.model.valueobject.AuthToken;
+import com.nutcracker.bamboo.domain.model.valueobject.CaptchaInfo;
+import com.nutcracker.bamboo.domain.model.valueobject.OnlineUser;
 import com.nutcracker.bamboo.infrastructure.persistence.repository.auth.SysUserConvert;
-import com.nutcracker.bamboo.interfaces.security.extension.sms.SmsAuthenticationToken;
-import com.nutcracker.bamboo.interfaces.security.extension.wx.WxMiniAppCodeAuthenticationToken;
-import com.nutcracker.bamboo.interfaces.security.extension.wx.WxMiniAppPhoneAuthenticationToken;
-import com.nutcracker.bamboo.interfaces.security.service.TokenService;
-import com.nutcracker.bamboo.interfaces.security.util.SecurityUtils;
-import com.nutcracker.shared.common.exception.BusinessException;
-import com.nutcracker.shared.common.wrapper.ResultCode;
-import com.nutcracker.shared.constant.RedisConstants;
-import com.nutcracker.shared.constant.SecurityConstants;
-import com.nutcracker.shared.util.JSON;
+import com.nutcracker.bamboo.web.security.extension.sms.SmsAuthenticationToken;
+import com.nutcracker.bamboo.web.security.extension.wx.WxMiniAppCodeAuthenticationToken;
+import com.nutcracker.bamboo.web.security.extension.wx.WxMiniAppPhoneAuthenticationToken;
+import com.nutcracker.bamboo.web.security.service.TokenService;
+import com.nutcracker.bamboo.web.security.util.SecurityUtils;
 
 import cn.hutool.core.util.StrUtil;
 import lombok.RequiredArgsConstructor;
@@ -69,20 +69,20 @@ public class LoginServiceImpl implements LoginService {
     @Override
     public AuthToken login(String username, String password) {
         log.debug("login username={},password={}", username, password);
-        SysUser sysUser = sysUserService.findByUsername(username);
-        if (null == sysUser) {
+        User user = sysUserService.findByUsername(username);
+        if (null == user) {
             log.error("login error, 账号不存在！username={}", username);
             throw new BusinessException(ResultCode.USER_PASSWORD_ERROR);
         }
-        String pwd = SecurityUtils.encryptPassword(sysUser.getSalt(), password, sysUser.getUsername());
-        if (!StrUtil.equals(pwd, sysUser.getPassword())) {
-            log.error("login error, 密码错误！username={},password={},pwd={}", username, sysUser.getPassword(), pwd);
+        String pwd = SecurityUtils.encryptPassword(user.getSalt(), password, user.getUsername());
+        if (!StrUtil.equals(pwd, user.getPassword())) {
+            log.error("login error, 密码错误！username={},password={},pwd={}", username, user.getPassword(), pwd);
             throw new BusinessException(ResultCode.USER_PASSWORD_ERROR);
         }
         // 手动创建已认证的 Authentication
-        OnlineUser onlineUser = SysUserConvert.INSTANCE.toOnlineUser(sysUser);
+        OnlineUser onlineUser = SysUserConvert.INSTANCE.toOnlineUser(user);
         log.debug("login onlineUser={}", JSON.toJSONString(onlineUser));
-        Authentication authentication = new UsernamePasswordAuthenticationToken(username, password, Collections.singletonList(new SimpleGrantedAuthority(sysUser.getRoleCode())));
+        Authentication authentication = new UsernamePasswordAuthenticationToken(username, password, Collections.singletonList(new SimpleGrantedAuthority(user.getRoleCode())));
         // 3. 认证成功后生成 JWT 令牌，并存入 Security 上下文，供登录日志 AOP 使用（已认证）
         AuthToken authenticationTokenResponse = tokenService.generateToken(onlineUser);
         SecurityContextHolder.getContext().setAuthentication(authentication);

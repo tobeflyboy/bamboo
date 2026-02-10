@@ -5,7 +5,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import org.springframework.stereotype.Service;
 
-import com.nutcracker.shared.common.enums.SecretStrategyEnum;
+import com.nutcracker.bamboo.common.enums.SecretStrategyEnum;
 
 import lombok.extern.slf4j.Slf4j;
 

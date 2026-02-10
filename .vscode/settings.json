@@ -22,5 +22,8 @@
             "command": "clean install -U -X",
             "debug": false
         }
-    ]
+    ],
+    "[xml]": {
+        "editor.defaultFormatter": "dotjoshjohnson.xml"
+    }
 }

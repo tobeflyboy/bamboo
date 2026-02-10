@@ -10,11 +10,11 @@ import com.baomidou.dynamic.datasource.annotation.DS;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.nutcracker.bamboo.application.service.biz.NewsService;
+import com.nutcracker.bamboo.common.constant.DataSourceTagger;
+import com.nutcracker.bamboo.common.constant.DemoConstants;
+import com.nutcracker.bamboo.common.constant.PrimaryKey;
 import com.nutcracker.bamboo.infrastructure.persistence.entity.biz.NewsDo;
 import com.nutcracker.bamboo.infrastructure.persistence.mapper.biz.NewsMapper;
-import com.nutcracker.shared.constant.DataSourceTagger;
-import com.nutcracker.shared.constant.DemoConstants;
-import com.nutcracker.shared.constant.PrimaryKey;
 
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.util.StrUtil;

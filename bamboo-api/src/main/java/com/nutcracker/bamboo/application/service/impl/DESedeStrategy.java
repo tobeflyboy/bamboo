@@ -3,8 +3,8 @@ package com.nutcracker.bamboo.application.service.impl;
 import org.springframework.stereotype.Component;
 
 import com.nutcracker.bamboo.application.service.BaseStrategy;
-import com.nutcracker.shared.common.enums.SecretStrategyEnum;
-import com.nutcracker.shared.util.secret.DESedeUtil;
+import com.nutcracker.bamboo.common.enums.SecretStrategyEnum;
+import com.nutcracker.bamboo.common.util.secret.DESedeUtil;
 
 /**
  * DESede加解密

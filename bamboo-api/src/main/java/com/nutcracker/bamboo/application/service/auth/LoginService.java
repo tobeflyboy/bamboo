@@ -1,10 +1,10 @@
 package com.nutcracker.bamboo.application.service.auth;
 
 
-import com.nutcracker.bamboo.application.dto.WxMiniAppCodeLoginDTO;
-import com.nutcracker.bamboo.application.dto.WxMiniAppPhoneLoginDTO;
-import com.nutcracker.bamboo.domain.auth.model.AuthToken;
-import com.nutcracker.bamboo.domain.auth.model.CaptchaInfo;
+import com.nutcracker.bamboo.application.model.command.WxMiniAppCodeLoginDTO;
+import com.nutcracker.bamboo.application.model.command.WxMiniAppPhoneLoginDTO;
+import com.nutcracker.bamboo.domain.model.valueobject.AuthToken;
+import com.nutcracker.bamboo.domain.model.valueobject.CaptchaInfo;
 
 /**
  * 认证服务接口

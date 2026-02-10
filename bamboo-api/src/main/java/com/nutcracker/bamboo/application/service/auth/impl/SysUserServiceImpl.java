@@ -10,29 +10,29 @@ import org.springframework.transaction.annotation.Transactional;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
-import com.nutcracker.bamboo.application.dto.SysUserQuery;
+import com.nutcracker.bamboo.application.model.query.UserQuery;
 import com.nutcracker.bamboo.application.service.auth.SysUserService;
-import com.nutcracker.bamboo.domain.auth.model.SysRole;
-import com.nutcracker.bamboo.domain.auth.model.SysUser;
-import com.nutcracker.bamboo.infrastructure.persistence.entity.auth.SysRoleDo;
-import com.nutcracker.bamboo.infrastructure.persistence.entity.auth.SysUserDo;
-import com.nutcracker.bamboo.infrastructure.persistence.entity.auth.SysUserRoleDo;
+import com.nutcracker.bamboo.common.constant.DemoConstants;
+import com.nutcracker.bamboo.common.constant.PrimaryKey;
+import com.nutcracker.bamboo.common.enums.SysUserStatusEnum;
+import com.nutcracker.bamboo.common.exception.BusinessException;
+import com.nutcracker.bamboo.common.util.JSON;
+import com.nutcracker.bamboo.common.util.salt.Digests;
+import com.nutcracker.bamboo.common.util.salt.Encodes;
+import com.nutcracker.bamboo.common.wrapper.WrapperResp;
+import com.nutcracker.bamboo.domain.model.entity.Role;
+import com.nutcracker.bamboo.domain.model.entity.User;
+import com.nutcracker.bamboo.infrastructure.persistence.entity.auth.RoleDo;
+import com.nutcracker.bamboo.infrastructure.persistence.entity.auth.UserDo;
+import com.nutcracker.bamboo.infrastructure.persistence.entity.auth.UserRoleDo;
 import com.nutcracker.bamboo.infrastructure.persistence.mapper.CustomDateTypeHandler;
-import com.nutcracker.bamboo.infrastructure.persistence.mapper.auth.SysRoleMapper;
-import com.nutcracker.bamboo.infrastructure.persistence.mapper.auth.SysUserMapper;
-import com.nutcracker.bamboo.infrastructure.persistence.mapper.auth.SysUserRoleMapper;
-import com.nutcracker.bamboo.infrastructure.persistence.repository.auth.SysRoleConvert;
+import com.nutcracker.bamboo.infrastructure.persistence.mapper.auth.RoleMapper;
+import com.nutcracker.bamboo.infrastructure.persistence.mapper.auth.UserMapper;
+import com.nutcracker.bamboo.infrastructure.persistence.mapper.auth.UserRoleMapper;
+import com.nutcracker.bamboo.infrastructure.persistence.repository.auth.RoleConvert;
 import com.nutcracker.bamboo.infrastructure.persistence.repository.auth.SysUserConvert;
-import com.nutcracker.bamboo.interfaces.Identify;
-import com.nutcracker.bamboo.interfaces.security.util.SecurityUtils;
-import com.nutcracker.shared.common.enums.SysUserStatusEnum;
-import com.nutcracker.shared.common.exception.BusinessException;
-import com.nutcracker.shared.common.wrapper.WrapperResp;
-import com.nutcracker.shared.constant.DemoConstants;
-import com.nutcracker.shared.constant.PrimaryKey;
-import com.nutcracker.shared.util.JSON;
-import com.nutcracker.shared.util.salt.Digests;
-import com.nutcracker.shared.util.salt.Encodes;
+import com.nutcracker.bamboo.web.Identify;
+import com.nutcracker.bamboo.web.security.util.SecurityUtils;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.ObjectUtil;
@@ -53,14 +53,14 @@ public class SysUserServiceImpl implements SysUserService {
     public static final int HASH_INTERATIONS = 1024;
     private static final int SALT_SIZE = 8;
 
-    private final SysRoleMapper sysRoleMapper;
-    private final SysUserRoleMapper sysUserRoleMapper;
-    private final SysUserMapper sysUserMapper;
+    private final RoleMapper sysRoleMapper;
+    private final UserRoleMapper sysUserRoleMapper;
+    private final UserMapper sysUserMapper;
 
     /**
      * 设定安全的密码，生成随机的salt并经过1024次 sha-1 hash
      */
-    private void entryptPassword(SysUserDo sysUserDo) {
+    private void entryptPassword(UserDo sysUserDo) {
         byte[] salt = Digests.generateSalt(SALT_SIZE);
         sysUserDo.setSalt(Encodes.encodeHex(salt));
         String pwd = SecurityUtils.encryptPassword(sysUserDo.getSalt(), sysUserDo.getPassword(), sysUserDo.getUsername());
@@ -69,7 +69,7 @@ public class SysUserServiceImpl implements SysUserService {
 
     @Transactional
     @Override
-    public WrapperResp<Boolean> addSysUser(SysUser user, SysRole role) {
+    public WrapperResp<Boolean> addSysUser(User user, Role role) {
         log.info("addSysUser {},{}", user, role);
         if (user == null || role == null) {
             log.error("addSysUser 缺少必要参数，新增用户失败！");
@@ -86,19 +86,19 @@ public class SysUserServiceImpl implements SysUserService {
             return WrapperResp.validateFailed("用户未指定所属角色，新增用户失败！");
         }
 
-        SysRoleDo r = sysRoleMapper.selectById(role.getId());
+        RoleDo r = sysRoleMapper.selectById(role.getId());
         if (r == null) {
             log.error("addSysUser {},{} 用户未指定所属组织或角色，新增用户失败！", user, role);
             return WrapperResp.validateFailed("用户未指定所属组织或角色，新增用户失败！");
         }
 
-        List<SysUser> userList = sysUserMapper.findLoginUser(user);
+        List<User> userList = sysUserMapper.findLoginUser(user);
         if (CollUtil.isNotEmpty(userList)) {
             log.error("addSysUser {},{} 用户账号已经存在，新增用户失败！", user, role);
             return WrapperResp.failed("用户账号已经存在，新增用户失败！");
         }
-        SysUserDo u = SysUserConvert.INSTANCE.toDo(user);
-        r = SysRoleConvert.INSTANCE.toDo(role);
+        UserDo u = SysUserConvert.INSTANCE.toDo(user);
+        r = RoleConvert.INSTANCE.toDo(role);
 
         String createdBy = Identify.getSessionUser().getUserId();
         LocalDateTime now = LocalDateTime.now();
@@ -113,7 +113,7 @@ public class SysUserServiceImpl implements SysUserService {
             return WrapperResp.failed("新增用户失败！");
         }
 
-        SysUserRoleDo ur = new SysUserRoleDo();
+        UserRoleDo ur = new UserRoleDo();
         ur.setId(PrimaryKey.getSysUserRoleId());
         ur.setRoleId(r.getId());
         ur.setUserId(u.getId());
@@ -144,8 +144,8 @@ public class SysUserServiceImpl implements SysUserService {
     }
 
     @Override
-    public void updatePassword(SysUser sysUser) {
-        SysUserDo u = sysUserMapper.selectById(sysUser.getUserId());
+    public void updatePassword(User sysUser) {
+        UserDo u = sysUserMapper.selectById(sysUser.getUserId());
         u.setPassword(sysUser.getPassword());
         entryptPassword(u);
         u.setUpdateTime(LocalDateTime.now());
@@ -153,10 +153,10 @@ public class SysUserServiceImpl implements SysUserService {
     }
 
     @Override
-    public SysUser findByUsername(String username) {
+    public User findByUsername(String username) {
         try {
-            SysUser user = SysUser.builder().username(username).build();
-            List<SysUser> list = sysUserMapper.findLoginUser(user);
+            User user = User.builder().username(username).build();
+            List<User> list = sysUserMapper.findLoginUser(user);
             if (CollUtil.isNotEmpty(list)) {
                 return list.iterator().next();
             }
@@ -168,10 +168,10 @@ public class SysUserServiceImpl implements SysUserService {
     }
 
     @Override
-    public SysUser findByMobile(String mobile) {
+    public User findByMobile(String mobile) {
         try {
-            SysUser user = SysUser.builder().mobile(mobile).build();
-            List<SysUser> list = sysUserMapper.findLoginUser(user);
+            User user = User.builder().mobile(mobile).build();
+            List<User> list = sysUserMapper.findLoginUser(user);
             if (CollUtil.isNotEmpty(list)) {
                 return list.iterator().next();
             }
@@ -183,10 +183,10 @@ public class SysUserServiceImpl implements SysUserService {
     }
 
     @Override
-    public SysUser findByOpenid(String openid) {
+    public User findByOpenid(String openid) {
         try {
-            SysUser user = SysUser.builder().openid(openid).build();
-            List<SysUser> list = sysUserMapper.findLoginUser(user);
+            User user = User.builder().openid(openid).build();
+            List<User> list = sysUserMapper.findLoginUser(user);
             if (CollUtil.isNotEmpty(list)) {
                 return list.iterator().next();
             }
@@ -199,17 +199,17 @@ public class SysUserServiceImpl implements SysUserService {
 
     @Transactional
     @Override
-    public void updateLastLoginTime(SysUser sysUser) {
+    public void updateLastLoginTime(User sysUser) {
         if (null == sysUser || null == sysUser.getUserId()) {
             return;
         }
-        SysUserDo u = sysUserMapper.selectById(sysUser.getUserId());
+        UserDo u = sysUserMapper.selectById(sysUser.getUserId());
         if (u != null) {
             LocalDateTime lastLoginTime = sysUser.getLastLoginTime();
             if (lastLoginTime == null) {
                 lastLoginTime = LocalDateTime.now();
             }
-            SysUserDo sysUserDo = new SysUserDo();
+            UserDo sysUserDo = new UserDo();
             sysUserDo.setId(u.getId());
             sysUserDo.setLastLoginTime(lastLoginTime);
             sysUserMapper.updateById(sysUserDo);
@@ -217,13 +217,13 @@ public class SysUserServiceImpl implements SysUserService {
     }
 
     @Override
-    public PageInfo<SysUser> findSysUserByPage(SysUserQuery query) {
+    public PageInfo<User> findSysUserByPage(UserQuery query) {
         log.info("findSysUserByPage , query={}", query);
-        int pageNum = Optional.ofNullable(query).orElse(new SysUserQuery()).getPageNum();
+        int pageNum = Optional.ofNullable(query).orElse(new UserQuery()).getPageNum();
         PageHelper.startPage(pageNum, DemoConstants.PAGE_SIZE);
-        List<SysUser> list = sysUserMapper.findUser(query);
+        List<User> list = sysUserMapper.findUser(query);
         log.info("findSysUserByPage, list={}", JSON.toJSONString(list));
-        PageInfo<SysUser> page = new PageInfo<>(list);
+        PageInfo<User> page = new PageInfo<>(list);
         log.debug("findSysUserByPage page.toString()={}", page);
         return page;
     }
@@ -235,14 +235,14 @@ public class SysUserServiceImpl implements SysUserService {
         if (StrUtil.isBlank(userId)) {
             return WrapperResp.validateFailed("删除失败，用户id为空！");
         }
-        SysUserDo userDo = sysUserMapper.selectById(userId);
+        UserDo userDo = sysUserMapper.selectById(userId);
         if (null == userDo) {
             return WrapperResp.validateFailed("删除失败，用户不存在！");
         }
 
-        List<SysUserRoleDo> list = sysUserRoleMapper.findUserRoleByUserId(userId);
+        List<UserRoleDo> list = sysUserRoleMapper.findUserRoleByUserId(userId);
         if (CollUtil.isNotEmpty(list)) {
-            int ret = sysUserRoleMapper.delete(new LambdaUpdateWrapper<SysUserRoleDo>().eq(SysUserRoleDo::getUserId, userId));
+            int ret = sysUserRoleMapper.delete(new LambdaUpdateWrapper<UserRoleDo>().eq(UserRoleDo::getUserId, userId));
             if (ret == 0) {
                 log.error("deleteUser, sysUserRoleMapper.delete fail, userId={}", userId);
                 return WrapperResp.failed("删除失败！");
@@ -256,7 +256,7 @@ public class SysUserServiceImpl implements SysUserService {
 
     @Transactional
     @Override
-    public WrapperResp<Boolean> editUser(SysUser user) {
+    public WrapperResp<Boolean> editUser(User user) {
         log.info("editUser, {}", user);
         if (ObjectUtil.isEmpty(user) || StrUtil.isBlank(user.getUserId())) {
             return WrapperResp.validateFailed("编辑保存失败，缺失用户信息！");
@@ -273,7 +273,7 @@ public class SysUserServiceImpl implements SysUserService {
         if (ObjectUtil.isEmpty(user.getStatus())) {
             return WrapperResp.validateFailed("编辑保存失败，用户状态未指定！");
         }
-        SysUserDo userDo = sysUserMapper.selectById(user.getUserId());
+        UserDo userDo = sysUserMapper.selectById(user.getUserId());
         if (null == userDo) {
             return WrapperResp.validateFailed("编辑保存失败，用户不存在！");
         }
@@ -290,7 +290,7 @@ public class SysUserServiceImpl implements SysUserService {
         //                .set(SysUserDo::getUpdateTime, now, "typeHandler=" + CustomDateTypeHandler.class.getName())
         //                .set(SysUserDo::getUpdateBy, operator)
         //);
-        SysUserDo updateEntity = new SysUserDo();
+        UserDo updateEntity = new UserDo();
         updateEntity.setId(user.getUserId());
         updateEntity.setRealName(user.getRealName());
         updateEntity.setStatus(user.getStatus());
@@ -302,10 +302,10 @@ public class SysUserServiceImpl implements SysUserService {
             log.error("editUser, sysUserMapper.update fail, {},now={},operator={}", user, now, operator);
             return WrapperResp.failed("编辑保存失败！");
         }
-        List<SysUserRoleDo> list = sysUserRoleMapper.findUserRoleByUserId(user.getUserId());
+        List<UserRoleDo> list = sysUserRoleMapper.findUserRoleByUserId(user.getUserId());
         if (CollUtil.isEmpty(list)) {
             // 用户找不到角色，给用户新增角色
-            SysUserRoleDo userRoleDo = SysUserRoleDo.builder()
+            UserRoleDo userRoleDo = UserRoleDo.builder()
                     .roleId(user.getRoleId())
                     .userId(user.getUserId())
                     .createTime(now)
@@ -322,7 +322,7 @@ public class SysUserServiceImpl implements SysUserService {
                         sysUserRoleMapper.deleteById(role.getId())
                 );
             }
-            SysUserRoleDo userRoleDo = list.get(0);
+            UserRoleDo userRoleDo = list.get(0);
             if (!StrUtil.equals(user.getRoleId(), userRoleDo.getRoleId())) {
                 userRoleDo.setRoleId(user.getRoleId());
                 if (sysUserRoleMapper.updateById(userRoleDo) == 0) {
@@ -336,7 +336,7 @@ public class SysUserServiceImpl implements SysUserService {
 
     @Transactional
     @Override
-    public WrapperResp<Boolean> resetPwd(SysUser user) {
+    public WrapperResp<Boolean> resetPwd(User user) {
         log.info("resetPwd, {}", user);
         if (ObjectUtil.isEmpty(user) || StrUtil.isBlank(user.getUserId())) {
             return WrapperResp.validateFailed("重置密码失败，缺失用户信息！");
@@ -344,7 +344,7 @@ public class SysUserServiceImpl implements SysUserService {
         if (StrUtil.isBlank(user.getNewPassword())) {
             return WrapperResp.validateFailed("请输入密码！");
         }
-        SysUserDo userDo = sysUserMapper.selectById(user.getUserId());
+        UserDo userDo = sysUserMapper.selectById(user.getUserId());
         if (null == userDo) {
             return WrapperResp.validateFailed("重置密码失败，用户不存在！");
         }
@@ -353,11 +353,11 @@ public class SysUserServiceImpl implements SysUserService {
         String operator = Identify.getSessionUser().getUserId();
         // 更新用户状态、邮箱
         int updateResult = sysUserMapper.update(
-                new LambdaUpdateWrapper<SysUserDo>()
-                        .eq(SysUserDo::getId, user.getUserId())
-                        .set(SysUserDo::getPassword, password)
-                        .set(SysUserDo::getUpdateTime, now, "typeHandler=" + CustomDateTypeHandler.class.getName())
-                        .set(SysUserDo::getUpdateBy, operator)
+                new LambdaUpdateWrapper<UserDo>()
+                        .eq(UserDo::getId, user.getUserId())
+                        .set(UserDo::getPassword, password)
+                        .set(UserDo::getUpdateTime, now, "typeHandler=" + CustomDateTypeHandler.class.getName())
+                        .set(UserDo::getUpdateBy, operator)
         );
         if (updateResult == 0) {
             log.error("resetPwd, sysUserMapper.update fail, {},now={},operator={}", user, now, operator);
@@ -367,18 +367,18 @@ public class SysUserServiceImpl implements SysUserService {
     }
 
     @Override
-    public List<SysUser> findAll(SysUserQuery query) {
+    public List<User> findAll(UserQuery query) {
         return sysUserMapper.findUser(query);
     }
 
 
     @Override
-    public WrapperResp<SysUser> findById(String userId) {
+    public WrapperResp<User> findById(String userId) {
         if (StrUtil.isBlank(userId)) {
             return WrapperResp.validateFailed("用户ID为空！");
         }
-        SysUserQuery query = SysUserQuery.builder().userId(userId).build();
-        List<SysUser> list = sysUserMapper.findUser(query);
+        UserQuery query = UserQuery.builder().userId(userId).build();
+        List<User> list = sysUserMapper.findUser(query);
         if (CollUtil.isEmpty(list)) {
             log.warn("未找到用户信息, userId={}", userId);
             return WrapperResp.failed("未找到用户信息");

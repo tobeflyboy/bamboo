@@ -3,10 +3,10 @@ package com.nutcracker.bamboo.application.service.auth;
 import java.util.List;
 
 import com.github.pagehelper.PageInfo;
-import com.nutcracker.bamboo.application.dto.SysUserQuery;
-import com.nutcracker.bamboo.domain.auth.model.SysRole;
-import com.nutcracker.bamboo.domain.auth.model.SysUser;
-import com.nutcracker.shared.common.wrapper.WrapperResp;
+import com.nutcracker.bamboo.application.model.query.UserQuery;
+import com.nutcracker.bamboo.common.wrapper.WrapperResp;
+import com.nutcracker.bamboo.domain.model.entity.Role;
+import com.nutcracker.bamboo.domain.model.entity.User;
 
 /**
  * 用户服务
@@ -22,7 +22,7 @@ public interface SysUserService {
      * @param sysUser 用户
      * @param sysRole 角色
      */
-    WrapperResp<Boolean> addSysUser(SysUser sysUser, SysRole sysRole);
+    WrapperResp<Boolean> addSysUser(User sysUser, Role sysRole);
 
     /**
      * 注册或绑定微信用户
@@ -52,7 +52,7 @@ public interface SysUserService {
      *
      * @param user 用户对象
      */
-    void updatePassword(SysUser user);
+    void updatePassword(User user);
 
     /**
      * 根据用户名查询用户
@@ -60,7 +60,7 @@ public interface SysUserService {
      * @param username 用户名
      * @return user 用户
      */
-    SysUser findByUsername(String username);
+    User findByUsername(String username);
 
     /**
      * 根据手机号查询用户
@@ -68,7 +68,7 @@ public interface SysUserService {
      * @param mobile 手机号
      * @return user 用户
      */
-    SysUser findByMobile(String mobile);
+    User findByMobile(String mobile);
 
     /**
      * 根据微信openid查询用户
@@ -76,22 +76,22 @@ public interface SysUserService {
      * @param openid 微信openid
      * @return user 用户
      */
-    SysUser findByOpenid(String openid);
+    User findByOpenid(String openid);
 
     /**
      * 更新用户上次登录时间
      *
      * @param sysUser 用户对照
      */
-    void updateLastLoginTime(SysUser sysUser);
+    void updateLastLoginTime(User sysUser);
 
     /**
      * 分页查询用户
      *
-     * @param query  {@link SysUserQuery }
-     * @return {@link List }<{@link SysUser }>
+     * @param query  {@link UserQuery }
+     * @return {@link List }<{@link User }>
      */
-    PageInfo<SysUser> findSysUserByPage(SysUserQuery query);
+    PageInfo<User> findSysUserByPage(UserQuery query);
 
     /**
      * 删除用户
@@ -107,7 +107,7 @@ public interface SysUserService {
      * @param user 用户
      * @return {@link WrapperResp }<{@link Boolean }>
      */
-    WrapperResp<Boolean> editUser(SysUser user);
+    WrapperResp<Boolean> editUser(User user);
 
     /**
      * 重置用户密码
@@ -115,22 +115,22 @@ public interface SysUserService {
      * @param user 用户
      * @return {@link WrapperResp }<{@link Boolean }>
      */
-    WrapperResp<Boolean> resetPwd(SysUser user);
+    WrapperResp<Boolean> resetPwd(User user);
 
     /**
      * 查找全部用户
      *
      * @param query 怎么翻译
-     * @return {@link List }<{@link SysUser }>
+     * @return {@link List }<{@link User }>
      */
-    List<SysUser> findAll(SysUserQuery query);
+    List<User> findAll(UserQuery query);
 
 
     /**
      * 查询用户
      *
      * @param userId 用户ID
-     * @return {@link WrapperResp }<{@link SysUser }>
+     * @return {@link WrapperResp }<{@link User }>
      */
-    WrapperResp<SysUser> findById(String userId);
+    WrapperResp<User> findById(String userId);
 }

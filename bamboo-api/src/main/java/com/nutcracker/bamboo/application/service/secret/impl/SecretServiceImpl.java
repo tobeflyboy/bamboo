@@ -7,8 +7,8 @@ import org.springframework.stereotype.Service;
 import com.nutcracker.bamboo.application.service.BaseStrategy;
 import com.nutcracker.bamboo.application.service.StrategyFactory;
 import com.nutcracker.bamboo.application.service.secret.SecretService;
-import com.nutcracker.shared.common.enums.SecretStrategyEnum;
-import com.nutcracker.shared.util.JSON;
+import com.nutcracker.bamboo.common.enums.SecretStrategyEnum;
+import com.nutcracker.bamboo.common.util.JSON;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

@@ -11,11 +11,11 @@ import java.util.concurrent.atomic.AtomicInteger;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
-import com.nutcracker.shared.common.enums.SecretStrategyEnum;
-import com.nutcracker.shared.constant.DemoConstants;
-import com.nutcracker.shared.util.ListUtil;
-import com.nutcracker.shared.util.MaskingUtil;
-import com.nutcracker.shared.util.TimeUtil;
+import com.nutcracker.bamboo.common.constant.DemoConstants;
+import com.nutcracker.bamboo.common.enums.SecretStrategyEnum;
+import com.nutcracker.bamboo.common.util.ListUtil;
+import com.nutcracker.bamboo.common.util.MaskingUtil;
+import com.nutcracker.bamboo.common.util.TimeUtil;
 
 import jakarta.annotation.PostConstruct;
 import jakarta.annotation.Resource;

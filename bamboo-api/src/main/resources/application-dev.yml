@@ -61,6 +61,12 @@ spring:
 mybatis-plus:
   configuration:
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl # 打印查询结果
+    # 添加字符编码设置
+    default-scripting-language-driver: org.apache.ibatis.scripting.xmltags.XMLLanguageDriver
+  global-config:
+    db-config:
+      # 设置数据库字符集
+      table-underline: true
 
 # knife4j的增强配置，不需要增强可以不配
 knife4j:

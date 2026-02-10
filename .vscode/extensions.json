@@ -64,6 +64,7 @@
         // YAML 支持（Spring / Kubernetes / CI 配置）
         "redhat.vscode-yaml",
         // XML 支持（校验 / 补全 / 格式化）
-        "redhat.vscode-xml"
+        "redhat.vscode-xml",
+        "dotjoshjohnson.xml"
     ]
 }

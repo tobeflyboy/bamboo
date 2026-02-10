@@ -18,18 +18,18 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-import com.nutcracker.bamboo.application.service.auth.SysConfigService;
+import com.nutcracker.bamboo.application.service.auth.ConfigService;
 import com.nutcracker.bamboo.application.service.auth.SysUserService;
 import com.nutcracker.bamboo.infrastructure.config.property.SecurityProperties;
-import com.nutcracker.bamboo.interfaces.filter.RateLimiterFilter;
-import com.nutcracker.bamboo.interfaces.security.exception.MyAccessDeniedHandler;
-import com.nutcracker.bamboo.interfaces.security.exception.MyAuthenticationEntryPoint;
-import com.nutcracker.bamboo.interfaces.security.extension.sms.SmsAuthenticationProvider;
-import com.nutcracker.bamboo.interfaces.security.extension.wx.WxMiniAppCodeAuthenticationProvider;
-import com.nutcracker.bamboo.interfaces.security.extension.wx.WxMiniAppPhoneAuthenticationProvider;
-import com.nutcracker.bamboo.interfaces.security.filter.TokenAuthenticationFilter;
-import com.nutcracker.bamboo.interfaces.security.service.SysUserDetailsService;
-import com.nutcracker.bamboo.interfaces.security.service.TokenService;
+import com.nutcracker.bamboo.web.filter.RateLimiterFilter;
+import com.nutcracker.bamboo.web.security.exception.MyAccessDeniedHandler;
+import com.nutcracker.bamboo.web.security.exception.MyAuthenticationEntryPoint;
+import com.nutcracker.bamboo.web.security.extension.sms.SmsAuthenticationProvider;
+import com.nutcracker.bamboo.web.security.extension.wx.WxMiniAppCodeAuthenticationProvider;
+import com.nutcracker.bamboo.web.security.extension.wx.WxMiniAppPhoneAuthenticationProvider;
+import com.nutcracker.bamboo.web.security.filter.TokenAuthenticationFilter;
+import com.nutcracker.bamboo.web.security.service.SysUserDetailsService;
+import com.nutcracker.bamboo.web.security.service.TokenService;
 
 import cn.binarywang.wx.miniapp.api.WxMaService;
 import cn.hutool.core.util.ArrayUtil;
@@ -55,7 +55,7 @@ public class SecurityConfig {
     private final SysUserDetailsService userDetailsService;
 
     //private final CodeGenerator codeGenerator;
-    private final SysConfigService sysConfigService;
+    private final ConfigService sysConfigService;
     private final SecurityProperties securityProperties;
 
     /**

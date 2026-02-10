@@ -2,9 +2,9 @@ package com.nutcracker.bamboo.infrastructure.persistence.repository.auth;
 
 import java.util.List;
 
-import com.nutcracker.bamboo.domain.auth.model.OnlineUser;
-import com.nutcracker.bamboo.domain.auth.model.SysUser;
-import com.nutcracker.bamboo.infrastructure.persistence.entity.auth.SysUserDo;
+import com.nutcracker.bamboo.domain.model.entity.User;
+import com.nutcracker.bamboo.domain.model.valueobject.OnlineUser;
+import com.nutcracker.bamboo.infrastructure.persistence.entity.auth.UserDo;
 
 /**
  * 用户转换器
@@ -18,43 +18,43 @@ public interface SysUserConvert {
     SysUserConvert INSTANCE = org.mapstruct.factory.Mappers.getMapper(SysUserConvert.class);
 
     /**
-     * SysUser 转 OnlineUser
+     * User 转 OnlineUser
      *
-     * @param user {@link SysUser}
+     * @param user {@link User}
      * @return {@link OnlineUser}
      */
-    OnlineUser toOnlineUser(SysUser user);
+    OnlineUser toOnlineUser(User user);
 
     /**
      * domain转do
      *
-     * @param user {@link SysUser}
-     * @return {@link SysUserDo}
+     * @param user {@link User}
+     * @return {@link UserDo}
      */
-    SysUserDo toDo(SysUser user);
+    UserDo toDo(User user);
 
     /**
      * domain转do
      *
-     * @param list {@link List }<{@link SysUser }>
-     * @return {@link List }<{@link SysUserDo }>
+     * @param list {@link List }<{@link User }>
+     * @return {@link List }<{@link UserDo }>
      */
-    List<SysUserDo> toDo(List<SysUser> list);
+    List<UserDo> toDo(List<User> list);
 
     /**
      * do转domain
      *
-     * @param userDo {@link SysUserDo}
-     * @return {@link SysUser}
+     * @param userDo {@link UserDo}
+     * @return {@link User}
      */
-    SysUser toDomain(SysUserDo userDo);
+    User toDomain(UserDo userDo);
 
     /**
      * do转domain
      *
-     * @param list {@link List }<{@link SysUserDo }>
-     * @return {@link List }<{@link SysUser }>
+     * @param list {@link List }<{@link UserDo }>
+     * @return {@link List }<{@link User }>
      */
-    List<SysUser> toDomain(List<SysUserDo> list);
+    List<User> toDomain(List<UserDo> list);
 
 }

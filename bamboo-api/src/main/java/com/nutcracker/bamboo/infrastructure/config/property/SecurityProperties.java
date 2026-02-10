@@ -27,6 +27,11 @@ public class SecurityProperties {
      * 会话管理配置
      */
     private SessionConfig session;
+    
+    // 手动添加getSession方法以解决编译问题
+    public SessionConfig getSession() {
+        return this.session;
+    }
 
     /**
      * 安全白名单路径（完全绕过安全过滤器）

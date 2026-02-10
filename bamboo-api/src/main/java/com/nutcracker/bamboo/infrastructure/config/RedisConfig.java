@@ -22,7 +22,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.serializer.RedisSerializationContext;
 import org.springframework.data.redis.serializer.RedisSerializer;
 
-import com.nutcracker.shared.constant.CacheableKey;
+import com.nutcracker.bamboo.common.constant.CacheableKey;
 
 import cn.hutool.core.util.StrUtil;
 import lombok.RequiredArgsConstructor;

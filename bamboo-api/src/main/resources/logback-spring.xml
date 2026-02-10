@@ -2,7 +2,7 @@
 <configuration scan="true" scanPeriod="60 seconds" debug="false">
 
     <!-- 从Spring环境变量读取配置 -->
-    <springProperty scope="context" name="LOG_DIR" source="logging.log-dir" defaultValue="./logs" />
+    <springProperty scope="context" name="LOG_DIR" source="logging.log-dir" defaultValue="D:\\workspace\\github\\bamboo\\logs" />
     <springProperty scope="context" name="MAX_HISTORY" source="logging.max-history" defaultValue="7" />
     <springProperty scope="context" name="LOGSTASH_ADDRESS" source="logging.logstash-address"
         defaultValue="10.28.19.168:5042" />

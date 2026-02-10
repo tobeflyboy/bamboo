@@ -3,7 +3,7 @@ package com.nutcracker.bamboo.application.service.secret;
 
 import java.util.List;
 
-import com.nutcracker.shared.common.enums.SecretStrategyEnum;
+import com.nutcracker.bamboo.common.enums.SecretStrategyEnum;
 
 /**
  * 加密解密操作

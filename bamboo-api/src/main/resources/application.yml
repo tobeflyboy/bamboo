@@ -24,7 +24,7 @@ server:
     basedir: .
     accesslog:
       buffered: true # 设置是否缓存日志，默认值为true，当设置为false时，每个request都会立刻产生访问日志
-      directory: logs # 指定access文件的路径
+      directory: D:\\workspace\\github\\bamboo\\logs # 指定access文件的路径
       enabled: true # 取值true、false，需要accesslog时设置为true
       file-date-format: .yyyy-MM-dd # 是设置滚动生成文件的格式，如yyyy-MM-dd是每天滚动生成新日志文件，yyyy-MM-dd.HH是每小时滚动生成新的日志文件。
       # Access log内置了两个日志格式模板，可以直接指定pattern为模板名称

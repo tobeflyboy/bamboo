@@ -13,8 +13,8 @@ import com.nutcracker.bamboo.application.service.biz.NewsService;
 import com.nutcracker.bamboo.common.constant.DataSourceTagger;
 import com.nutcracker.bamboo.common.constant.DemoConstants;
 import com.nutcracker.bamboo.common.constant.PrimaryKey;
-import com.nutcracker.bamboo.infrastructure.persistence.entity.biz.NewsDo;
-import com.nutcracker.bamboo.infrastructure.persistence.mapper.biz.NewsMapper;
+import com.nutcracker.bamboo.infrastructure.entity.biz.NewsDo;
+import com.nutcracker.bamboo.infrastructure.mapper.biz.NewsMapper;
 
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.util.StrUtil;

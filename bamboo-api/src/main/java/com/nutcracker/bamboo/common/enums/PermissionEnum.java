@@ -3,7 +3,7 @@ package com.nutcracker.bamboo.common.enums;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.nutcracker.bamboo.infrastructure.persistence.entity.auth.PermissionDo;
+import com.nutcracker.bamboo.infrastructure.entity.auth.PermissionDo;
 
 import lombok.Getter;
 

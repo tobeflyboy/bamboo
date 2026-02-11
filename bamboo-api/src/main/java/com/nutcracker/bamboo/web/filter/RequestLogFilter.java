@@ -14,7 +14,7 @@ import org.springframework.web.filter.CommonsRequestLoggingFilter;
 import org.springframework.web.util.ContentCachingRequestWrapper;
 
 import com.nutcracker.bamboo.common.util.IPUtils;
-import com.nutcracker.bamboo.infrastructure.config.property.SecurityProperties;
+import com.nutcracker.bamboo.config.security.SecurityProperties;
 
 import jakarta.annotation.PostConstruct;
 import jakarta.servlet.RequestDispatcher;

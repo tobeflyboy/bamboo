@@ -156,35 +156,68 @@ bamboo/
 │   │   │   │   ├── query/       # 查询对象
 │   │   │   │   └── response/    # 响应对象
 │   │   │   └── service/         # 应用服务接口
-│   │   │       └── auth/        # 认证授权服务
+│   │   │       ├── auth/        # 认证授权服务
+│   │   │       ├── biz/         # 业务服务
+│   │   │       ├── impl/        # 加密策略实现
+│   │   │       ├── secret/      # 密钥服务
+│   │   │       ├── BaseStrategy.java
+│   │   │       └── StrategyFactory.java
+│   │   ├── common/              # 公共模块
+│   │   │   ├── annotation/      # 自定义注解
+│   │   │   ├── constant/        # 常量定义
+│   │   │   ├── enums/           # 枚举类
+│   │   │   ├── exception/       # 全局异常
+│   │   │   │   ├── BusinessException.java
+│   │   │   │   ├── DomainException.java
+│   │   │   │   └── SecurityException.java
+│   │   │   ├── util/            # 工具类
+│   │   │   │   ├── salt/        # 加密工具
+│   │   │   │   ├── secret/      # 密钥工具
+│   │   │   │   ├── BigDecimalUtil.java
+│   │   │   │   ├── IPUtils.java
+│   │   │   │   ├── JSON.java
+│   │   │   │   └── ...
+│   │   │   └── wrapper/         # 响应包装类
+│   │   ├── config/              # 应用配置（已提升到根包）
+│   │   │   ├── async/           # 异步配置
+│   │   │   ├── cache/           # 缓存配置
+│   │   │   ├── captcha/         # 验证码配置
+│   │   │   ├── codegen/         # 代码生成配置
+│   │   │   ├── messaging/       # 消息通信配置
+│   │   │   ├── openapi/         # API文档配置
+│   │   │   ├── security/        # 安全配置
+│   │   │   ├── web/             # Web配置
+│   │   │   └── wx/              # 微信小程序配置
 │   │   ├── domain/              # 领域层（Domain Layer）
 │   │   │   └── model/           # 领域模型
 │   │   │       ├── command/     # 领域命令
 │   │   │       ├── entity/      # 领域实体
-│   │   │       ├── exception/   # 领域异常
-│   │   │       ├── repository/  # 仓储接口
-│   │   │       ├── service/     # 领域服务
 │   │   │       └── valueobject/ # 值对象
-│   │   ├── infrastructure/      # 基础设施层（Infrastructure Layer）
-│   │   │   ├── config/          # 配置类
-│   │   │   └── persistence/     # 持久化实现
-│   │   │       ├── entity/      # 数据库实体
-│   │   │       ├── mapper/      # MyBatis Mapper
-│   │   │       ├── repository/  # 仓储实现
-│   │   │       └── repository/auth/ # 认证仓储实现
-│   │   ├── web/                 # Web层（Presentation Layer）
-│   │   │   ├── aop/             # AOP切面
-│   │   │   ├── filter/          # 过滤器
-│   │   │   ├── rest/            # REST控制器
-│   │   │   ├── security/        # 安全配置
-│   │   │   └── validator/       # 参数校验
-│   │   └── common/              # 公共模块
-│   │       ├── annotation/      # 自定义注解
-│   │       ├── constant/        # 常量定义
-│   │       ├── enums/           # 枚举类
-│   │       ├── exception/       # 全局异常
-│   │       ├── util/            # 工具类
-│   │       └── wrapper/         # 响应包装类
+│   │   │   ├── repository/      # 仓储接口（已独立）
+│   │   │   └── service/         # 领域服务（已独立）
+│   │   ├── infrastructure/      # 基础设施层（已扁平化）
+│   │   │   ├── converter/       # 对象转换器
+│   │   │   │   └── auth/        # 认证转换器
+│   │   │   ├── entity/          # 数据库实体
+│   │   │   │   ├── auth/        # 认证实体
+│   │   │   │   └── biz/         # 业务实体
+│   │   │   └── mapper/          # MyBatis Mapper
+│   │   │       ├── auth/        # 认证Mapper
+│   │   │       ├── biz/         # 业务Mapper
+│   │   │       └── CustomDateTypeHandler.java
+│   │   └── web/                 # Web层（Presentation Layer）
+│   │       ├── aop/             # AOP切面
+│   │       ├── filter/          # 过滤器
+│   │       ├── rest/            # REST控制器
+│   │       ├── security/        # 安全配置
+│   │       │   ├── exception/   # 安全异常处理
+│   │       │   ├── extension/   # 认证扩展
+│   │       │   │   ├── sms/     # 短信认证
+│   │       │   │   └── wx/      # 微信认证
+│   │       │   ├── filter/      # 安全过滤器
+│   │       │   ├── service/     # 安全服务
+│   │       │   └── util/        # 安全工具
+│   │       └── validator/       # 参数校验
 │   └── src/main/resources/
 │       ├── db/                  # 数据库脚本
 │       ├── mapper/              # MyBatis映射文件
@@ -234,11 +267,23 @@ bamboo/
 ```
 com.nutcracker.bamboo
 ├── application/     # 应用层 - 业务流程编排
+├── common/          # 公共模块 - 共享组件和异常处理
+├── config/          # 应用配置 - 各种配置类（已提升到根包）
 ├── domain/          # 领域层 - 核心业务逻辑
-├── infrastructure/  # 基础设施层 - 技术实现
-├── web/             # 表现层 - 接口和控制器
-└── common/          # 公共模块 - 共享组件
+│   ├── model/       # 领域模型 - 实体、值对象、命令
+│   ├── repository/  # 仓储接口 - 数据访问契约（已独立）
+│   └── service/     # 领域服务 - 跨聚合业务逻辑（已独立）
+├── infrastructure/  # 基础设施层 - 技术实现（已扁平化）
+│   ├── converter/   # 对象转换器 - DO与Domain对象映射
+│   ├── entity/      # 数据库实体 - ORM映射对象
+│   └── mapper/      # MyBatis映射器 - 数据库访问接口
+└── web/             # 表现层 - 接口和控制器
 ```
+
+**关键优化点**：
+- `config` 包已从 `infrastructure.config` 提升到根包级别
+- `domain.repository` 和 `domain.service` 已从 `domain.model` 中独立出来
+- `infrastructure.persistence` 已扁平化为 `infrastructure` 直接包含 converter/entity/mapper
 
 ## 🔧 配置说明
 

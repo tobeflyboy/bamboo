@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.nutcracker.bamboo.infrastructure.persistence.mapper.biz.NewsMapper">
+<mapper namespace="com.nutcracker.bamboo.infrastructure.mapper.biz.NewsMapper">
 
-    <resultMap id="newsMap" type="com.nutcracker.bamboo.infrastructure.persistence.entity.biz.NewsDo">
+    <resultMap id="newsMap" type="com.nutcracker.bamboo.infrastructure.entity.biz.NewsDo">
         <result column="id" property="id"/>
         <result column="address" property="address"/>
         <result column="create_time" property="createTime"/>
@@ -12,7 +12,7 @@
         <result column="title" property="title"/>
     </resultMap>
 
-    <insert id="insert" parameterType="com.nutcracker.bamboo.infrastructure.persistence.entity.biz.NewsDo">
+    <insert id="insert" parameterType="com.nutcracker.bamboo.infrastructure.entity.biz.NewsDo">
         insert into t_news(id, address, create_time, description, news_time, title)
         values (#{id}, #{address}, #{createTime}, #{description}, #{newsTime}, #{title})
     </insert>
@@ -48,7 +48,7 @@
         order by create_time desc
     </select>
 
-    <update id="updateNews" parameterType="com.nutcracker.bamboo.infrastructure.persistence.entity.biz.NewsDo">
+    <update id="updateNews" parameterType="com.nutcracker.bamboo.infrastructure.entity.biz.NewsDo">
         update t_news
         <set>
             <if test="address != null and address!='' ">

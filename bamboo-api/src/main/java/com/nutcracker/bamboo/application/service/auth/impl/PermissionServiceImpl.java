@@ -21,11 +21,11 @@ import com.nutcracker.bamboo.common.constant.PrimaryKey;
 import com.nutcracker.bamboo.common.util.JSON;
 import com.nutcracker.bamboo.common.wrapper.WrapperResp;
 import com.nutcracker.bamboo.domain.model.entity.Permission;
-import com.nutcracker.bamboo.infrastructure.persistence.entity.auth.PermissionDo;
-import com.nutcracker.bamboo.infrastructure.persistence.entity.auth.RolePermissionDo;
-import com.nutcracker.bamboo.infrastructure.persistence.mapper.auth.PermissionMapper;
-import com.nutcracker.bamboo.infrastructure.persistence.mapper.auth.RolePermissionMapper;
-import com.nutcracker.bamboo.infrastructure.persistence.repository.auth.PermissionConvert;
+import com.nutcracker.bamboo.infrastructure.converter.auth.PermissionConvert;
+import com.nutcracker.bamboo.infrastructure.entity.auth.PermissionDo;
+import com.nutcracker.bamboo.infrastructure.entity.auth.RolePermissionDo;
+import com.nutcracker.bamboo.infrastructure.mapper.auth.PermissionMapper;
+import com.nutcracker.bamboo.infrastructure.mapper.auth.RolePermissionMapper;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.collection.CollectionUtil;

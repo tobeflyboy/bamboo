@@ -1,8 +1,8 @@
 package com.nutcracker.bamboo.application.service.auth;
 
 
-import com.nutcracker.bamboo.application.model.command.WxMiniAppCodeLoginDTO;
-import com.nutcracker.bamboo.application.model.command.WxMiniAppPhoneLoginDTO;
+import com.nutcracker.bamboo.application.model.dto.WxMiniAppCodeLoginDTO;
+import com.nutcracker.bamboo.application.model.dto.WxMiniAppPhoneLoginDTO;
 import com.nutcracker.bamboo.domain.model.valueobject.AuthToken;
 import com.nutcracker.bamboo.domain.model.valueobject.CaptchaInfo;
 

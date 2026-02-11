@@ -13,7 +13,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import com.nutcracker.bamboo.application.service.auth.SysUserService;
 import com.nutcracker.bamboo.domain.model.entity.User;
 import com.nutcracker.bamboo.domain.model.valueobject.OnlineUser;
-import com.nutcracker.bamboo.infrastructure.persistence.repository.auth.SysUserConvert;
+import com.nutcracker.bamboo.infrastructure.converter.auth.SysUserConvert;
 import com.nutcracker.bamboo.web.security.extension.sms.SmsAuthenticationToken;
 
 import cn.binarywang.wx.miniapp.api.WxMaService;

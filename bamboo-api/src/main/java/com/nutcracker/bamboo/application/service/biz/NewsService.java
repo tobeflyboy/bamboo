@@ -4,7 +4,7 @@ package com.nutcracker.bamboo.application.service.biz;
 import java.util.List;
 
 import com.github.pagehelper.PageInfo;
-import com.nutcracker.bamboo.infrastructure.persistence.entity.biz.NewsDo;
+import com.nutcracker.bamboo.infrastructure.entity.biz.NewsDo;
 
 /**
  * 新闻接口类

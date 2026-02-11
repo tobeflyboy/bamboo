@@ -4,7 +4,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.nutcracker.bamboo.application.model.query.ConfigQuery;
 import com.nutcracker.bamboo.domain.model.entity.Config;
-import com.nutcracker.bamboo.infrastructure.persistence.entity.auth.ConfigDo;
+import com.nutcracker.bamboo.infrastructure.entity.auth.ConfigDo;
 
 /**
  * 系统配置Service接口

@@ -18,9 +18,9 @@ import com.nutcracker.bamboo.application.model.query.ConfigQuery;
 import com.nutcracker.bamboo.application.service.auth.ConfigService;
 import com.nutcracker.bamboo.common.constant.RedisConstants;
 import com.nutcracker.bamboo.domain.model.entity.Config;
-import com.nutcracker.bamboo.infrastructure.persistence.entity.auth.ConfigDo;
-import com.nutcracker.bamboo.infrastructure.persistence.mapper.auth.ConfigMapper;
-import com.nutcracker.bamboo.infrastructure.persistence.repository.auth.ConfigConvert;
+import com.nutcracker.bamboo.infrastructure.converter.auth.ConfigConvert;
+import com.nutcracker.bamboo.infrastructure.entity.auth.ConfigDo;
+import com.nutcracker.bamboo.infrastructure.mapper.auth.ConfigMapper;
 import com.nutcracker.bamboo.web.security.util.SecurityUtils;
 
 import jakarta.annotation.PostConstruct;

@@ -16,7 +16,7 @@ import com.nutcracker.bamboo.common.exception.BusinessException;
 import com.nutcracker.bamboo.common.wrapper.ResultCode;
 import com.nutcracker.bamboo.domain.model.entity.User;
 import com.nutcracker.bamboo.domain.model.valueobject.OnlineUser;
-import com.nutcracker.bamboo.infrastructure.persistence.repository.auth.SysUserConvert;
+import com.nutcracker.bamboo.infrastructure.converter.auth.SysUserConvert;
 
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;

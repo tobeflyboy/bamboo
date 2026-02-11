@@ -20,7 +20,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class PayDailySumTotalDto implements Serializable {
+public class PayDailySumTotalDTO implements Serializable {
 
     @Serial
     private static final long serialVersionUID = 1816316229033847444L;

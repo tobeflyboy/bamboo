@@ -20,10 +20,10 @@ import com.nutcracker.bamboo.common.constant.RedisConstants;
 import com.nutcracker.bamboo.common.exception.BusinessException;
 import com.nutcracker.bamboo.common.util.JSON;
 import com.nutcracker.bamboo.common.wrapper.ResultCode;
+import com.nutcracker.bamboo.config.security.SecurityProperties;
 import com.nutcracker.bamboo.domain.model.entity.User;
 import com.nutcracker.bamboo.domain.model.valueobject.AuthToken;
 import com.nutcracker.bamboo.domain.model.valueobject.OnlineUser;
-import com.nutcracker.bamboo.infrastructure.config.property.SecurityProperties;
 
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.IdUtil;

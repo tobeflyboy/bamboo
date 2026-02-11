@@ -32,6 +32,7 @@ import lombok.RequiredArgsConstructor;
  * @author 胡桃夹子
  * @since 2024-07-29 11:17:26
  */
+@SuppressWarnings("null")
 @Service
 @RequiredArgsConstructor
 public class ConfigServiceImpl extends ServiceImpl<ConfigMapper, ConfigDo> implements ConfigService {
@@ -63,8 +64,8 @@ public class ConfigServiceImpl extends ServiceImpl<ConfigMapper, ConfigDo> imple
                                 .or()
                                 .like(ConfigDo::getConfigName, keywords)
                 );
-        Page<ConfigDo> pageList = this.page(page, query);
-        return sysConfigConvert.toPageVo(pageList);
+        Page<ConfigDo> configPage = this.page(page, query);
+        return configPage.convert(ConfigConvert.INSTANCE::toForm);
     }
 
     /**

@@ -77,6 +77,7 @@ public class OpenApiConfig {
      * 全局自定义扩展
      */
     @Bean
+    @SuppressWarnings("null")
     public GlobalOpenApiCustomizer globalOpenApiCustomizer() {
         return openApi -> {
             // 全局添加Authorization

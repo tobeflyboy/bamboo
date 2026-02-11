@@ -23,6 +23,7 @@ import lombok.extern.slf4j.Slf4j;
 @Configuration
 public class RedissonConfig {
 
+    @SuppressWarnings("null")
     @Bean(destroyMethod = "shutdown")
     public RedissonClient redissonClient(@Value("${spring.redis.redisson.file}") String path) throws IOException {
         log.debug("redissonConfig={}", path);

@@ -19,7 +19,6 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import com.nutcracker.bamboo.application.service.auth.ConfigService;
-import com.nutcracker.bamboo.application.service.auth.SysUserService;
 import com.nutcracker.bamboo.web.filter.RateLimiterFilter;
 import com.nutcracker.bamboo.web.security.exception.MyAccessDeniedHandler;
 import com.nutcracker.bamboo.web.security.exception.MyAuthenticationEntryPoint;
@@ -46,7 +45,7 @@ public class SecurityConfig {
 
     private final TokenService tokenService;
     //private final WxMaService wxMaService;
-    private final SysUserService sysUserService;
+    // private final SysUserService sysUserService;
     private final SysUserDetailsService userDetailsService;
 
     //private final CodeGenerator codeGenerator;

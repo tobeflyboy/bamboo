@@ -34,6 +34,7 @@ import lombok.extern.slf4j.Slf4j;
  *
  * @author 胡桃夹子
  */
+@SuppressWarnings("null")
 @Configuration
 @Slf4j
 public class WebMvcConfig implements WebMvcConfigurer {
@@ -81,11 +82,8 @@ public class WebMvcConfig implements WebMvcConfigurer {
      */
     @Bean
     public Validator validator(final AutowireCapableBeanFactory autowireCapableBeanFactory) {
-        try (ValidatorFactory validatorFactory = Validation.byProvider(HibernateValidator.class)
-                .configure()
-                .failFast(true) // failFast=true 时，遇到第一个校验失败则立即返回，false 表示校验所有参数
-                .constraintValidatorFactory(new SpringConstraintValidatorFactory(autowireCapableBeanFactory))
-                .buildValidatorFactory()) {
+        try (ValidatorFactory validatorFactory = Validation.byProvider(HibernateValidator.class).configure().failFast(true) // failFast=true 时，遇到第一个校验失败则立即返回，false 表示校验所有参数
+                .constraintValidatorFactory(new SpringConstraintValidatorFactory(autowireCapableBeanFactory)).buildValidatorFactory()) {
 
             // 使用 try-with-resources 确保 ValidatorFactory 被正确关闭
             return validatorFactory.getValidator();

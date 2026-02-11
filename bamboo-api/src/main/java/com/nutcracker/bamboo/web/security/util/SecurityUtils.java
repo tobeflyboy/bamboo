@@ -194,6 +194,7 @@ public class SecurityUtils {
      *
      * @return Token 字符串
      */
+    @SuppressWarnings("null")
     public static String getTokenFromRequest() {
         HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
         return request.getHeader(HttpHeaders.AUTHORIZATION);

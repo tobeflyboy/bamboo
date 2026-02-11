@@ -67,6 +67,7 @@ public class RepeatSubmitAspect {
      * 生成防重复提交锁的 key
      * @return 锁的 key
      */
+    @SuppressWarnings("null")
     private String buildLockKey() {
         HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
         // 用户唯一标识

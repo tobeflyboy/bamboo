@@ -34,6 +34,7 @@ import lombok.extern.slf4j.Slf4j;
  * @author 胡桃夹子
  * @date 2020-03-01 09:49
  */
+@SuppressWarnings("null")
 @Slf4j
 @RequiredArgsConstructor
 @Configuration

@@ -2,8 +2,6 @@ package com.nutcracker.bamboo.application.service.auth.impl;
 
 import java.util.Collections;
 
-import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -39,7 +37,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class LoginServiceImpl implements LoginService {
 
-    private final AuthenticationManager authenticationManager;
+    // private final AuthenticationManager authenticationManager;
     private final TokenService tokenService;
     private final SysUserService sysUserService;
 
@@ -48,7 +46,7 @@ public class LoginServiceImpl implements LoginService {
     //private final CodeGenerator codeGenerator;
 
     //private final SmsService smsService;
-    private final RedisTemplate<String, Object> redisTemplate;
+    // private final RedisTemplate<String, Object> redisTemplate;
 
     /**
      * 用户名密码登录

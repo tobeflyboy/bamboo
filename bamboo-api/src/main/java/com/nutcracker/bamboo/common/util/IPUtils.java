@@ -71,6 +71,7 @@ public class IPUtils {
     /**
      * 获取客户端真实 IP（支持各种代理、Nginx、内网环境）
      */
+    @SuppressWarnings("null")
     public static String getIpAddr(HttpServletRequest request) {
         String ip = null;
         try {

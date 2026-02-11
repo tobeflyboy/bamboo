@@ -1,7 +1,6 @@
 package com.nutcracker.bamboo.infrastructure.converter.auth;
 
 import java.util.List;
-
 import com.nutcracker.bamboo.domain.model.entity.User;
 import com.nutcracker.bamboo.domain.model.valueobject.OnlineUser;
 import com.nutcracker.bamboo.infrastructure.entity.auth.UserDo;
@@ -31,6 +30,9 @@ public interface UserConvert {
      * @param user {@link User}
      * @return {@link UserDo}
      */
+    @org.mapstruct.Mappings({@org.mapstruct.Mapping(target = "id", ignore = true),
+            @org.mapstruct.Mapping(target = "createBy", ignore = true),
+            @org.mapstruct.Mapping(target = "updateBy", ignore = true)})
     UserDo toDo(User user);
 
     /**
@@ -47,6 +49,14 @@ public interface UserConvert {
      * @param userDo {@link UserDo}
      * @return {@link User}
      */
+    @org.mapstruct.Mappings({@org.mapstruct.Mapping(target = "userId", source = "id"),
+            @org.mapstruct.Mapping(target = "newPassword", ignore = true),
+            @org.mapstruct.Mapping(target = "statusDesc", ignore = true),
+            @org.mapstruct.Mapping(target = "createUserRealName", ignore = true),
+            @org.mapstruct.Mapping(target = "updateUserRealName", ignore = true),
+            @org.mapstruct.Mapping(target = "roleId", ignore = true),
+            @org.mapstruct.Mapping(target = "roleCode", ignore = true),
+            @org.mapstruct.Mapping(target = "roleName", ignore = true)})
     User toDomain(UserDo userDo);
 
     /**

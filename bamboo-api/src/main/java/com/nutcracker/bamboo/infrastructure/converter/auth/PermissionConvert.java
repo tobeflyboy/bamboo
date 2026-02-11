@@ -1,7 +1,6 @@
 package com.nutcracker.bamboo.infrastructure.converter.auth;
 
 import java.util.List;
-
 import com.nutcracker.bamboo.domain.model.entity.Permission;
 import com.nutcracker.bamboo.infrastructure.entity.auth.PermissionDo;
 
@@ -38,6 +37,7 @@ public interface PermissionConvert {
      * @param roleDo {@link PermissionDo}
      * @return {@link Permission}
      */
+    @org.mapstruct.Mappings({@org.mapstruct.Mapping(target = "checked", ignore = true)})
     Permission toDomain(PermissionDo roleDo);
 
     /**

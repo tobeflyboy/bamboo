@@ -63,16 +63,6 @@ public class User implements Serializable {
     private String email;
 
     /**
-     * 用户手机
-     */
-    private String mobile;
-
-    /**
-     * 微信openid
-     */
-    private String openid;
-
-    /**
      * 状态
      */
     private Integer status;

@@ -1,9 +1,6 @@
 package com.nutcracker.bamboo.application.service.auth.impl;
 
 import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.concurrent.TimeUnit;
 
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -13,11 +10,8 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
-import com.nutcracker.bamboo.application.model.dto.WxMiniAppCodeLoginDTO;
-import com.nutcracker.bamboo.application.model.dto.WxMiniAppPhoneLoginDTO;
 import com.nutcracker.bamboo.application.service.auth.LoginService;
 import com.nutcracker.bamboo.application.service.auth.SysUserService;
-import com.nutcracker.bamboo.common.constant.RedisConstants;
 import com.nutcracker.bamboo.common.constant.SecurityConstants;
 import com.nutcracker.bamboo.common.exception.BusinessException;
 import com.nutcracker.bamboo.common.util.JSON;
@@ -27,9 +21,6 @@ import com.nutcracker.bamboo.domain.model.valueobject.AuthToken;
 import com.nutcracker.bamboo.domain.model.valueobject.CaptchaInfo;
 import com.nutcracker.bamboo.domain.model.valueobject.OnlineUser;
 import com.nutcracker.bamboo.infrastructure.converter.auth.SysUserConvert;
-import com.nutcracker.bamboo.web.security.extension.sms.SmsAuthenticationToken;
-import com.nutcracker.bamboo.web.security.extension.wx.WxMiniAppCodeAuthenticationToken;
-import com.nutcracker.bamboo.web.security.extension.wx.WxMiniAppPhoneAuthenticationToken;
 import com.nutcracker.bamboo.web.security.service.TokenService;
 import com.nutcracker.bamboo.web.security.util.SecurityUtils;
 
@@ -90,79 +81,7 @@ public class LoginServiceImpl implements LoginService {
         return authenticationTokenResponse;
     }
 
-    /**
-     * 微信一键授权登录
-     *
-     * @param code 微信登录code
-     * @return 访问令牌
-     */
-    @Override
-    public AuthToken loginByWechat(String code) {
-        // 1. 创建用户微信认证的令牌（未认证）
-        WxMiniAppCodeAuthenticationToken authenticationToken = new WxMiniAppCodeAuthenticationToken(code);
 
-        // 2. 执行认证（认证中）
-        Authentication authentication = authenticationManager.authenticate(authenticationToken);
-        OnlineUser onlineUser = (OnlineUser) authentication.getPrincipal();
-        //SysUser user = sysUserService.findByUsername(username);
-        //OnlineUser onlineUser = SysUserConvert.INSTANCE.toOnlineUser(user);
-
-        // 3. 认证成功后生成 JWT 令牌，并存入 Security 上下文，供登录日志 AOP 使用（已认证）
-        AuthToken token = tokenService.generateToken(onlineUser);
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-
-        return token;
-    }
-
-    /**
-     * 发送登录短信验证码
-     *
-     * @param mobile 手机号
-     */
-    @Override
-    public void sendSmsLoginCode(String mobile) {
-
-        // 随机生成4位验证码
-        // String code = String.valueOf((int) ((Math.random() * 9 + 1) * 1000));
-        // TODO 为了方便测试，验证码固定为 1234，实际开发中在配置了厂商短信服务后，可以使用上面的随机验证码
-        String code = "1234";
-
-        // 发送短信验证码
-        Map<String, String> templateParams = new HashMap<>();
-        templateParams.put("code", code);
-        try {
-            //smsService.sendSms(mobile, SmsTypeEnum.LOGIN, templateParams);
-            // TODO 发送短信
-        } catch (Exception e) {
-            log.error("发送短信验证码失败", e);
-        }
-        // 缓存验证码至Redis，用于登录校验
-        redisTemplate.opsForValue().set(StrUtil.format(RedisConstants.Captcha.SMS_LOGIN_CODE, mobile), code, 5, TimeUnit.MINUTES);
-    }
-
-    /**
-     * 短信验证码登录
-     *
-     * @param mobile 手机号
-     * @param code   验证码
-     * @return 访问令牌
-     */
-    @Override
-    public AuthToken loginBySms(String mobile, String code) {
-        // 1. 创建用户短信验证码认证的令牌（未认证）
-        SmsAuthenticationToken smsAuthenticationToken = new SmsAuthenticationToken(mobile, code);
-
-        // 2. 执行认证（认证中）
-        Authentication authentication = authenticationManager.authenticate(smsAuthenticationToken);
-        OnlineUser onlineUser = (OnlineUser)  authentication.getPrincipal();
-        //SysUser user = sysUserService.findByUsername(username);
-        //OnlineUser onlineUser = SysUserConvert.INSTANCE.toOnlineUser(user);
-        // 3. 认证成功后生成 JWT 令牌，并存入 Security 上下文，供登录日志 AOP 使用（已认证）
-        AuthToken authenticationToken = tokenService.generateToken(onlineUser);
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-
-        return authenticationToken;
-    }
 
     /**
      * 注销登录
@@ -239,53 +158,6 @@ public class LoginServiceImpl implements LoginService {
         return tokenService.refreshToken(refreshToken);
     }
 
-    /**
-     * 微信小程序Code登录
-     *
-     * @param loginDTO 登录参数
-     * @return 访问令牌
-     */
-    @Override
-    public AuthToken loginByWxMiniAppCode(WxMiniAppCodeLoginDTO loginDTO) {
-        // 1. 创建微信小程序认证令牌（未认证）
-        WxMiniAppCodeAuthenticationToken authenticationToken = new WxMiniAppCodeAuthenticationToken(loginDTO.getCode());
 
-        // 2. 执行认证（认证中）
-        Authentication authentication = authenticationManager.authenticate(authenticationToken);
-        OnlineUser onlineUser = (OnlineUser)  authentication.getPrincipal();
-        //SysUser user = sysUserService.findByUsername(username);
-        //OnlineUser onlineUser = SysUserConvert.INSTANCE.toOnlineUser(user);
-        // 3. 认证成功后生成 JWT 令牌，并存入 Security 上下文，供登录日志 AOP 使用（已认证）
-        AuthToken token = tokenService.generateToken(onlineUser);
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-
-        return token;
-    }
-
-    /**
-     * 微信小程序手机号登录
-     *
-     * @param loginDTO 登录参数
-     * @return 访问令牌
-     */
-    @Override
-    public AuthToken loginByWxMiniAppPhone(WxMiniAppPhoneLoginDTO loginDTO) {
-        // 创建微信小程序手机号认证Token
-        WxMiniAppPhoneAuthenticationToken authenticationToken = new WxMiniAppPhoneAuthenticationToken(
-                loginDTO.getCode(),
-                loginDTO.getEncryptedData(),
-                loginDTO.getIv()
-        );
-
-        // 执行认证
-        Authentication authentication = authenticationManager.authenticate(authenticationToken);
-        OnlineUser onlineUser = (OnlineUser) authentication.getPrincipal();
-        //SysUser user = sysUserService.findByUsername(username);
-        //OnlineUser onlineUser = SysUserConvert.INSTANCE.toOnlineUser(user);
-        // 认证成功后生成JWT令牌，并存入Security上下文
-        AuthToken token = tokenService.generateToken(onlineUser);
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-        return token;
-    }
 
 }

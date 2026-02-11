@@ -1,8 +1,6 @@
 package com.nutcracker.bamboo.application.service.auth;
 
 
-import com.nutcracker.bamboo.application.model.dto.WxMiniAppCodeLoginDTO;
-import com.nutcracker.bamboo.application.model.dto.WxMiniAppPhoneLoginDTO;
 import com.nutcracker.bamboo.domain.model.valueobject.AuthToken;
 import com.nutcracker.bamboo.domain.model.valueobject.CaptchaInfo;
 
@@ -43,43 +41,5 @@ public interface LoginService {
      */
     AuthToken refreshToken(String refreshToken);
 
-    /**
-     * 微信小程序登录
-     *
-     * @param code 微信登录code
-     * @return 登录结果
-     */
-    AuthToken loginByWechat(String code);
 
-    /**
-     * 微信小程序Code登录
-     *
-     * @param loginDTO 登录参数
-     * @return 访问令牌
-     */
-    AuthToken loginByWxMiniAppCode(WxMiniAppCodeLoginDTO loginDTO);
-
-    /**
-     * 微信小程序手机号登录
-     *
-     * @param loginDTO 登录参数
-     * @return 访问令牌
-     */
-    AuthToken loginByWxMiniAppPhone(WxMiniAppPhoneLoginDTO loginDTO);
-
-    /**
-     * 发送短信验证码
-     *
-     * @param mobile 手机号
-     */
-    void sendSmsLoginCode(String mobile);
-
-    /**
-     * 短信验证码登录
-     *
-     * @param mobile 手机号
-     * @param code   验证码
-     * @return 登录结果
-     */
-    AuthToken loginBySms(String mobile, String code);
 }

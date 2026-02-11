@@ -28,18 +28,17 @@
 </template>
 
 <script setup>
-import { ref, reactive, onMounted, onBeforeUnmount } from "vue";
-import { useRouter } from "vue-router";
-import { HOME_URL } from "@/config";
-import { ElNotification } from "element-plus";
 import { loginApi } from "@/api/modules/login";
-import { useUserStore } from "@/stores/modules/user";
-import { useTabsStore } from "@/stores/modules/tabs";
-import { useKeepAliveStore } from "@/stores/modules/keepAlive";
+import { HOME_URL } from "@/config";
 import { initDynamicRouter } from "@/routers/modules/dynamicRouter";
-import { CircleClose, Lock, User, UserFilled } from "@element-plus/icons-vue";
-import md5 from "md5";
+import { useKeepAliveStore } from "@/stores/modules/keepAlive";
+import { useTabsStore } from "@/stores/modules/tabs";
+import { useUserStore } from "@/stores/modules/user";
 import { getTimeState } from "@/utils/index.js";
+import { CircleClose, Lock, User, UserFilled } from "@element-plus/icons-vue";
+import { ElNotification } from "element-plus";
+import { onBeforeUnmount, onMounted, reactive, ref } from "vue";
+import { useRouter } from "vue-router";
 
 const router = useRouter();
 const userStore = useUserStore();
@@ -54,7 +53,7 @@ const loginRules = reactive({
 
 const loading = ref(false);
 const loginForm = reactive({
-  // TODO 为了方便测试，这里硬编码固定值
+  // XXX 为了方便测试，这里硬编码固定值
   username: "admin",
   password: "123456"
 });

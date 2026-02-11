@@ -24,28 +24,7 @@ public interface SysUserService {
      */
     WrapperResp<Boolean> addSysUser(User sysUser, Role sysRole);
 
-    /**
-     * 注册或绑定微信用户
-     *
-     * @param openid 微信openid
-     */
-    void registerOrBindWechatUser(String openid);
 
-    /**
-     * 按手机注册用户并打开id
-     *
-     * @param mobile 手机号
-     * @param openid 微信openid
-     */
-    boolean registerUserByMobileAndOpenId(String mobile, String openid);
-
-    /**
-     * 用户绑定微信openid
-     *
-     * @param userId 用户id
-     * @param openid 微信openid
-     */
-    void bindUserOpenId(String userId, String openid);
 
     /**
      * 更新密码
@@ -62,21 +41,7 @@ public interface SysUserService {
      */
     User findByUsername(String username);
 
-    /**
-     * 根据手机号查询用户
-     *
-     * @param mobile 手机号
-     * @return user 用户
-     */
-    User findByMobile(String mobile);
 
-    /**
-     * 根据微信openid查询用户
-     *
-     * @param openid 微信openid
-     * @return user 用户
-     */
-    User findByOpenid(String openid);
 
     /**
      * 更新用户上次登录时间

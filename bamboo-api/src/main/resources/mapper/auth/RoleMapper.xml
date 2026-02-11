@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.nutcracker.bamboo.infrastructure.persistence.mapper.auth.RoleMapper">
+<mapper namespace="com.nutcracker.bamboo.infrastructure.mapper.auth.RoleMapper">
 
-    <resultMap id="roleMap" type="com.nutcracker.bamboo.infrastructure.persistence.entity.auth.RoleDo">
+    <resultMap id="roleMap" type="com.nutcracker.bamboo.infrastructure.entity.auth.RoleDo">
         <id column="id" jdbcType="VARCHAR" property="id"/>
         <result column="role_code" jdbcType="VARCHAR" property="roleCode"/>
         <result column="role_name" jdbcType="VARCHAR" property="roleName"/>
-        <result column="create_time" jdbcType="VARCHAR" property="createTime" typeHandler="com.nutcracker.bamboo.infrastructure.persistence.mapper.CustomDateTypeHandler"/>
+        <result column="create_time" jdbcType="VARCHAR" property="createTime" typeHandler="com.nutcracker.bamboo.infrastructure.mapper.CustomDateTypeHandler"/>
         <result column="create_by" jdbcType="VARCHAR" property="createBy"/>
     </resultMap>
 

@@ -127,21 +127,7 @@ public class SysUserServiceImpl implements SysUserService {
         return WrapperResp.success(true);
     }
 
-    @Override
-    public void registerOrBindWechatUser(String openid) {
-        // TODO register
-    }
 
-    @Override
-    public boolean registerUserByMobileAndOpenId(String mobile, String openid) {
-        // TODO register
-        return false;
-    }
-
-    @Override
-    public void bindUserOpenId(String userId, String openid) {
-        // TODO register
-    }
 
     @Override
     public void updatePassword(User sysUser) {
@@ -167,35 +153,7 @@ public class SysUserServiceImpl implements SysUserService {
         }
     }
 
-    @Override
-    public User findByMobile(String mobile) {
-        try {
-            User user = User.builder().mobile(mobile).build();
-            List<User> list = sysUserMapper.findLoginUser(user);
-            if (CollUtil.isNotEmpty(list)) {
-                return list.iterator().next();
-            }
-            return null;
-        } catch (Exception e) {
-            log.error("# 根据账号查询用户报错 , mobile={}", mobile);
-            throw new BusinessException("1001", "查询用户失败");
-        }
-    }
 
-    @Override
-    public User findByOpenid(String openid) {
-        try {
-            User user = User.builder().openid(openid).build();
-            List<User> list = sysUserMapper.findLoginUser(user);
-            if (CollUtil.isNotEmpty(list)) {
-                return list.iterator().next();
-            }
-            return null;
-        } catch (Exception e) {
-            log.error("# 根据账号查询用户报错 , openid={}", openid);
-            throw new BusinessException("1001", "查询用户失败");
-        }
-    }
 
     @Transactional
     @Override

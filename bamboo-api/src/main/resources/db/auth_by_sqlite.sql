@@ -45,8 +45,6 @@ create table sys_user  (
     salt TEXT not null,
     real_name TEXT,
     email TEXT,
-    mobile TEXT,
-    openid TEXT,
     status integer not null,
     create_time DATETIME DEFAULT CURRENT_TIMESTAMP,
     create_by TEXT,

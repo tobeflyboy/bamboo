@@ -147,8 +147,3 @@ captcha:
   # 验证码有效期(秒)
   expire-seconds: 120
 
-# 微信小程配置
-wx:
-  miniapp:
-    app-id: xxxxxx
-    app-secret: xxxxxx

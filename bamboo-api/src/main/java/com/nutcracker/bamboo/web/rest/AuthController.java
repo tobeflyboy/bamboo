@@ -4,12 +4,9 @@ import java.util.List;
 
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.nutcracker.bamboo.application.model.dto.WxMiniAppCodeLoginDTO;
-import com.nutcracker.bamboo.application.model.dto.WxMiniAppPhoneLoginDTO;
 import com.nutcracker.bamboo.application.model.response.RouteRecordRawVo;
 import com.nutcracker.bamboo.application.service.auth.LoginService;
 import com.nutcracker.bamboo.application.service.auth.PermissionService;
@@ -25,7 +22,6 @@ import com.nutcracker.bamboo.web.security.util.SecurityUtils;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -63,47 +59,7 @@ public class AuthController {
         return WrapperResp.success(authenticationToken);
     }
 
-    @Operation(summary = "短信验证码登录")
-    @PostMapping("/api/auth/login/sms")
-    public WrapperResp<AuthToken> loginBySms(
-            @Parameter(description = "手机号", example = "18812345678") @RequestParam String mobile,
-            @Parameter(description = "验证码", example = "1234") @RequestParam String code
-    ) {
-        AuthToken loginResult = loginService.loginBySms(mobile, code);
-        return WrapperResp.success(loginResult);
-    }
 
-    @Operation(summary = "发送登录短信验证码")
-    @PostMapping("/api/auth/sms/code")
-    public WrapperResp<Void> sendLoginVerifyCode(
-            @Parameter(description = "手机号", example = "18812345678") @RequestParam String mobile
-    ) {
-        loginService.sendSmsLoginCode(mobile);
-        return WrapperResp.success();
-    }
-
-    @Operation(summary = "微信授权登录(Web)")
-    @PostMapping("/api/auth/login/wechat")
-    public WrapperResp<AuthToken> loginByWechat(
-            @Parameter(description = "微信授权码", example = "code") @RequestParam String code
-    ) {
-        AuthToken loginResult = loginService.loginByWechat(code);
-        return WrapperResp.success(loginResult);
-    }
-
-    @Operation(summary = "微信小程序登录(Code)")
-    @PostMapping("/api/auth/wx/miniapp/code-login")
-    public WrapperResp<AuthToken> loginByWxMiniAppCode(@RequestBody @Valid WxMiniAppCodeLoginDTO loginDTO) {
-        AuthToken token = loginService.loginByWxMiniAppCode(loginDTO);
-        return WrapperResp.success(token);
-    }
-
-    @Operation(summary = "微信小程序登录(手机号)")
-    @PostMapping("/api/auth/wx/miniapp/phone-login")
-    public WrapperResp<AuthToken> loginByWxMiniAppPhone(@RequestBody @Valid WxMiniAppPhoneLoginDTO loginDTO) {
-        AuthToken token = loginService.loginByWxMiniAppPhone(loginDTO);
-        return WrapperResp.success(token);
-    }
 
 
     @Operation(summary = "退出登录")

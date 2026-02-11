@@ -60,14 +60,6 @@ public class UserDo implements Serializable {
     @TableField(value = "email", jdbcType = JdbcType.VARCHAR)
     private String email;
 
-    @Schema(description = "用户手机", name = "mobile")
-    @TableField(value = "mobile", jdbcType = JdbcType.VARCHAR)
-    private String mobile;
-
-    @Schema(description = "微信openid", name = "openid")
-    @TableField(value = "openid", jdbcType = JdbcType.VARCHAR)
-    private String openid;
-
     @Schema(description = "状态", name = "status", requiredMode = Schema.RequiredMode.REQUIRED)
     @TableField(value = "status", jdbcType = JdbcType.INTEGER)
     private Integer status;

@@ -42,9 +42,6 @@ public interface RedisConstants {
      */
     interface Captcha {
         String IMAGE_CODE = "captcha:image:{}";              // 图形验证码
-        String SMS_LOGIN_CODE = "captcha:sms_login:{}";      // 登录短信验证码
-        String SMS_REGISTER_CODE = "captcha:sms_register:{}";// 注册短信验证码
-        String MOBILE_CODE = "captcha:mobile:{}";            // 绑定、更换手机验证码
         String EMAIL_CODE = "captcha:email:{}";              // 邮箱验证码
     }
 

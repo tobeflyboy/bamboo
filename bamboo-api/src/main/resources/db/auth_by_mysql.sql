@@ -42,8 +42,6 @@ CREATE TABLE sys_user (
     salt VARCHAR(50) NOT NULL COMMENT '密码盐',
     real_name VARCHAR(50) COMMENT '真实姓名',
     email VARCHAR(100) COMMENT '邮箱',
-    mobile VARCHAR(100) COMMENT '手机',
-    openid VARCHAR(100) COMMENT '微信openid',
     status INTEGER NOT NULL COMMENT '状态(0:禁用 1:启用)',
     create_time DATETIME NOT NULL COMMENT '创建时间',
     create_by VARCHAR(32) COMMENT '创建人',

@@ -183,13 +183,6 @@
                 <version>3.1.1</version>
             </dependency>
 
-            <!-- 微信 jdk -->
-            <dependency>
-                <groupId>com.github.binarywang</groupId>
-                <artifactId>weixin-java-miniapp</artifactId>
-                <version>4.7.8-20251117.120146</version>
-            </dependency>
-
             <!-- apache commons -->
             <dependency>
                 <groupId>commons-codec</groupId>
@@ -351,12 +344,6 @@
         <dependency>
             <groupId>org.lionsoul</groupId>
             <artifactId>ip2region</artifactId>
-        </dependency>
-
-        <!-- 微信 jdk -->
-        <dependency>
-            <groupId>com.github.binarywang</groupId>
-            <artifactId>weixin-java-miniapp</artifactId>
         </dependency>
     </dependencies>
 

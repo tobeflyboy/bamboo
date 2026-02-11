@@ -23,14 +23,10 @@ import com.nutcracker.bamboo.application.service.auth.SysUserService;
 import com.nutcracker.bamboo.web.filter.RateLimiterFilter;
 import com.nutcracker.bamboo.web.security.exception.MyAccessDeniedHandler;
 import com.nutcracker.bamboo.web.security.exception.MyAuthenticationEntryPoint;
-import com.nutcracker.bamboo.web.security.extension.sms.SmsAuthenticationProvider;
-import com.nutcracker.bamboo.web.security.extension.wx.WxMiniAppCodeAuthenticationProvider;
-import com.nutcracker.bamboo.web.security.extension.wx.WxMiniAppPhoneAuthenticationProvider;
 import com.nutcracker.bamboo.web.security.filter.TokenAuthenticationFilter;
 import com.nutcracker.bamboo.web.security.service.SysUserDetailsService;
 import com.nutcracker.bamboo.web.security.service.TokenService;
 
-import cn.binarywang.wx.miniapp.api.WxMaService;
 import cn.hutool.core.util.ArrayUtil;
 import lombok.RequiredArgsConstructor;
 
@@ -49,7 +45,7 @@ public class SecurityConfig {
     //private final PasswordEncoder passwordEncoder;
 
     private final TokenService tokenService;
-    private final WxMaService wxMaService;
+    //private final WxMaService wxMaService;
     private final SysUserService sysUserService;
     private final SysUserDetailsService userDetailsService;
 
@@ -139,44 +135,14 @@ public class SecurityConfig {
     }
 
     /**
-     * 微信小程序Code认证Provider
-     */
-    @Bean
-    public WxMiniAppCodeAuthenticationProvider wxMiniAppCodeAuthenticationProvider() {
-        return new WxMiniAppCodeAuthenticationProvider(sysUserService, wxMaService);
-    }
-
-    /**
-     * 微信小程序手机号认证Provider
-     */
-    @Bean
-    public WxMiniAppPhoneAuthenticationProvider wxMiniAppPhoneAuthenticationProvider() {
-        return new WxMiniAppPhoneAuthenticationProvider(sysUserService, wxMaService);
-    }
-
-    /**
-     * 短信验证码认证 Provider
-     */
-    @Bean
-    public SmsAuthenticationProvider smsAuthenticationProvider() {
-        return new SmsAuthenticationProvider(sysUserService, redisTemplate);
-    }
-
-    /**
      * 认证管理器
      */
     @Bean
     public AuthenticationManager authenticationManager(
-            DaoAuthenticationProvider daoAuthenticationProvider,
-            WxMiniAppCodeAuthenticationProvider wxMiniAppCodeAuthenticationProvider,
-            WxMiniAppPhoneAuthenticationProvider wxMiniAppPhoneAuthenticationProvider,
-            SmsAuthenticationProvider smsAuthenticationProvider
+            DaoAuthenticationProvider daoAuthenticationProvider
     ) {
         return new ProviderManager(
-                daoAuthenticationProvider,
-                wxMiniAppCodeAuthenticationProvider,
-                wxMiniAppPhoneAuthenticationProvider,
-                smsAuthenticationProvider
+                daoAuthenticationProvider
         );
     }
 }

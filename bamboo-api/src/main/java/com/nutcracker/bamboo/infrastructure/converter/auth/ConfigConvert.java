@@ -1,5 +1,7 @@
 package com.nutcracker.bamboo.infrastructure.converter.auth;
 
+import java.util.List;
+
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.nutcracker.bamboo.domain.model.entity.Config;
 import com.nutcracker.bamboo.infrastructure.entity.auth.ConfigDo;
@@ -17,7 +19,9 @@ public interface ConfigConvert {
 
     Page<Config> toPageVo(Page<ConfigDo> page);
 
-    ConfigDo toEntity(Config sysConfig);
+    ConfigDo toEntity(Config config);
 
     Config toForm(ConfigDo configDo);
+
+    List<Config> toConfigList(List<ConfigDo> configDoList);
 }

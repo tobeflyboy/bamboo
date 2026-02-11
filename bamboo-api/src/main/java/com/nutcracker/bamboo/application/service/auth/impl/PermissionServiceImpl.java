@@ -200,7 +200,17 @@ public class PermissionServiceImpl implements PermissionService {
             p = PermissionConvert.INSTANCE.toDo(permission);
             resultNum = permissionMapper.updateById(p);
         } else {
-            // TODO 判断是不是已经存在相同的菜单
+            // 判断是不是已经存在相同的菜单
+            LambdaQueryWrapper<PermissionDo> queryWrapper = new LambdaQueryWrapper<>();
+            queryWrapper.eq(PermissionDo::getName, permission.getName())
+                       .eq(PermissionDo::getPath, permission.getPath())
+                       .eq(PermissionDo::getIsDeleted, false);
+            
+            Long count = permissionMapper.selectCount(queryWrapper);
+            if (count > 0) {
+                return WrapperResp.validateFailed("菜单已存在，不能重复添加！");
+            }
+            
             // 新增
             PermissionDo p = PermissionConvert.INSTANCE.toDo(permission);
             p.setId(PrimaryKey.getPermissionId());

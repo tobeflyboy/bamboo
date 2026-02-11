@@ -41,6 +41,7 @@ import lombok.extern.slf4j.Slf4j;
  *
  * @author 胡桃夹子
  */
+@SuppressWarnings("null")
 @Slf4j
 @Service
 public class TokenService {
@@ -57,7 +58,6 @@ public class TokenService {
         this.secretKey = securityProperties.getSession().getSecretKey().getBytes();
         this.sysUserService = sysUserService;
     }
-
 
     /**
      * 生成 Token
@@ -80,12 +80,7 @@ public class TokenService {
         // 记录登录时间
         User user = User.builder().userId(onlineUser.getUserId()).lastLoginTime(LocalDateTime.now()).build();
         sysUserService.updateLastLoginTime(user);
-        return AuthToken.builder()
-                .token(accessToken)
-                .refreshToken(refreshToken)
-                .expiresAt(expiresAt)
-                .onlineUser(onlineUser)
-                .build();
+        return AuthToken.builder().token(accessToken).refreshToken(refreshToken).expiresAt(expiresAt).onlineUser(onlineUser).build();
     }
 
     /**
@@ -143,7 +138,7 @@ public class TokenService {
     /**
      * 校验 Token 是否有效
      *
-     * @param token  访问令牌
+     * @param token 访问令牌
      * @return 是否有效
      */
     public boolean validateToken(String token) {
@@ -153,7 +148,7 @@ public class TokenService {
     /**
      * 校验 RefreshToken 是否有效
      *
-     * @param refreshToken  访问令牌
+     * @param refreshToken 访问令牌
      * @return 是否有效
      */
     public boolean validateRefreshToken(String refreshToken) {
@@ -217,6 +212,7 @@ public class TokenService {
      * @return 新生成的 AuthenticationToken 对象
      */
     public AuthToken refreshToken(String refreshToken) {
+
         OnlineUser onlineUser = (OnlineUser) redisTemplate.opsForValue().get(StrUtil.format(RedisConstants.Auth.REFRESH_TOKEN_USER, refreshToken));
         if (onlineUser == null) {
             throw new BusinessException(ResultCode.REFRESH_TOKEN_INVALID);
@@ -235,12 +231,7 @@ public class TokenService {
 
         int accessTtl = securityProperties.getSession().getAccessTokenTimeToLive();
         LocalDateTime expiresAt = LocalDateTime.now().plusSeconds(accessTtl);
-        return AuthToken.builder()
-                .token(newToken)
-                .refreshToken(refreshToken)
-                .expiresAt(expiresAt)
-                .onlineUser(onlineUser)
-                .build();
+        return AuthToken.builder().token(newToken).refreshToken(refreshToken).expiresAt(expiresAt).onlineUser(onlineUser).build();
     }
 
     /**
@@ -249,11 +240,13 @@ public class TokenService {
      * @param token 访问令牌
      */
     public void invalidateToken(String token) {
+
         OnlineUser onlineUser = (OnlineUser) redisTemplate.opsForValue().get(formatTokenKey(token));
         if (onlineUser != null) {
             String userId = onlineUser.getUserId();
             // 1. 删除访问令牌相关
             String userAccessKey = StrUtil.format(RedisConstants.Auth.USER_ACCESS_TOKEN, userId);
+
             String accessToken = (String) redisTemplate.opsForValue().get(userAccessKey);
             if (accessToken != null) {
                 redisTemplate.delete(formatTokenKey(accessToken));
@@ -262,6 +255,7 @@ public class TokenService {
 
             // 2. 删除刷新令牌相关
             String userRefreshKey = StrUtil.format(RedisConstants.Auth.USER_REFRESH_TOKEN, userId);
+
             String refreshToken = (String) redisTemplate.opsForValue().get(userRefreshKey);
             if (refreshToken != null) {
                 redisTemplate.delete(StrUtil.format(RedisConstants.Auth.REFRESH_TOKEN_USER, refreshToken));
@@ -273,20 +267,21 @@ public class TokenService {
     /**
      * 将访问令牌和刷新令牌存储至 Redis
      *
-     * @param accessToken 访问令牌
+     * @param accessToken  访问令牌
      * @param refreshToken 刷新令牌
-     * @param onlineUser 在线用户信息
+     * @param onlineUser   在线用户信息
      */
     private void storeTokensInRedis(String accessToken, String refreshToken, OnlineUser onlineUser) {
         int accessTokenTimeToLive = securityProperties.getSession().getAccessTokenTimeToLive();
         int refreshTokenTimeToLive = securityProperties.getSession().getRefreshTokenTimeToLive();
-        
+
         // 访问令牌 -> 用户信息
         String accessTokenKey = formatTokenKey(accessToken);
         log.debug("存储访问令牌到Redis: key={}, user={}, ttl={}秒", accessTokenKey, JSON.toJSONString(onlineUser), accessTokenTimeToLive);
         setRedisValue(accessTokenKey, onlineUser, accessTokenTimeToLive);
-        
+
         // 验证存储是否成功
+
         OnlineUser storedUser = (OnlineUser) redisTemplate.opsForValue().get(accessTokenKey);
         log.debug("验证存储结果: storedUser={}", JSON.toJSONString(storedUser));
 
@@ -301,14 +296,16 @@ public class TokenService {
     /**
      * 处理单设备登录控制
      *
-     * @param userId 用户ID
+     * @param userId      用户ID
      * @param accessToken 新生成的访问令牌
      */
+
     private void handleSingleDeviceLogin(String userId, String accessToken) {
         Boolean allowMultiLogin = securityProperties.getSession().getAllowMultiLogin();
         String userAccessKey = StrUtil.format(RedisConstants.Auth.USER_ACCESS_TOKEN, userId);
         // 单设备登录控制，删除旧的访问令牌
         if (!allowMultiLogin) {
+
             String oldAccessToken = (String) redisTemplate.opsForValue().get(userAccessKey);
             if (oldAccessToken != null) {
                 redisTemplate.delete(formatTokenKey(oldAccessToken));
@@ -322,7 +319,7 @@ public class TokenService {
      * 存储新的访问令牌
      *
      * @param newAccessToken 新访问令牌
-     * @param onlineUser 在线用户信息
+     * @param onlineUser     在线用户信息
      */
     private void storeAccessToken(String newAccessToken, OnlineUser onlineUser) {
         int accessTokenTimeToLive = securityProperties.getSession().getAccessTokenTimeToLive();
@@ -330,7 +327,6 @@ public class TokenService {
         String userAccessKey = StrUtil.format(RedisConstants.Auth.USER_ACCESS_TOKEN, onlineUser.getUserId());
         setRedisValue(userAccessKey, newAccessToken, accessTokenTimeToLive);
     }
-
 
     /**
      * 格式化访问令牌的 Redis 键

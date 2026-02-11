@@ -40,6 +40,7 @@ import lombok.extern.slf4j.Slf4j;
  * @date 2025/08/11 13:36:43
  */
 @Slf4j
+@SuppressWarnings("null")
 @RequiredArgsConstructor
 @Component
 public class RequestLogFilter extends CommonsRequestLoggingFilter {

@@ -49,7 +49,7 @@
         where parent_id = #{parentPermissionId,jdbcType=VARCHAR}
     </select>
 
-    <select id="findAllByRoleId" resultType="com.nutcracker.bamboo.domain.model.entity.Permission">
+    <select id="findAllByRoleId" resultMap="permissionMap">
         select
             distinct
             p.id as id,

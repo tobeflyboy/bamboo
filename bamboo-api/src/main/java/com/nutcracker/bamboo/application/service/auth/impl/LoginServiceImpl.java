@@ -20,7 +20,7 @@ import com.nutcracker.bamboo.domain.model.entity.User;
 import com.nutcracker.bamboo.domain.model.valueobject.AuthToken;
 import com.nutcracker.bamboo.domain.model.valueobject.CaptchaInfo;
 import com.nutcracker.bamboo.domain.model.valueobject.OnlineUser;
-import com.nutcracker.bamboo.infrastructure.converter.auth.SysUserConvert;
+import com.nutcracker.bamboo.infrastructure.converter.auth.UserConvert;
 import com.nutcracker.bamboo.web.security.service.TokenService;
 import com.nutcracker.bamboo.web.security.util.SecurityUtils;
 
@@ -71,7 +71,7 @@ public class LoginServiceImpl implements LoginService {
             throw new BusinessException(ResultCode.USER_PASSWORD_ERROR);
         }
         // 手动创建已认证的 Authentication
-        OnlineUser onlineUser = SysUserConvert.INSTANCE.toOnlineUser(user);
+        OnlineUser onlineUser = UserConvert.INSTANCE.toOnlineUser(user);
         log.debug("login onlineUser={}", JSON.toJSONString(onlineUser));
         Authentication authentication = new UsernamePasswordAuthenticationToken(username, password, Collections.singletonList(new SimpleGrantedAuthority(user.getRoleCode())));
         // 3. 认证成功后生成 JWT 令牌，并存入 Security 上下文，供登录日志 AOP 使用（已认证）

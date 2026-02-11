@@ -23,7 +23,7 @@ import com.nutcracker.bamboo.common.wrapper.WrapperResp;
 import com.nutcracker.bamboo.domain.model.entity.Role;
 import com.nutcracker.bamboo.domain.model.entity.User;
 import com.nutcracker.bamboo.infrastructure.converter.auth.RoleConvert;
-import com.nutcracker.bamboo.infrastructure.converter.auth.SysUserConvert;
+import com.nutcracker.bamboo.infrastructure.converter.auth.UserConvert;
 import com.nutcracker.bamboo.infrastructure.entity.auth.RoleDo;
 import com.nutcracker.bamboo.infrastructure.entity.auth.UserDo;
 import com.nutcracker.bamboo.infrastructure.entity.auth.UserRoleDo;
@@ -97,7 +97,7 @@ public class SysUserServiceImpl implements SysUserService {
             log.error("addSysUser {},{} 用户账号已经存在，新增用户失败！", user, role);
             return WrapperResp.failed("用户账号已经存在，新增用户失败！");
         }
-        UserDo u = SysUserConvert.INSTANCE.toDo(user);
+        UserDo u = UserConvert.INSTANCE.toDo(user);
         r = RoleConvert.INSTANCE.toDo(role);
 
         String createdBy = Identify.getSessionUser().getUserId();

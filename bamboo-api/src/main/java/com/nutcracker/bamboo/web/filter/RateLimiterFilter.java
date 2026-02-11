@@ -29,6 +29,7 @@ import lombok.extern.slf4j.Slf4j;
  * @author 胡桃夹子
  */
 @Slf4j
+@SuppressWarnings("null")
 @RequiredArgsConstructor
 public class RateLimiterFilter extends OncePerRequestFilter {
 

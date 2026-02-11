@@ -28,6 +28,7 @@ import lombok.extern.slf4j.Slf4j;
  * @since 2025/3/6 16:50
  */
 @Slf4j
+@SuppressWarnings("null")
 @RequiredArgsConstructor
 public class TokenAuthenticationFilter extends OncePerRequestFilter {
 

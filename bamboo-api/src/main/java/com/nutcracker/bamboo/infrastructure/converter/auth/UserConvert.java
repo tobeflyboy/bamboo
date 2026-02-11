@@ -13,9 +13,9 @@ import com.nutcracker.bamboo.infrastructure.entity.auth.UserDo;
  * @date 2025/02/06 10:57:22
  */
 @org.mapstruct.Mapper(componentModel = "spring")
-public interface SysUserConvert {
+public interface UserConvert {
 
-    SysUserConvert INSTANCE = org.mapstruct.factory.Mappers.getMapper(SysUserConvert.class);
+    UserConvert INSTANCE = org.mapstruct.factory.Mappers.getMapper(UserConvert.class);
 
     /**
      * User 转 OnlineUser

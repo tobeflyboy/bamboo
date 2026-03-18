@@ -21,7 +21,9 @@ public interface RoleConvert {
      * @param role {@link Role}
      * @return {@link RoleDo}
      */
-    @org.mapstruct.Mappings({@org.mapstruct.Mapping(target = "createBy", ignore = true)})
+    @org.mapstruct.Mappings({
+            @org.mapstruct.Mapping(target = "createBy", ignore = true)
+    })
     RoleDo toDo(Role role);
 
     /**
@@ -38,7 +40,9 @@ public interface RoleConvert {
      * @param roleDo {@link RoleDo}
      * @return {@link Role}
      */
-    @org.mapstruct.Mappings({@org.mapstruct.Mapping(target = "createUserRealName", ignore = true)})
+    @org.mapstruct.Mappings({
+            @org.mapstruct.Mapping(target = "createUserRealName", ignore = true)
+    })
     Role toDomain(RoleDo roleDo);
 
     /**

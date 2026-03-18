@@ -37,7 +37,9 @@ public interface PermissionConvert {
      * @param roleDo {@link PermissionDo}
      * @return {@link Permission}
      */
-    @org.mapstruct.Mappings({@org.mapstruct.Mapping(target = "checked", ignore = true)})
+    @org.mapstruct.Mappings({
+            @org.mapstruct.Mapping(target = "checked", ignore = true)
+    })
     Permission toDomain(PermissionDo roleDo);
 
     /**

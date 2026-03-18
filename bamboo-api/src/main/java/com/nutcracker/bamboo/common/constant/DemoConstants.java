@@ -1,7 +1,6 @@
 package com.nutcracker.bamboo.common.constant;
 
 import java.util.Arrays;
-
 import org.springframework.util.AntPathMatcher;
 
 /**
@@ -32,9 +31,11 @@ public class DemoConstants {
     public static final String TOKEN_PREFIX = "Bearer ";
 
     // 白名单路径（无需认证）
-    public static final String[] WHITE_LIST = { "/public/**", "/static/**", "/favicon.ico", "/v3/api-docs/**",
-            "/webjars/**", "/swagger-ui/**", "/swagger-ui.html", "/swagger-resources/**", "/doc.html",
-            "/rest/actuator/**", "/actuator/**", "/alive", "/api/login", "/error/**" };
+    public static final String[] WHITE_LIST = {
+            "/public/**", "/static/**", "/favicon.ico", "/v3/api-docs/**", "/webjars/**", "/swagger-ui/**",
+            "/swagger-ui.html", "/swagger-resources/**", "/doc.html", "/rest/actuator/**", "/actuator/**", "/alive",
+            "/api/login", "/error/**"
+    };
 
     /**
      * 是不是白名单

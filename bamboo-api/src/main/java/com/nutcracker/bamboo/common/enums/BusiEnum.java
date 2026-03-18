@@ -3,7 +3,6 @@ package com.nutcracker.bamboo.common.enums;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
-
 import lombok.Getter;
 import lombok.ToString;
 
@@ -19,11 +18,10 @@ public enum BusiEnum {
 
     // 注意：编码长度不能超过30个字符
 
-    CCB_QR_CODE_PAY("CCB_QR_CODE_PAY", "建设银行聚合二维码支付", "15分钟", "ccb.png"),
-    ALIPAY_QRCODE_PAY("ALIPAY_QRCODE_PAY", "支付宝订单码支付", "2小时", "alipay.png"),
-    ALIPAY_JSAPI_PAY("ALIPAY_JSAPI_PAY", "支付宝JSAPI支付", "3小时", "alipay.png"),
-    ALIPAY_FACE_TO_FACE_PAY("ALIPAY_FACE_TO_FACE_PAY", "支付宝当面付", "3小时", "alipay.png"),
-    ;
+    CCB_QR_CODE_PAY("CCB_QR_CODE_PAY", "建设银行聚合二维码支付", "15分钟", "ccb.png"), ALIPAY_QRCODE_PAY(
+            "ALIPAY_QRCODE_PAY", "支付宝订单码支付", "2小时", "alipay.png"), ALIPAY_JSAPI_PAY(
+                    "ALIPAY_JSAPI_PAY", "支付宝JSAPI支付", "3小时", "alipay.png"), ALIPAY_FACE_TO_FACE_PAY(
+                            "ALIPAY_FACE_TO_FACE_PAY", "支付宝当面付", "3小时", "alipay.png"),;
 
     private static final Map<String, BusiEnum> BUSI_ENUM_MAP = new LinkedHashMap<>();
 

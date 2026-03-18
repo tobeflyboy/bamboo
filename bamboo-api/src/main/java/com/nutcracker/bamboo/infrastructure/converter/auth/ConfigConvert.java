@@ -15,11 +15,13 @@ public interface ConfigConvert {
 
     ConfigConvert INSTANCE = org.mapstruct.factory.Mappers.getMapper(ConfigConvert.class);
 
-    @org.mapstruct.Mappings({@org.mapstruct.Mapping(target = "createBy", ignore = true),
+    @org.mapstruct.Mappings({
+            @org.mapstruct.Mapping(target = "createBy", ignore = true),
             @org.mapstruct.Mapping(target = "createTime", ignore = true),
             @org.mapstruct.Mapping(target = "updateTime", ignore = true),
             @org.mapstruct.Mapping(target = "updateBy", ignore = true),
-            @org.mapstruct.Mapping(target = "isDeleted", ignore = true)})
+            @org.mapstruct.Mapping(target = "isDeleted", ignore = true)
+    })
     ConfigDo toEntity(Config config);
 
     Config toForm(ConfigDo configDo);

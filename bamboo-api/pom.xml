@@ -110,6 +110,11 @@
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>
+            <dependency>
+                <groupId>com.github.jsqlparser</groupId>
+                <artifactId>jsqlparser</artifactId>
+                <version>5.3</version>
+            </dependency>
 
             <!-- https://hutool.cn/docs -->
             <dependency>
@@ -194,6 +199,23 @@
                 <artifactId>commons-codec</artifactId>
                 <version>1.21.0</version>
             </dependency>
+            <dependency>
+                <groupId>commons-io</groupId>
+                <artifactId>commons-io</artifactId>
+                <version>2.21.0</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.yaml</groupId>
+                <artifactId>snakeyaml</artifactId>
+                <version>${snakeyaml.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.objenesis</groupId>
+                <artifactId>objenesis</artifactId>
+                <version>3.5</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
@@ -243,10 +265,6 @@
             <artifactId>mybatis-plus-jsqlparser</artifactId>
         </dependency>
         <dependency>
-            <groupId>org.mybatis</groupId>
-            <artifactId>mybatis</artifactId>
-        </dependency>
-        <dependency>
             <groupId>org.xerial</groupId>
             <artifactId>sqlite-jdbc</artifactId>
         </dependency>
@@ -285,7 +303,7 @@
             <groupId>org.redisson</groupId>
             <artifactId>redisson-spring-cache</artifactId>
         </dependency>
-        
+
         <!-- 获取浏览器 agent -->
         <dependency>
             <groupId>nl.bitwalker</groupId>

@@ -22,6 +22,18 @@
             "description": "加解密线程池大小"
         },
         {
+            "name": "spring.session",
+            "description": "spring.session 相关参数配置"
+        },
+        {
+            "name": "jwt",
+            "description": "jwt 相关参数配置"
+        },
+        {
+            "name": "captcha",
+            "description": "captcha 相关参数配置"
+        },
+        {
             "name": "spring.redis.redisson",
             "type": "java.lang.String",
             "description": "Redisson 配置"
@@ -36,12 +48,27 @@
             "description": "security.session 相关参数配置"
         },
         {
+            "name": "security.max-session",
+            "type": "java.lang.Integer",
+            "description": "security.max-session 相关参数配置"
+        },
+        {
+            "name": "security.prevents-login",
+            "type": "java.lang.Boolean",
+            "description": "security.prevents-login 相关参数配置"
+        },
+        {
             "name": "security.ignore-urls",
             "description": "security.ignore-urls 相关参数配置"
         },
         {
             "name": "security.unsecured-urls",
             "description": "security.unsecured-urls 相关参数配置"
+        },
+        {
+            "name": "pagehelper.banner",
+            "type": "java.lang.String",
+            "description": "A description for 'pagehelper.banner'"
         }
     ]
 }

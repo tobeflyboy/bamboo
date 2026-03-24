@@ -43,7 +43,6 @@ public class DemoConstants {
      * @param uri uri
      * @return boolean(true=是;false=不是;)
      */
-    @SuppressWarnings("null")
     public static boolean isWhitelisted(String uri) {
         return Arrays.stream(WHITE_LIST).anyMatch(pattern -> new AntPathMatcher().match(pattern, uri));
     }

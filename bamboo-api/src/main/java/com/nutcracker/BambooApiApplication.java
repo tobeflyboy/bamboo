@@ -1,16 +1,13 @@
 package com.nutcracker;
 
 import java.net.InetAddress;
-
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.info.BuildProperties;
-import org.springframework.boot.web.servlet.ServletComponentScan;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.ApplicationContext;
 import org.springframework.core.env.Environment;
 import org.springframework.scheduling.annotation.EnableAsync;
-
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -23,7 +20,6 @@ import lombok.extern.slf4j.Slf4j;
 @EnableAsync
 @EnableCaching
 @SpringBootApplication(scanBasePackages = "com.nutcracker")
-@ServletComponentScan(basePackages = "com.nutcracker")
 public class BambooApiApplication {
 
     public static void main(String[] args) {
@@ -56,23 +52,16 @@ public class BambooApiApplication {
         String baseUrl = "http://" + host + ":" + port + contextPath;
 
         log.info("""
-                        
-                        ------------------------------------------------------------
-                         Application      : {}
-                         Version          : {}
-                         Active Profile   : {}
-                         Context Path     : {}
-                         Access URL       : {}
-                         API Doc          : {}/doc.html
-                        ------------------------------------------------------------
-                        """,
-                appName,
-                version,
-                profile.isBlank() ? "default" : profile,
-                contextPath,
-                baseUrl,
-                baseUrl
-        );
+
+                ------------------------------------------------------------
+                 Application      : {}
+                 Version          : {}
+                 Active Profile   : {}
+                 Context Path     : {}
+                 Access URL       : {}
+                 API Doc          : {}/doc.html
+                ------------------------------------------------------------
+                """, appName, version, profile.isBlank() ? "default" : profile, contextPath, baseUrl, baseUrl);
     }
 
 

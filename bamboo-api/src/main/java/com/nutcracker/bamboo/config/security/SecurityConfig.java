@@ -2,7 +2,7 @@ package com.nutcracker.bamboo.config.security;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.data.redis.core.RedisTemplate;
+import com.nutcracker.bamboo.common.util.RedissonUtil;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
@@ -40,7 +40,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class SecurityConfig {
 
-    private final RedisTemplate<String, Object> redisTemplate;
+    private final RedissonUtil redissonUtil;
     //private final PasswordEncoder passwordEncoder;
 
     private final TokenService tokenService;
@@ -91,7 +91,7 @@ public class SecurityConfig {
                 // 禁用 X-Frame-Options 响应头，允许页面被嵌套到 iframe 中
                 .headers(headers -> headers.frameOptions(HeadersConfigurer.FrameOptionsConfig::disable))
                 // 限流过滤器
-                .addFilterBefore(new RateLimiterFilter(redisTemplate, sysConfigService), UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(new RateLimiterFilter(redissonUtil, sysConfigService), UsernamePasswordAuthenticationFilter.class)
                 // 验证码校验过滤器
                 //.addFilterBefore(new CaptchaValidationFilter(redisTemplate, codeGenerator), UsernamePasswordAuthenticationFilter.class)
                 // 验证和解析过滤器

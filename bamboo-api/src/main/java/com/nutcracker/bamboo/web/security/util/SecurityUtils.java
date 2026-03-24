@@ -8,20 +8,17 @@ import java.util.Collection;
 import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
-
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
-
 import com.nutcracker.bamboo.common.constant.SecurityConstants;
 import com.nutcracker.bamboo.common.constant.SystemConstants;
 import com.nutcracker.bamboo.common.exception.BusinessException;
 import com.nutcracker.bamboo.common.util.JSON;
 import com.nutcracker.bamboo.domain.model.valueobject.OnlineUser;
-
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.util.StrUtil;
 import jakarta.servlet.http.HttpServletRequest;
@@ -194,7 +191,6 @@ public class SecurityUtils {
      *
      * @return Token 字符串
      */
-    @SuppressWarnings("null")
     public static String getTokenFromRequest() {
         HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
         return request.getHeader(HttpHeaders.AUTHORIZATION);

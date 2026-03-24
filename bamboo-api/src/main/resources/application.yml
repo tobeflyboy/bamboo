@@ -17,9 +17,6 @@ server:
     context-path: /bamboo-api
   port: 8080
   shutdown: graceful   # 优雅停服务，在容器关闭时，web服务器将不再接收新请求，并将等待活动请求完成的缓冲期。从springboot2.3.0引入的新特性
-  error:
-    # springboot2.5.3 ErrorController中删除了getErrorPath方法，改为走配置项，默认是：/error
-    path: /error
   tomcat:
     basedir: .
     accesslog:
@@ -60,11 +57,6 @@ spring:
     redis:
       namespace: demo-session-namespace
       flush-mode: on-save
-#  session:
-#    store-type: redis
-#    redis:
-#      namespace: spring::session
-
 mybatis-plus:
   mapper-locations: classpath:mapper/**/*.xml
   # 关闭mybatis-plus的banner打印
@@ -82,7 +74,6 @@ pagehelper:
   async-count: true               # 异步查询总记录数，提升分页查询性能。
   params: count=countSql          # 设置为 SQL 语句中的 count 查询
   banner: false                   # 关闭banner打印
-
 
 # springdoc-openapi项目配置
 springdoc:
@@ -116,7 +107,6 @@ app:
 
 jwt:
   secret: GZoxfbQ0dDIqSqwvtc2WdstvJaACU3QKALjkHnp3C78=
-
 
 # 验证码配置
 captcha:

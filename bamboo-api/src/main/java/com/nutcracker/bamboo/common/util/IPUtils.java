@@ -1,19 +1,18 @@
 package com.nutcracker.bamboo.common.util;
 
-import java.io.FileNotFoundException;
-import java.io.InputStream;
-import java.net.InetAddress;
-import java.net.UnknownHostException;
-
+import cn.hutool.core.util.StrUtil;
+import jakarta.annotation.PostConstruct;
+import jakarta.servlet.http.HttpServletRequest;
+import lombok.extern.slf4j.Slf4j;
 import org.lionsoul.ip2region.xdb.LongByteArray;
 import org.lionsoul.ip2region.xdb.Searcher;
 import org.lionsoul.ip2region.xdb.Version;
 import org.springframework.stereotype.Component;
 
-import cn.hutool.core.util.StrUtil;
-import jakarta.annotation.PostConstruct;
-import jakarta.servlet.http.HttpServletRequest;
-import lombok.extern.slf4j.Slf4j;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 
 /**
  * ip信息工具类
@@ -56,7 +55,8 @@ public class IPUtils {
             byte[] bytes = inputStream.readAllBytes();
 
             // 3. 转换为 LongByteArray：这是 3.1.1 要求的内存结构
-            LongByteArray cBuff = new LongByteArray(bytes);
+            LongByteArray cBuff = new LongByteArray();
+            cBuff.append(bytes);
 
             // 4. 使用纯内存方式创建 Searcher（性能最高、线程安全）
             searcher = Searcher.newWithBuffer(Version.IPv4, cBuff);

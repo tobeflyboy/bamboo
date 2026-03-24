@@ -9,7 +9,7 @@
     <springProperty scope="context" name="APP" source="spring.application.name" defaultValue="sc" />
     <springProperty scope="context" name="ENV" source="spring.profiles.active" defaultValue="dev" />
     <property name="PATTERN_COLOR"
-        value="${APP}-${ENV} %d{yyyy/MM/dd HH:mm:ss.SSS} %highlight([%-5level]) %magenta([%thread]) %cyan([%c{36}.%M\(\) [%X{traceId:-NONE}] - %line]) - %msg%n" />
+        value="%d{yyyy/MM/dd HH:mm:ss.SSS} %highlight([%-5level]) %magenta([%thread]) %cyan([%c{36}.%M\(\) [%X{traceId:-NONE}] - %line]) - %msg%n" />
     <property name="PATTERN_PLAIN"
         value="%d{yyyy/MM/dd HH:mm:ss.SSS} [%-5level] [%thread] [%c{36}.%M\(\) : %line] [%X{traceId:-NONE}] - %msg%n" />
 
@@ -75,7 +75,7 @@
     <logger name="org.springframework.data.redis" level="DEBUG" />
 
     <!-- print sql log , but for development debug -->
-    <logger name="com.zaxxer.hikari.HikariConfig" level="DEBUG" />
+    <!--<logger name="com.zaxxer.hikari.HikariConfig" level="DEBUG" />-->
     <logger name="org.springframework.jdbc.core.JdbcTemplate" level="DEBUG" />
     <logger name="org.springframework.jdbc.core.StatementCreatorUtils" level="TRACE" />
     <logger name="org.apache.ibatis.jdbc.ScriptRunner" level="DEBUG" />

@@ -1,7 +1,6 @@
 package com.nutcracker.bamboo.web.aop;
 
 import java.util.concurrent.TimeUnit;
-
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
@@ -12,14 +11,12 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
-
 import com.nutcracker.bamboo.common.annotation.RepeatSubmit;
 import com.nutcracker.bamboo.common.constant.RedisConstants;
 import com.nutcracker.bamboo.common.constant.SecurityConstants;
 import com.nutcracker.bamboo.common.exception.BusinessException;
 import com.nutcracker.bamboo.common.util.IPUtils;
 import com.nutcracker.bamboo.common.wrapper.ResultCode;
-
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.crypto.digest.DigestUtil;
 import jakarta.servlet.http.HttpServletRequest;
@@ -67,7 +64,6 @@ public class RepeatSubmitAspect {
      * 生成防重复提交锁的 key
      * @return 锁的 key
      */
-    @SuppressWarnings("null")
     private String buildLockKey() {
         HttpServletRequest request = ((ServletRequestAttributes) RequestContextHolder.getRequestAttributes()).getRequest();
         // 用户唯一标识

@@ -1,10 +1,12 @@
 package com.nutcracker.bamboo.config.cache;
 
-import java.time.Duration;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
-
+import org.redisson.api.RedissonClient;
+import org.redisson.spring.cache.CacheConfig;
+import org.redisson.spring.cache.RedissonSpringCacheManager;
+import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.CachingConfigurer;
 import org.springframework.cache.interceptor.CacheErrorHandler;
@@ -14,57 +16,37 @@ import org.springframework.cache.interceptor.SimpleCacheErrorHandler;
 import org.springframework.cache.interceptor.SimpleCacheResolver;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.data.redis.cache.RedisCacheConfiguration;
-import org.springframework.data.redis.cache.RedisCacheManager;
-import org.springframework.data.redis.cache.RedisCacheWriter;
-import org.springframework.data.redis.connection.RedisConnectionFactory;
-import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.data.redis.serializer.RedisSerializationContext;
-import org.springframework.data.redis.serializer.RedisSerializer;
-
+import org.springframework.context.event.EventListener;
+import org.springframework.core.env.Environment;
 import com.nutcracker.bamboo.common.constant.CacheableKey;
-
 import cn.hutool.core.util.StrUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 /**
- * Redis
+ * Redis 配置（基于 Redisson）
  *
  * @author 胡桃夹子
  * @date 2020-03-01 09:49
  */
-@SuppressWarnings("null")
 @Slf4j
 @RequiredArgsConstructor
 @Configuration
 public class RedisConfig implements CachingConfigurer {
 
-    private final RedisConnectionFactory redisConnectionFactory;
+    private final RedissonClient redissonClient;
 
-    /**
-     * 自定义 RedisTemplate
-     * <p>
-     * 指定 Redis 序列化方式
-     *
-     * @param redisConnectionFactory {@link RedisConnectionFactory}
-     * @return {@link RedisTemplate}
-     */
-    @Bean
-    public RedisTemplate<String, Object> redisTemplate(RedisConnectionFactory redisConnectionFactory) {
-        RedisTemplate<String, Object> redisTemplate = new RedisTemplate<>();
-        redisTemplate.setConnectionFactory(redisConnectionFactory);
-        redisTemplate.setKeySerializer(RedisSerializer.string());
-        redisTemplate.setValueSerializer(RedisSerializer.json());
-        redisTemplate.setHashKeySerializer(RedisSerializer.string());
-        redisTemplate.setHashValueSerializer(RedisSerializer.json());
-        redisTemplate.afterPropertiesSet();
-        return redisTemplate;
+    private final Environment environment;
+
+    @EventListener(ApplicationReadyEvent.class)
+    public void printRedisConfig() {
+        String configPath = environment.getProperty("spring.redis.redisson.file");
+        log.warn("🔥 REDIS CONFIG | Using Redisson with config: {}", configPath);
     }
 
     /**
-     * 重写KeyGenerator
-     * 自定义redis-key
+     * 重写 KeyGenerator
+     * 自定义 redis-key
      *
      * @return KeyGenerator
      */
@@ -87,39 +69,23 @@ public class RedisConfig implements CachingConfigurer {
     @Bean
     @Override
     public CacheErrorHandler errorHandler() {
-        // 用于捕获从Cache中进行CRUD时的异常的回调处理器。
+        // 用于捕获从 Cache 中进行 CRUD 时的异常的回调处理器。
         return new SimpleCacheErrorHandler();
     }
 
     @Bean
     @Override
     public CacheManager cacheManager() {
-        return new RedisCacheManager(
-                RedisCacheWriter.nonLockingRedisCacheWriter(redisConnectionFactory),
-                // 默认策略，未配置的 key 会使用这个, 默认2小时
-                this.getRedisCacheConfigurationWithTtl(7200),
-                // 指定 key 策略
-                this.getRedisCacheConfigurationMap()
-        );
-    }
-
-    private Map<String, RedisCacheConfiguration> getRedisCacheConfigurationMap() {
-        Map<String, RedisCacheConfiguration> redisCacheConfigurationMap = new HashMap<>();
+        Map<String, CacheConfig> configMap = new HashMap<>();
         Map<String, Long> keyMap = CacheableKey.getCacheableKeyMap();
         for (Map.Entry<String, Long> entry : keyMap.entrySet()) {
             if (log.isDebugEnabled()) {
                 log.debug("CacheManager cacheNames=[{}],timeout=[{}]s", entry.getKey(), entry.getValue());
             }
-            redisCacheConfigurationMap.put(entry.getKey(), this.getRedisCacheConfigurationWithTtl(entry.getValue()));
+            // TTL 和 MaxIdleTime 都设置为配置的过期时间（秒）
+            CacheConfig config = new CacheConfig(entry.getValue() * 1000, entry.getValue() * 1000);
+            configMap.put(entry.getKey(), config);
         }
-        return redisCacheConfigurationMap;
-    }
-
-    private RedisCacheConfiguration getRedisCacheConfigurationWithTtl(long seconds) {
-        RedisCacheConfiguration config = RedisCacheConfiguration.defaultCacheConfig();
-        config = config.serializeValuesWith(
-                RedisSerializationContext.SerializationPair.fromSerializer(RedisSerializer.json())
-        ).entryTtl(Duration.ofSeconds(seconds));
-        return config;
+        return new RedissonSpringCacheManager(redissonClient, configMap);
     }
 }

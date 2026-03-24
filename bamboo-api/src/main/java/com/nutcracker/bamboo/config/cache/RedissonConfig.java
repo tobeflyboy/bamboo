@@ -1,7 +1,6 @@
 package com.nutcracker.bamboo.config.cache;
 
 import java.io.IOException;
-
 import org.redisson.Redisson;
 import org.redisson.api.RedissonClient;
 import org.redisson.config.Config;
@@ -9,7 +8,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ClassPathResource;
-
 import cn.hutool.core.util.StrUtil;
 import lombok.extern.slf4j.Slf4j;
 
@@ -23,7 +21,6 @@ import lombok.extern.slf4j.Slf4j;
 @Configuration
 public class RedissonConfig {
 
-    @SuppressWarnings("null")
     @Bean(destroyMethod = "shutdown")
     public RedissonClient redissonClient(@Value("${spring.redis.redisson.file}") String path) throws IOException {
         log.debug("redissonConfig={}", path);

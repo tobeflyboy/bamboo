@@ -9,10 +9,6 @@ singleServerConfig:
   # 命令失败重试次数,如果尝试达到 retryAttempts（命令失败重试次数） 仍然不能将命令发送至某个指定的节点时，将抛出错误。
   # 如果尝试在此限制之内发送成功，则开始启用 timeout（命令等待超时） 计时。
   retryAttempts: 3
-  # 命令重试发送时间间隔，单位：毫秒
-  retryInterval: 1500
-  # redis密码
-  password:
   # 单个连接最大订阅数量
   subscriptionsPerConnection: 5
   # 客户端名称
@@ -25,11 +21,17 @@ singleServerConfig:
   address: "redis://10.28.21.167:6379"
   # database
   database: 15
+  # 定期检测连接有效性（毫秒），避免防火墙断连
+  pingConnectionInterval: 30000
+  # TCP KeepAlive
+#  keepAlive: true
+  # 禁用 Nagle 算法，降低延迟
+#  tcpNoDelay: true
   # 线程池数量,默认值: 当前处理核数量 * 2
 #threads: 16
 # Netty线程池数量,默认值: 当前处理核数量 * 2
 #nettyThreads: 32
-# 编码
-codec: !<org.redisson.codec.JsonJacksonCodec> { }
+# 编码方式（使用字符串形式，避免 IDE 验证问题）
+codec: org.redisson.codec.JsonJacksonCodec
 # 传输模式
 transportMode: "NIO"

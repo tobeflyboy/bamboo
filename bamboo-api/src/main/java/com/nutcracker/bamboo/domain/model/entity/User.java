@@ -3,9 +3,7 @@ package com.nutcracker.bamboo.domain.model.entity;
 import java.io.Serial;
 import java.io.Serializable;
 import java.time.LocalDateTime;
-
 import com.nutcracker.bamboo.common.enums.SysUserStatusEnum;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -70,6 +68,7 @@ public class User implements Serializable {
     /**
      * 状态描述
      */
+    @SuppressWarnings("unused")
     private String statusDesc;
 
     /**

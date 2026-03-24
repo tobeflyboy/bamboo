@@ -7,5 +7,6 @@
     "maven.executable.path": "mvn",
     "[java]": {
         "editor.detectIndentation": false
-    } // 如果已配环境变量填 mvn，否则填全路径("D:\\apache-maven-3.6.3\\bin\\mvn")
+    },
+    "commentTranslate.hover.enabled": true // 如果已配环境变量填 mvn，否则填全路径("D:\\apache-maven-3.6.3\\bin\\mvn")
 }

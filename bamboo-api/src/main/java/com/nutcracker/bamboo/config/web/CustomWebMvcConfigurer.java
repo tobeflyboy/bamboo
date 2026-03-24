@@ -19,7 +19,6 @@ public class CustomWebMvcConfigurer implements WebMvcConfigurer {
      *
      * @param registry 资源处理器注册表
      */
-    @SuppressWarnings("null")
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         // Swagger 配置

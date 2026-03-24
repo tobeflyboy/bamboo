@@ -55,9 +55,7 @@ spring:
             connection-test-query: SELECT 'biz'
   redis:
     redisson:
-      # redisson cluster yml 方式集成redis
       file: classpath:redisson.yml
-
 mybatis-plus:
   configuration:
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl # 打印查询结果

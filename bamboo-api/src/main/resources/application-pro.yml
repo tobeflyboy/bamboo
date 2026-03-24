@@ -55,8 +55,10 @@ spring:
             connection-test-query: SELECT 'biz'
   redis:
     redisson:
-      # redisson cluster yml 方式集成redis
-      file: classpath:redisson.yml
+      # redisson single yml 方式集成 redis（单节点模式）
+      # file: classpath:redisson.yml
+      # redisson cluster yml 方式集成 redis（集群模式）
+      file: classpath:redisson-cluster.yml
 # knife4j的增强配置，不需要增强可以不配
 knife4j:
   enable: true

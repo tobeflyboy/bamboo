@@ -7,24 +7,21 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
-
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Service;
-
 import com.nutcracker.bamboo.application.service.auth.SysUserService;
 import com.nutcracker.bamboo.common.constant.JwtClaimConstants;
 import com.nutcracker.bamboo.common.constant.RedisConstants;
 import com.nutcracker.bamboo.common.exception.BusinessException;
 import com.nutcracker.bamboo.common.util.JSON;
+import com.nutcracker.bamboo.common.util.RedissonUtil;
 import com.nutcracker.bamboo.common.wrapper.ResultCode;
 import com.nutcracker.bamboo.config.security.SecurityProperties;
 import com.nutcracker.bamboo.domain.model.entity.User;
 import com.nutcracker.bamboo.domain.model.valueobject.AuthToken;
 import com.nutcracker.bamboo.domain.model.valueobject.OnlineUser;
-
 import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.IdUtil;
 import cn.hutool.core.util.StrUtil;
@@ -41,19 +38,18 @@ import lombok.extern.slf4j.Slf4j;
  *
  * @author 胡桃夹子
  */
-@SuppressWarnings("null")
 @Slf4j
 @Service
 public class TokenService {
 
     private final SecurityProperties securityProperties;
-    private final RedisTemplate<String, Object> redisTemplate;
+    private final RedissonUtil redissonUtil;
     private final SysUserService sysUserService;
     private final byte[] secretKey;
 
-    public TokenService(SecurityProperties securityProperties, RedisTemplate<String, Object> redisTemplate, SysUserService sysUserService) {
+    public TokenService(SecurityProperties securityProperties, RedissonUtil redissonUtil, SysUserService sysUserService) {
         this.securityProperties = securityProperties;
-        this.redisTemplate = redisTemplate;
+        this.redissonUtil = redissonUtil;
         log.debug("secretkey={}", securityProperties.getSession().getSecretKey());
         this.secretKey = securityProperties.getSession().getSecretKey().getBytes();
         this.sysUserService = sysUserService;
@@ -126,7 +122,7 @@ public class TokenService {
         }
         String redisKey = formatTokenKey(token);
         log.debug("尝试从Redis获取用户信息，key={}", redisKey);
-        OnlineUser onlineUser = (OnlineUser) redisTemplate.opsForValue().get(redisKey);
+        OnlineUser onlineUser = (OnlineUser) redissonUtil.get(redisKey);
         log.debug("从Redis获取到的onlineUser={}, token={}", JSON.toJSONString(onlineUser), token);
         if (onlineUser == null) {
             log.warn("Redis中未找到用户信息，key={}", redisKey);
@@ -186,16 +182,16 @@ public class TokenService {
             // 检查 Token 是否已被加入黑名单(注销、修改密码等场景)
             JSONObject payloads = jwt.getPayloads();
             String jti = payloads.getStr(JWTPayload.JWT_ID);
-            if (redisTemplate.hasKey(StrUtil.format(RedisConstants.Auth.BLACKLIST_TOKEN, jti))) {
+            if (redissonUtil.hasKey(StrUtil.format(RedisConstants.Auth.BLACKLIST_TOKEN, jti))) {
                 log.warn("validateToken,token is blacklist, token={}", token);
                 return false;
             }
 
             boolean validate;
             if (validateRefreshToken) {
-                validate = redisTemplate.hasKey(formatRefreshTokenKey(token));
+                validate = redissonUtil.hasKey(formatRefreshTokenKey(token));
             } else {
-                validate = redisTemplate.hasKey(formatTokenKey(token));
+                validate = redissonUtil.hasKey(formatTokenKey(token));
             }
             log.debug("validateToken validate={},validateRefreshToken={},token={}", validate, validateRefreshToken, token);
             return validate;
@@ -213,16 +209,16 @@ public class TokenService {
      */
     public AuthToken refreshToken(String refreshToken) {
 
-        OnlineUser onlineUser = (OnlineUser) redisTemplate.opsForValue().get(StrUtil.format(RedisConstants.Auth.REFRESH_TOKEN_USER, refreshToken));
+        OnlineUser onlineUser = (OnlineUser) redissonUtil.get(StrUtil.format(RedisConstants.Auth.REFRESH_TOKEN_USER, refreshToken));
         if (onlineUser == null) {
             throw new BusinessException(ResultCode.REFRESH_TOKEN_INVALID);
         }
 
-        String oldToken = (String) redisTemplate.opsForValue().get(StrUtil.format(RedisConstants.Auth.USER_ACCESS_TOKEN, onlineUser.getUserId()));
+        String oldToken = (String) redissonUtil.get(StrUtil.format(RedisConstants.Auth.USER_ACCESS_TOKEN, onlineUser.getUserId()));
 
         // 删除旧的访问令牌记录
         if (oldToken != null) {
-            redisTemplate.delete(formatTokenKey(oldToken));
+            redissonUtil.delete(formatTokenKey(oldToken));
         }
 
         // 生成新访问令牌并存储
@@ -240,26 +236,25 @@ public class TokenService {
      * @param token 访问令牌
      */
     public void invalidateToken(String token) {
-
-        OnlineUser onlineUser = (OnlineUser) redisTemplate.opsForValue().get(formatTokenKey(token));
+        OnlineUser onlineUser = (OnlineUser) redissonUtil.get(formatTokenKey(token));
         if (onlineUser != null) {
             String userId = onlineUser.getUserId();
             // 1. 删除访问令牌相关
             String userAccessKey = StrUtil.format(RedisConstants.Auth.USER_ACCESS_TOKEN, userId);
 
-            String accessToken = (String) redisTemplate.opsForValue().get(userAccessKey);
+            String accessToken = (String) redissonUtil.get(userAccessKey);
             if (accessToken != null) {
-                redisTemplate.delete(formatTokenKey(accessToken));
-                redisTemplate.delete(userAccessKey);
+                redissonUtil.delete(formatTokenKey(accessToken));
+                redissonUtil.delete(userAccessKey);
             }
 
             // 2. 删除刷新令牌相关
             String userRefreshKey = StrUtil.format(RedisConstants.Auth.USER_REFRESH_TOKEN, userId);
 
-            String refreshToken = (String) redisTemplate.opsForValue().get(userRefreshKey);
+            String refreshToken = (String) redissonUtil.get(userRefreshKey);
             if (refreshToken != null) {
-                redisTemplate.delete(StrUtil.format(RedisConstants.Auth.REFRESH_TOKEN_USER, refreshToken));
-                redisTemplate.delete(userRefreshKey);
+                redissonUtil.delete(StrUtil.format(RedisConstants.Auth.REFRESH_TOKEN_USER, refreshToken));
+                redissonUtil.delete(userRefreshKey);
             }
         }
     }
@@ -282,7 +277,7 @@ public class TokenService {
 
         // 验证存储是否成功
 
-        OnlineUser storedUser = (OnlineUser) redisTemplate.opsForValue().get(accessTokenKey);
+        OnlineUser storedUser = (OnlineUser) redissonUtil.get(accessTokenKey);
         log.debug("验证存储结果: storedUser={}", JSON.toJSONString(storedUser));
 
         // 刷新令牌 -> 用户信息
@@ -306,9 +301,9 @@ public class TokenService {
         // 单设备登录控制，删除旧的访问令牌
         if (!allowMultiLogin) {
 
-            String oldAccessToken = (String) redisTemplate.opsForValue().get(userAccessKey);
+            String oldAccessToken = (String) redissonUtil.get(userAccessKey);
             if (oldAccessToken != null) {
-                redisTemplate.delete(formatTokenKey(oldAccessToken));
+                redissonUtil.delete(formatTokenKey(oldAccessToken));
             }
         }
         // 存储访问令牌映射（用户ID -> 访问令牌），用于单设备登录控制删除旧的访问令牌和刷新令牌时删除旧令牌
@@ -353,14 +348,14 @@ public class TokenService {
      *
      * @param key   键
      * @param value 值
-     * @param ttl   过期时间（秒），-1表示永不过期
+     * @param ttl   过期时间（秒），-1 表示永不过期
      */
     private void setRedisValue(String key, Object value, int ttl) {
         if (ttl != -1) {
-            redisTemplate.opsForValue().set(key, value, ttl, TimeUnit.SECONDS);
+            redissonUtil.set(key, value, ttl, TimeUnit.SECONDS);
         } else {
-            // ttl=-1时永不过期
-            redisTemplate.opsForValue().set(key, value);
+            // ttl=-1 时永不过期
+            redissonUtil.set(key, value);
         }
     }
 }

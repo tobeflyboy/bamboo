@@ -1,18 +1,15 @@
 package com.nutcracker.bamboo.web.security.filter;
 
 import java.io.IOException;
-
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
-
 import com.nutcracker.bamboo.common.constant.SecurityConstants;
 import com.nutcracker.bamboo.common.util.ResponseUtils;
 import com.nutcracker.bamboo.common.wrapper.ResultCode;
 import com.nutcracker.bamboo.domain.model.valueobject.OnlineUser;
 import com.nutcracker.bamboo.web.security.service.TokenService;
-
 import cn.hutool.core.util.StrUtil;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -28,7 +25,6 @@ import lombok.extern.slf4j.Slf4j;
  * @since 2025/3/6 16:50
  */
 @Slf4j
-@SuppressWarnings("null")
 @RequiredArgsConstructor
 public class TokenAuthenticationFilter extends OncePerRequestFilter {
 

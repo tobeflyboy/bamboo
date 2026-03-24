@@ -3,12 +3,11 @@ package com.nutcracker.bamboo.application.service.auth.impl;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-
 import org.apache.commons.lang3.StringUtils;
-import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.boot.context.event.ApplicationReadyEvent;
+import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
-
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
@@ -17,13 +16,12 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.nutcracker.bamboo.application.model.query.ConfigQuery;
 import com.nutcracker.bamboo.application.service.auth.ConfigService;
 import com.nutcracker.bamboo.common.constant.RedisConstants;
+import com.nutcracker.bamboo.common.util.RedissonUtil;
 import com.nutcracker.bamboo.domain.model.entity.Config;
 import com.nutcracker.bamboo.infrastructure.converter.auth.ConfigConvert;
 import com.nutcracker.bamboo.infrastructure.entity.auth.ConfigDo;
 import com.nutcracker.bamboo.infrastructure.mapper.auth.ConfigMapper;
 import com.nutcracker.bamboo.web.security.util.SecurityUtils;
-
-import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 
 /**
@@ -32,20 +30,23 @@ import lombok.RequiredArgsConstructor;
  * @author 胡桃夹子
  * @since 2024-07-29 11:17:26
  */
-@SuppressWarnings("null")
 @Service
 @RequiredArgsConstructor
 public class ConfigServiceImpl extends ServiceImpl<ConfigMapper, ConfigDo> implements ConfigService {
 
     private final ConfigConvert sysConfigConvert;
-    private final RedisTemplate<String, Object> redisTemplate;
+    private final RedissonUtil redissonUtil;
 
     /**
      * 系统启动完成后，加载系统配置到缓存
      */
-    @PostConstruct
+    @EventListener(ApplicationReadyEvent.class)
     public void init() {
-        refreshCache();
+        try {
+            refreshCache();
+        } catch (Exception e) {
+            log.error("Redis not available, skip cache init", e);
+        }
     }
 
     /**
@@ -139,11 +140,11 @@ public class ConfigServiceImpl extends ServiceImpl<ConfigMapper, ConfigDo> imple
      */
     @Override
     public boolean refreshCache() {
-        redisTemplate.delete(RedisConstants.System.CONFIG);
+        redissonUtil.delete(RedisConstants.System.CONFIG);
         List<ConfigDo> list = this.list();
         if (list != null) {
             Map<String, String> map = list.stream().collect(Collectors.toMap(ConfigDo::getConfigKey, ConfigDo::getConfigValue));
-            redisTemplate.opsForHash().putAll(RedisConstants.System.CONFIG, map);
+            redissonUtil.hashPutAll(RedisConstants.System.CONFIG, map);
             return true;
         }
         return false;
@@ -158,7 +159,7 @@ public class ConfigServiceImpl extends ServiceImpl<ConfigMapper, ConfigDo> imple
     @Override
     public Object getSystemConfig(String key) {
         if (StringUtils.isNotBlank(key)) {
-            return redisTemplate.opsForHash().get(RedisConstants.System.CONFIG, key);
+            return redissonUtil.hashGet(RedisConstants.System.CONFIG, key);
         }
         return null;
     }

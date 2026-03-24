@@ -5,17 +5,14 @@ import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.Set;
 import java.util.stream.Collectors;
-
 import org.springframework.stereotype.Component;
 import org.springframework.util.AntPathMatcher;
 import org.springframework.util.PathMatcher;
 import org.springframework.util.StringUtils;
 import org.springframework.web.filter.CommonsRequestLoggingFilter;
 import org.springframework.web.util.ContentCachingRequestWrapper;
-
 import com.nutcracker.bamboo.common.util.IPUtils;
 import com.nutcracker.bamboo.config.security.SecurityProperties;
-
 import jakarta.annotation.PostConstruct;
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.http.HttpServletRequest;
@@ -40,7 +37,6 @@ import lombok.extern.slf4j.Slf4j;
  * @date 2025/08/11 13:36:43
  */
 @Slf4j
-@SuppressWarnings("null")
 @RequiredArgsConstructor
 @Component
 public class RequestLogFilter extends CommonsRequestLoggingFilter {

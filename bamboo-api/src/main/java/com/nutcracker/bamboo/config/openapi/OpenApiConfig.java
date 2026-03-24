@@ -1,16 +1,13 @@
 package com.nutcracker.bamboo.config.openapi;
 
 import java.util.stream.Stream;
-
 import org.springdoc.core.customizers.GlobalOpenApiCustomizer;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
 import org.springframework.http.HttpHeaders;
 import org.springframework.util.AntPathMatcher;
-
 import com.nutcracker.bamboo.config.security.SecurityProperties;
-
 import cn.hutool.core.util.ArrayUtil;
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;
@@ -77,7 +74,6 @@ public class OpenApiConfig {
      * 全局自定义扩展
      */
     @Bean
-    @SuppressWarnings("null")
     public GlobalOpenApiCustomizer globalOpenApiCustomizer() {
         return openApi -> {
             // 全局添加Authorization

@@ -1,19 +1,15 @@
 package com.nutcracker.bamboo.web.security.service;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.util.PatternMatchUtils;
-
 import com.nutcracker.bamboo.common.constant.RedisConstants;
+import com.nutcracker.bamboo.common.util.RedissonUtil;
 import com.nutcracker.bamboo.web.security.util.SecurityUtils;
-
 import cn.hutool.core.collection.CollectionUtil;
 import cn.hutool.core.util.StrUtil;
 import lombok.RequiredArgsConstructor;
@@ -29,7 +25,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class PermissionService {
 
-    private final RedisTemplate<String, Object> redisTemplate;
+    private final RedissonUtil redissonUtil;
 
     /**
      * 判断当前登录用户是否拥有操作权限
@@ -86,8 +82,7 @@ public class PermissionService {
 
         Set<String> perms = new HashSet<>();
         // 从缓存中一次性获取所有角色的权限
-        Collection<Object> roleCodesAsObjects = new ArrayList<>(roleCodes);
-        List<Object> rolePermsList = redisTemplate.opsForHash().multiGet(RedisConstants.System.ROLE_PERMS, roleCodesAsObjects);
+        List<Object> rolePermsList = redissonUtil.hashMultiGet(RedisConstants.System.ROLE_PERMS, new ArrayList<>(roleCodes));
 
         for (Object rolePermsObj : rolePermsList) {
             if (rolePermsObj instanceof Set) {

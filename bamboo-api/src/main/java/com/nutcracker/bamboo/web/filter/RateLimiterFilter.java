@@ -2,17 +2,14 @@ package com.nutcracker.bamboo.web.filter;
 
 import java.io.IOException;
 import java.util.concurrent.TimeUnit;
-
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.web.filter.OncePerRequestFilter;
-
 import com.nutcracker.bamboo.application.service.auth.ConfigService;
 import com.nutcracker.bamboo.common.constant.RedisConstants;
 import com.nutcracker.bamboo.common.constant.SystemConstants;
 import com.nutcracker.bamboo.common.util.IPUtils;
+import com.nutcracker.bamboo.common.util.RedissonUtil;
 import com.nutcracker.bamboo.common.util.ResponseUtils;
 import com.nutcracker.bamboo.common.wrapper.ResultCode;
-
 import cn.hutool.core.convert.Convert;
 import cn.hutool.core.util.StrUtil;
 import jakarta.servlet.FilterChain;
@@ -29,11 +26,10 @@ import lombok.extern.slf4j.Slf4j;
  * @author 胡桃夹子
  */
 @Slf4j
-@SuppressWarnings("null")
 @RequiredArgsConstructor
 public class RateLimiterFilter extends OncePerRequestFilter {
 
-    private final RedisTemplate<String, Object> redisTemplate;
+    private final RedissonUtil redissonUtil;
     private final ConfigService configService;
 
     // 默认 IP 限流阈值
@@ -53,10 +49,10 @@ public class RateLimiterFilter extends OncePerRequestFilter {
         String key = StrUtil.format(RedisConstants.RateLimiter.IP, ip);
 
         // 自增请求计数
-        Long count = redisTemplate.opsForValue().increment(key);
+        Long count = redissonUtil.increment(key);
         if (count == null || count == 1) {
             // 第一次访问时设置过期时间为 1 秒
-            redisTemplate.expire(key, 1, TimeUnit.SECONDS);
+            redissonUtil.expire(key, 1, TimeUnit.SECONDS);
         }
 
         // 获取系统配置的限流阈值

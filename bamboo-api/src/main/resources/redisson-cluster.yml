@@ -1,0 +1,78 @@
+# Redisson 集群模式配置示例
+# 适用于 Redis Cluster 环境
+
+# 集群配置
+clusterServersConfig:
+  # 连接空闲超时，单位：毫秒
+  idleConnectionTimeout: 10000
+  # 连接超时，单位：毫秒
+  connectTimeout: 10000
+  # 命令等待超时，单位：毫秒
+  timeout: 3000
+  # 命令失败重试次数
+  retryAttempts: 3
+  # 命令重试间隔，单位：毫秒
+  retryInterval: 1500
+  # 单个连接最大订阅数量
+  subscriptionsPerConnection: 5
+  # 客户端名称
+  clientName: 'bamboo-api-prod'
+  # 最小空闲连接数（每个节点）
+  slaveConnectionMinimumIdleSize: 10
+  # 空闲连接池大小（每个节点）
+  slaveConnectionPoolSize: 64
+  # 最小空闲主节点连接数
+  masterConnectionMinimumIdleSize: 10
+  # 主节点连接池大小
+  masterConnectionPoolSize: 64
+  # 读取操作从节点选择策略
+  # MASTER - 只在主节点读取
+  # SLAVE - 只在从节点读取
+  # MASTER_SLAVE - 在主节点和从节点都读取
+  # SLAVE_SLAVE - 在两个从节点读取
+  readMode: "SLAVE"
+  # 写入操作节点选择策略
+  # MASTER - 只在主节点写入
+  # MASTER_SLAVE - 在主节点和从节点都写入
+  writeMode: "MASTER"
+  # 发布和订阅连接的最小空闲连接数
+  subscriptionConnectionMinimumIdleSize: 1
+  # 发布和订阅连接池大小
+  subscriptionConnectionPoolSize: 50
+  # 集群节点地址列表（至少 3 个主节点）
+  nodeAddresses:
+    - "redis://192.168.1.101:7000"
+    - "redis://192.168.1.101:7001"
+    - "redis://192.168.1.101:7002"
+    - "redis://192.168.1.102:7000"
+    - "redis://192.168.1.102:7001"
+    - "redis://192.168.1.102:7002"
+  # 集群扫描间隔，单位：毫秒
+  scanInterval: 2000
+  # 密码（如集群设置了密码）
+  # password: your_cluster_password
+  # 数据库索引（Redis Cluster 通常只使用 database 0）
+  database: 0
+  # 定期检测连接有效性（毫秒），避免防火墙断连
+  pingConnectionInterval: 30000
+  # TCP KeepAlive
+  keepAlive: true
+  # 禁用 Nagle 算法，降低延迟
+  tcpNoDelay: true
+
+# 线程池数量，默认值：当前处理核数量 * 2
+threads: 32
+# Netty 线程池数量，默认值：当前处理核数量 * 2
+nettyThreads: 64
+# 编码方式（使用字符串形式，避免 IDE 验证问题）
+codec: org.redisson.codec.JsonJacksonCodec
+# 传输模式
+transportMode: "NIO"
+
+# 监控和调试配置（可选）
+# metrics:
+#   enabled: true
+#   latencyTimer:
+#     enabled: true
+#     interval: 5000
+#     percentiles: [0.50, 0.95, 0.99]
